@@ -7,7 +7,13 @@ package tensor;
 
 import java.math.BigDecimal;
 
-interface Scalar {
+public interface Scalar {
 
   BigDecimal bigDecimal = null;
+
+  // String으로 값을 지정
+  void setValueFromString(String s);
+
+  // 값을 String으로 조회
+  String getValueAsString();
 }
