@@ -16,4 +16,13 @@ public interface Scalar {
 
   // 12. 값을 String으로 조회
   String getValueAsString();
+
+  // 18. 스칼라는 다른 스칼라와 덧셈이 가능하다
+  Scalar add(Scalar other);
+
+  // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다.
+  Scalar multiply(Scalar other);
+
+
+
 }

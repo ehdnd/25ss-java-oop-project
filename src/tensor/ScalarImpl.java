@@ -7,6 +7,7 @@ package tensor;
  */
 
 import java.math.BigDecimal;
+import java.security.SecureClassLoader;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
@@ -57,4 +58,39 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   protected Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
+
+  // 스칼라의 연산(non-static 메소드로 구현)연산 결과는 자신의 새로운 값이 된다 .
+
+  //18. 스칼라는 다른 스칼라와 덧셈이 가능하다
+  @Override
+  public Scalar add(Scalar other) {
+    BigDecimal otherValue = new BigDecimal(other.getValueAsString());
+    this.scalarValue = this.scalarValue.add(otherValue);
+    return this;
+  }
+
+  // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다
+  @Override
+  public Scalar multiply(Scalar other) {
+    BigDecimal otherValue = new BigDecimal(other.getValueAsString());
+    this.scalarValue = this.scalarValue.multiply(otherValue);
+    return this;
+  }
+
+  // 스칼라의 연산 디폴트 메소드로 구현연산 결과 스칼라는 새로 생성되어 반환( static ) ※
+  // 24. 전달받은 두 스칼라의 덧셈이 가능하다.
+  static Scalar add(Scalar a, Scalar b) {
+    BigDecimal v1 = new BigDecimal(a.getValueAsString());
+    BigDecimal v2 = new BigDecimal(b.getValueAsString());
+    return new ScalarImpl(v1.add(v2).toString());
+  }
+
+  // 25. 전달받은 두 스칼라의 곱셈이 가능하다.
+  static Scalar multiply(Scalar a, Scalar b) {
+    BigDecimal v1 = new BigDecimal(a.getValueAsString());
+    BigDecimal v2 = new BigDecimal(b.getValueAsString());
+    return new ScalarImpl(v1.multiply(v2).toString());
+  }
+
+
 }
