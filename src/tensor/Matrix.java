@@ -4,6 +4,9 @@ import java.util.List;
 
 interface Matrix {
 
+  // +. MatrixValue getter
+  List<List<Scalar>> getMatrixValue();
+
   Scalar get(int index);
 
   void set(int index, Scalar value);
@@ -19,8 +22,25 @@ interface Matrix {
   // - 다른 행렬이 왼쪽 행렬로서 곱해지는 경우와 오른쪽 행렬로서 곱해지는 경우 모두 지원
   void mul(Matrix otherMatrix);
 
-  // +. MatrixValue getter
-  List<List<Scalar>> getMatrixValue();
+  // 28. 전달받은 두 행렬의 덧셈이 가능하다. (크기가 같을 때)
+  static Matrix add(Matrix a, Matrix b) {
+    /*TODO
+     * Matrix 객체 생성
+     * Matrix 객체 a, b로 수정
+     * Matrix 반환
+     */
+    return null;
+  }
+
+  // 29. 전달받은 두 행렬의 곱셈이 가능하다. ((m x n) x (n x l) 일 때)
+  static Matrix mul(Matrix a, Matrix b) {
+    /*TODO
+     * Matrix 객체 생성
+     * Matrix 객체 a, b로 수정
+     * Matrix 반환
+     */
+    return null;
+  }
 
   // 45. 특정 두 행의 위치를 맞교환
   void swapRows(int row1, int row2);
