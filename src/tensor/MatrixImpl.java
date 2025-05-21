@@ -55,6 +55,7 @@ class MatrixImpl implements Matrix {
   public int getRowSize() {
     return 0;
   }
+
   // 13. 행렬의 열개수를 조회
   @Override
   public int getColSize() {
@@ -79,4 +80,26 @@ class MatrixImpl implements Matrix {
     return super.clone();
   }
 
+  @Override
+  public List<List<Scalar>> getMatrixValue() {
+    return matrixValue;
+  }
+
+  // 22. 행렬은 다른 행렬과 덧셈이 가능하다. (크기가 같을 때)
+  @Override
+  public void add(Matrix otherMatrix) {
+    // add 연산은 유효한 입력만 들어온다고 일단 가정
+    List<List<Scalar>> otherMatrixValue = otherMatrix.getMatrixValue();
+
+    for (int r = 0; r < matrixValue.size(); ++r) {
+      for (int c = 0; c < matrixValue.get(0).size(); ++c) {
+//        matrixValue.get(r).get(c) += otherMatrixValue.get(r).get(c);
+      }
+    }
+  }
+
+  @Override
+  public void mul(Matrix otherMatrix) {
+
+  }
 }
