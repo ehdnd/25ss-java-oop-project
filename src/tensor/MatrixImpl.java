@@ -7,6 +7,7 @@ package tensor;
  */
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 class MatrixImpl implements Matrix {
@@ -88,18 +89,81 @@ class MatrixImpl implements Matrix {
   // 22. 행렬은 다른 행렬과 덧셈이 가능하다. (크기가 같을 때)
   @Override
   public void add(Matrix otherMatrix) {
-    // add 연산은 유효한 입력만 들어온다고 일단 가정
-    List<List<Scalar>> otherMatrixValue = otherMatrix.getMatrixValue();
+    List<List<Scalar>> other = otherMatrix.getMatrixValue();
 
-    for (int r = 0; r < matrixValue.size(); ++r) {
-      for (int c = 0; c < matrixValue.get(0).size(); ++c) {
-//        matrixValue.get(r).get(c) += otherMatrixValue.get(r).get(c);
+    for (int r = 0; r < matrixValue.size(); r++) {
+      for (int c = 0; c < matrixValue.get(r).size(); c++) {
+        // mutable Scalar에 직접 더해서 내부 값 변경
+        matrixValue
+            .get(r)
+            .get(c)
+            .add(other.get(r).get(c));
       }
     }
   }
 
+  // 23. 행렬은 다른 행렬과 곱셈이 가능하다. ((m x n) x (n x l) 일 떄)
+  // - 다른 행렬이 왼쪽 행렬로서 곱해지는 경우와 오른쪽 행렬로서 곱해지는 경우 모두 지원
   @Override
   public void mul(Matrix otherMatrix) {
+    // 원본과 파라미터 행렬 값
+    List<List<Scalar>> A = this.matrixValue;
+    List<List<Scalar>> B = otherMatrix.getMatrixValue();
 
+    int rowsA = A.size();
+    int colsA = A.get(0).size();
+    int rowsB = B.size();
+    int colsB = B.get(0).size();
+
+    boolean canAB = (colsA == rowsB);
+    boolean canBA = (colsB == rowsA);
+
+    if (!canAB && !canBA) {
+      throw new IllegalArgumentException(
+          String.format("Cannot multiply: A is %dx%d, B is %dx%d",
+              rowsA, colsA, rowsB, colsB));
+    }
+
+    // 실제 곱셈 수행 헬퍼
+    List<List<Scalar>> result;
+    if (canAB) {
+      // A × B
+      result = multiply(A, B, rowsA, colsA, colsB);
+    } else {
+      // B × A
+      result = multiply(B, A, rowsB, colsB, colsA);
+    }
+
+    // 연산 결과로 대체
+    this.matrixValue = result;
   }
+
+  /**
+   * left (m×n) × right (n×p) → (m×p) 결과를 생성해서 반환 mutable Scalar.add(…) 으로 합계 누적, Scalar.mul(…) 으로 새
+   * 객체 반환한다고 가정
+   */
+  private List<List<Scalar>> multiply(
+      List<List<Scalar>> left,
+      List<List<Scalar>> right,
+      int m, int n, int p) {
+
+    List<List<Scalar>> res = new ArrayList<>(m);
+    for (int i = 0; i < m; i++) {
+      List<Scalar> row = new ArrayList<>(p);
+      for (int j = 0; j < p; j++) {
+        // 0 으로 시작하는 Scalar (구현에 맞게 수정)
+        Scalar sum = new ScalarImpl("0");
+        for (int k = 0; k < n; k++) {
+          // left(i,k) * right(k,j)
+          Scalar prod = left.get(i).get(k).multiply(right.get(k).get(j));
+          // mutable add
+          sum.add(prod);
+        }
+        row.add(sum);
+      }
+      res.add(row);
+    }
+    return res;
+  }
+
 }
