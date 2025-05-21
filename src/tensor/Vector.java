@@ -7,7 +7,10 @@ package tensor;
  */
 
 interface Vector {
-    Scalar get(int index);        // 요소 조회
-    void set(int index, Scalar value);  // 요소 지정
+    // 11. 요소 조회
+    Scalar get(int index);
+    // 11. 요소 지정
+    void set(int index, Scalar value);
+    // 13. 크기 정보를 조회할 수 있다.
     int size();
 }
