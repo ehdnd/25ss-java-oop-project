@@ -167,42 +167,52 @@ class MatrixImpl implements Matrix {
   }
 
   @Override
+  // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
   public void swapRows(int row1, int row2) {
-    
+    // TODO: row1과 row2의 리스트 요소를 서로 교환
   }
 
   @Override
+  // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
   public void swapColumns(int col1, int col2) {
-
+    // TODO: 모든 행에 대해 col1과 col2의 값을 교환
   }
 
   @Override
+  // 47. 지정된 행 row에 Scalar factor를 곱해 상수배한다.
   public void scaleRow(int row, Scalar factor) {
-
+    // TODO: matrixValue.get(row)의 각 요소에 factor를 곱함
   }
 
   @Override
+  // 48. 지정된 열 column에 Scalar factor를 곱해 상수배한다.
   public void scaleColumn(int column, Scalar factor) {
-
+    // TODO: 모든 행의 column 인덱스 요소에 factor를 곱함
   }
 
   @Override
+  // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
   public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor) {
-
+    // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
   }
 
   @Override
+  // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
   public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
-
+    // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
   }
 
   @Override
+  // 51. 이 행렬의 RREF(row reduced echelon form) 버전을 새 Matrix로 계산하여 반환한다.
   public Matrix toReducedRowEchelonForm() {
+    // TODO: Gaussian elimination 알고리즘으로 RREF 계산 후 새 Matrix 반환
     return null;
   }
 
   @Override
+  // 52. 이 행렬이 이미 RREF 형태인지 검사하여 true/false를 반환한다.
   public boolean isReducedRowEchelonForm() {
+    // TODO: 각 피벗 위치, 0-행, 피벗 위의 값 등 RREF 조건 검사
     return false;
   }
 }
