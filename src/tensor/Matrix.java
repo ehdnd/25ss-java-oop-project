@@ -21,4 +21,28 @@ interface Matrix {
 
   // +. MatrixValue getter
   List<List<Scalar>> getMatrixValue();
+
+  // 45. 특정 두 행의 위치를 맞교환
+  void swapRows(int row1, int row2);
+
+  // 46. 특정 두 열의 위치를 맞교환
+  void swapColumns(int col1, int col2);
+
+  // 47. 특정 행에 상수배(스칼라) 곱하기
+  void scaleRow(int row, Scalar factor);
+
+  // 48. 특정 열에 상수배(스칼라) 곱하기
+  void scaleColumn(int column, Scalar factor);
+
+  // 49. 특정 행에 다른 행의 상수배를 더하기
+  void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor);
+
+  // 50. 특정 열에 다른 열의 상수배를 더하기
+  void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor);
+
+  // 51. 이 행렬의 RREF 행렬을 계산해 새 객체로 반환
+  Matrix toReducedRowEchelonForm();
+
+  // 52. 이 행렬이 RREF 형태인지 여부 판별
+  boolean isReducedRowEchelonForm();
 }

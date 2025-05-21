@@ -166,4 +166,43 @@ class MatrixImpl implements Matrix {
     return res;
   }
 
+  @Override
+  public void swapRows(int row1, int row2) {
+    
+  }
+
+  @Override
+  public void swapColumns(int col1, int col2) {
+
+  }
+
+  @Override
+  public void scaleRow(int row, Scalar factor) {
+
+  }
+
+  @Override
+  public void scaleColumn(int column, Scalar factor) {
+
+  }
+
+  @Override
+  public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor) {
+
+  }
+
+  @Override
+  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
+
+  }
+
+  @Override
+  public Matrix toReducedRowEchelonForm() {
+    return null;
+  }
+
+  @Override
+  public boolean isReducedRowEchelonForm() {
+    return false;
+  }
 }
