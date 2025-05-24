@@ -62,4 +62,34 @@ class VectorImpl implements Vector {
   protected Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
+
+  // 20. 길이가 같을 때 다른 벡터와 덧셈 (자신을 수정한 뒤 자신 반환)
+  @Override
+  public Vector add(Vector other) {
+    if (other == null) {
+      throw new NullPointerException("other vector is null");
+    }
+    if (this.size() != other.size()) {
+      throw new IllegalArgumentException(
+          "두 벡터의 길이가 다릅니다: " + this.size() + " vs " + other.size());
+    }
+    for (int i = 0; i < vectorValue.size(); i++) {
+      // Scalar의 non‑static add 는 자신의 값을 바꾼 뒤 this를 리턴
+      vectorValue.get(i).add(other.get(i));
+    }
+    return this;
+  }
+
+  // 21. 벡터를 다른 스칼라와 곱셈이 가능하다 (모든 요소에 스칼라 곱한 뒤 자신 반환)
+  @Override
+  public Vector multiply(Scalar scalar) {
+    if (scalar == null) {
+      throw new NullPointerException("scalar is null");
+    }
+    for (Scalar elem : vectorValue) {
+      elem.multiply(scalar);   // in‑place 곱셈
+    }
+    return this;
+  }
+
 }

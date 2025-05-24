@@ -42,6 +42,21 @@ interface Matrix {
     return null;
   }
 
+  /** 40. 자신이 정사각 행렬인지 여부를 판별 */
+  boolean isSquare();
+
+  /** 41. 자신이 상삼각 행렬인지 여부를 판별 */
+  boolean isUpperTriangular();
+
+  /** 42. 자신이 하삼각 행렬인지 여부를 판별 */
+  boolean isLowerTriangular();
+
+  /** 43. 자신이 단위 행렬인지 여부를 판별 */
+  boolean isIdentity();
+
+  /** 44. 자신이 영 행렬인지 여부를 판별 */
+  boolean isZero();
+
   // 45. 특정 두 행의 위치를 맞교환
   void swapRows(int row1, int row2);
 
@@ -65,4 +80,6 @@ interface Matrix {
 
   // 52. 이 행렬이 RREF 형태인지 여부 판별
   boolean isReducedRowEchelonForm();
+
+
 }
