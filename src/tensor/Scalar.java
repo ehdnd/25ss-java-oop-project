@@ -23,6 +23,4 @@ public interface Scalar {
   // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다.
   Scalar multiply(Scalar other);
 
-
-
 }

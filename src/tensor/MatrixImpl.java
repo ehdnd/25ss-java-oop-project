@@ -223,4 +223,69 @@ class MatrixImpl implements Matrix {
     // TODO: 각 피벗 위치, 0-행, 피벗 위의 값 등 RREF 조건 검사
     return false;
   }
+
+  // 40. 정사각 행렬인지 반환
+  @Override
+  public boolean isSquare() {
+    return getRowSize() == getColSize();
+  }
+
+// 41. 상삼각 행렬인지 반환
+  @Override
+  public boolean isUpperTriangular() {
+    if (!isSquare()) return false;
+    int n = getRowSize();
+    for (int i = 1; i < n; i++) {
+      for (int j = 0; j < i; j++) {
+        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 42. 하삼각 행렬인지 반환
+  @Override
+  public boolean isLowerTriangular() {
+    if (!isSquare()) return false;
+    int n = getRowSize();
+    for (int i = 0; i < n; i++) {
+      for (int j = i + 1; j < n; j++) {
+        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 43. 단위 행렬(Identity)인지 반환
+  @Override
+  public boolean isIdentity() {
+    if (!isSquare()) return false;
+    int n = getRowSize();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        Scalar expected = (i == j) ? new ScalarImpl("1") : new ScalarImpl("0");
+        if (!matrixValue.get(i).get(j).equals(expected)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 44. 영행렬(Zero)인지 반환
+  @Override
+  public boolean isZero() {
+    for (List<Scalar> row : matrixValue) {
+      for (Scalar val : row) {
+        if (!val.equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
