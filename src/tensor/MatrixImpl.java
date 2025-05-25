@@ -178,6 +178,9 @@ class MatrixImpl implements Matrix {
   // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
   public void swapRows(int row1, int row2) {
     // TODO: row1과 row2의 리스트 요소를 서로 교환
+    List<Scalar> tmp = matrixValue.get(row1);
+    matrixValue.set(row1, matrixValue.get(row2));
+    matrixValue.set(row2, tmp);
   }
 
   @Override
