@@ -247,7 +247,7 @@ class MatrixImpl implements Matrix {
   // 52. 이 행렬이 이미 RREF 형태인지 검사하여 true/false를 반환한다.
   public boolean isReducedRowEchelonForm() {
     // TODO: 각 피벗 위치, 0-행, 피벗 위의 값 등 RREF 조건 검사
-    return false;
+    return equals(toReducedRowEchelonForm());
   }
 
   // 40. 정사각 행렬인지 반환
