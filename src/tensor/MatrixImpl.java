@@ -187,6 +187,11 @@ class MatrixImpl implements Matrix {
   // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
   public void swapColumns(int col1, int col2) {
     // TODO: 모든 행에 대해 col1과 col2의 값을 교환
+    for (int r = 0; r < getRowSize(); ++r) {
+      Scalar tmp = matrixValue.get(r).get(col1);
+      matrixValue.get(r).set(col1, matrixValue.get(r).get(col2));
+      matrixValue.get(r).set(col2, tmp);
+    }
   }
 
   @Override
@@ -233,10 +238,12 @@ class MatrixImpl implements Matrix {
     return getRowSize() == getColSize();
   }
 
-// 41. 상삼각 행렬인지 반환
+  // 41. 상삼각 행렬인지 반환
   @Override
   public boolean isUpperTriangular() {
-    if (!isSquare()) return false;
+    if (!isSquare()) {
+      return false;
+    }
     int n = getRowSize();
     for (int i = 1; i < n; i++) {
       for (int j = 0; j < i; j++) {
@@ -251,7 +258,9 @@ class MatrixImpl implements Matrix {
   // 42. 하삼각 행렬인지 반환
   @Override
   public boolean isLowerTriangular() {
-    if (!isSquare()) return false;
+    if (!isSquare()) {
+      return false;
+    }
     int n = getRowSize();
     for (int i = 0; i < n; i++) {
       for (int j = i + 1; j < n; j++) {
@@ -266,7 +275,9 @@ class MatrixImpl implements Matrix {
   // 43. 단위 행렬(Identity)인지 반환
   @Override
   public boolean isIdentity() {
-    if (!isSquare()) return false;
+    if (!isSquare()) {
+      return false;
+    }
     int n = getRowSize();
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
