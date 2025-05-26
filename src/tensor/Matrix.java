@@ -81,5 +81,20 @@ interface Matrix {
   // 52. 이 행렬이 RREF 형태인지 여부 판별
   boolean isReducedRowEchelonForm();
 
+  public VectorImpl getRowVector(int row);
 
+  // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
+  VectorImpl getColVector(int col);
+
+  // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  MatrixImpl subMatrix(int startRow, int endRow, int startCol, int endCol);
+
+  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  MatrixImpl minor(int rowToRemove, int colToRemove);
+
+  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
+  MatrixImpl transpose();
+
+  // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
+  Scalar trace();
 }
