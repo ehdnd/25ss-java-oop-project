@@ -36,4 +36,14 @@ public class Tensors {
     return ScalarImpl.multiply(a, b);
   }
 
+    // ===== 벡터의 연산 =====
+
+    // 두 벡터의 연산 결과를 반환
+    public static Vector add(Vector a, Vector b){
+      return Vector.add(a,b);
+    }
+
+    public static Vector multiply(Scalar a, Vector b){
+      return Vector.multiply(a,b);
+    }
 }
