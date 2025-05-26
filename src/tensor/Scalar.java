@@ -26,4 +26,6 @@ public interface Scalar extends Cloneable {
   // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다.
   Scalar multiply(Scalar other);
 
+  // 추가. 역수
+  Scalar reciprocal();
 }
