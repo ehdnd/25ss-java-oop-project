@@ -42,19 +42,29 @@ interface Matrix {
     return null;
   }
 
-  /** 40. 자신이 정사각 행렬인지 여부를 판별 */
+  /**
+   * 40. 자신이 정사각 행렬인지 여부를 판별
+   */
   boolean isSquare();
 
-  /** 41. 자신이 상삼각 행렬인지 여부를 판별 */
+  /**
+   * 41. 자신이 상삼각 행렬인지 여부를 판별
+   */
   boolean isUpperTriangular();
 
-  /** 42. 자신이 하삼각 행렬인지 여부를 판별 */
+  /**
+   * 42. 자신이 하삼각 행렬인지 여부를 판별
+   */
   boolean isLowerTriangular();
 
-  /** 43. 자신이 단위 행렬인지 여부를 판별 */
+  /**
+   * 43. 자신이 단위 행렬인지 여부를 판별
+   */
   boolean isIdentity();
 
-  /** 44. 자신이 영 행렬인지 여부를 판별 */
+  /**
+   * 44. 자신이 영 행렬인지 여부를 판별
+   */
   boolean isZero();
 
   // 45. 특정 두 행의 위치를 맞교환
@@ -70,7 +80,8 @@ interface Matrix {
   void scaleColumn(int column, Scalar factor);
 
   // 49. 특정 행에 다른 행의 상수배를 더하기
-  void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor);
+  void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor)
+      throws CloneNotSupportedException;
 
   // 50. 특정 열에 다른 열의 상수배를 더하기
   void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor);
