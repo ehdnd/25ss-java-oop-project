@@ -207,6 +207,9 @@ class MatrixImpl implements Matrix {
   // 48. 지정된 열 column에 Scalar factor를 곱해 상수배한다.
   public void scaleColumn(int column, Scalar factor) {
     // TODO: 모든 행의 column 인덱스 요소에 factor를 곱함
+    for (int r = 0; r < getRowSize(); ++r) {
+      matrixValue.get(r).get(column).multiply(factor);
+    }
   }
 
   @Override
