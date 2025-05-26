@@ -84,7 +84,8 @@ interface Matrix {
       throws CloneNotSupportedException;
 
   // 50. 특정 열에 다른 열의 상수배를 더하기
-  void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor);
+  void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
+      throws CloneNotSupportedException;
 
   // 51. 이 행렬의 RREF 행렬을 계산해 새 객체로 반환
   Matrix toReducedRowEchelonForm();
