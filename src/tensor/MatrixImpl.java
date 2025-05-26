@@ -226,8 +226,14 @@ class MatrixImpl implements Matrix {
 
   @Override
   // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
-  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
+  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
+      throws CloneNotSupportedException {
     // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
+    for (int r = 0; r < getRowSize(); ++r) {
+      Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
+      sourceScalar.multiply(factor);
+      matrixValue.get(r).get(targetColumn).add(sourceScalar);
+    }
   }
 
   @Override
