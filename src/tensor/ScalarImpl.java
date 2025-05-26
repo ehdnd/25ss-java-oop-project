@@ -7,7 +7,7 @@ package tensor;
  */
 
 import java.math.BigDecimal;
-import java.security.SecureClassLoader;
+import java.math.MathContext;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
@@ -93,4 +93,10 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   }
 
 
+  // 추가. 역수
+  @Override
+  public Scalar reciprocal() {
+    this.scalarValue = BigDecimal.ONE.divide(this.scalarValue, MathContext.DECIMAL128);
+    return this;
+  }
 }

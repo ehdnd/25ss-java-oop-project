@@ -7,7 +7,7 @@ interface Matrix {
   // +. MatrixValue getter
   List<List<Scalar>> getMatrixValue();
 
-  Scalar get(int index);
+  Scalar get(int row, int col);
 
   void set(int index, Scalar value);
 
@@ -88,7 +88,7 @@ interface Matrix {
       throws CloneNotSupportedException;
 
   // 51. 이 행렬의 RREF 행렬을 계산해 새 객체로 반환
-  Matrix toReducedRowEchelonForm();
+  Matrix toReducedRowEchelonForm() throws CloneNotSupportedException;
 
   // 52. 이 행렬이 RREF 형태인지 여부 판별
   boolean isReducedRowEchelonForm();

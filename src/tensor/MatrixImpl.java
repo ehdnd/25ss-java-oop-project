@@ -7,6 +7,7 @@ package tensor;
  */
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +51,8 @@ class MatrixImpl implements Matrix {
   // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
   @Override
   // 11. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
-  public Scalar get(int index) {
-    return null;
+  public Scalar get(int row, int col) {
+    return getMatrixValue().get(row).get(col);
   }
 
   @Override
@@ -85,8 +86,8 @@ class MatrixImpl implements Matrix {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  protected Object clone() throws CloneNotSupportedException {
-    return super.clone();
+  protected Matrix clone() throws CloneNotSupportedException {
+    return (Matrix) super.clone();
   }
 
   @Override
