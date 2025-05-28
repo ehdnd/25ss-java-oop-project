@@ -39,7 +39,7 @@ public class Tensors {
     // ===== 벡터의 연산 =====
 
     // 두 벡터의 연산 결과를 반환
-    public static Vector add(Vector a, Vector b){
+  public static Vector add(Vector a, Vector b){
       return Vector.add(a,b);
     }
 

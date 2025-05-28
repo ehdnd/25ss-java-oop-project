@@ -9,7 +9,7 @@ package tensor;
 import java.util.ArrayList;
 import java.util.List;
 
-interface Vector {
+public interface Vector {
 
   // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
   // 11v. 조회: 지정한 인덱스 위치의 Scalar 값을 반환

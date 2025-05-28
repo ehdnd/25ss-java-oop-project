@@ -1,6 +1,7 @@
 package tensor;
 
 import java.util.List;
+import java.io.File;
 
 /*TODO
  * 행렬, 벡터, 스칼라를 생성한다
@@ -15,12 +16,40 @@ public class Factory {
       return new ScalarImpl(value);
   }
 
+  public static Scalar createScalar(String value1, String value2) {
+        return new ScalarImpl(value1, value2);
+    }
+
   public static Vector createVector(List<Scalar> values) {
       return new VectorImpl(values);
   }
 
+  public static Vector createVector(String value, int dimension) {
+      return new VectorImpl(value, dimension);
+  }
+
+  public static Vector createVector(String i, String j, int dimension) {
+      return new VectorImpl(i, j, dimension);
+  }
+
+
   public static Matrix createMatrix(List<List<Scalar>> rows) {
       return new MatrixImpl(rows);
   }
-  
+
+  public static Matrix createMatrix(String value, int rowSize, int colSize) {
+      return new MatrixImpl(value, rowSize, colSize);
+  }
+
+  public static Matrix createMatrix(String i, String j, int rowSize, int colSize) {
+      return new MatrixImpl(i, j, rowSize, colSize);
+  }
+
+  public static Matrix createMatrix(File csvFile) {
+      return new MatrixImpl(csvFile);
+  }
+
+  public static Matrix createMatrix(Matrix matrix) {
+      return new MatrixImpl((MatrixImpl) matrix);
+  }
 }
