@@ -1,5 +1,7 @@
 package tensor;
 
+import java.util.List;
+
 /*TODO
  * 행렬, 벡터, 스칼라를 생성한다
  * 모든 메서드가 public static
@@ -8,5 +10,17 @@ package tensor;
  */
 
 public class Factory {
+
+  public static Scalar createScalar(String value) {
+      return new ScalarImpl(value);
+  }
+
+  public static Vector createVector(List<Scalar> values) {
+      return new VectorImpl(values);
+  }
+
+  public static Matrix createMatrix(List<List<Scalar>> rows) {
+      return new MatrixImpl(rows);
+  }
   
 }
