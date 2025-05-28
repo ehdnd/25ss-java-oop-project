@@ -7,7 +7,7 @@ package tensor;
  */
 
 import java.math.BigDecimal;
-import java.security.SecureClassLoader;
+import java.math.MathContext;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
@@ -55,8 +55,8 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  protected Object clone() throws CloneNotSupportedException {
-    return super.clone();
+  public Scalar clone() throws CloneNotSupportedException {
+    return (Scalar) super.clone();
   }
 
   // 스칼라의 연산(non-static 메소드로 구현)연산 결과는 자신의 새로운 값이 된다 .
@@ -93,4 +93,10 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   }
 
 
+  // 추가. 역수
+  @Override
+  public Scalar reciprocal() {
+    this.scalarValue = BigDecimal.ONE.divide(this.scalarValue, MathContext.DECIMAL128);
+    return this;
+  }
 }

@@ -7,7 +7,7 @@ package tensor;
 
 import java.math.BigDecimal;
 
-public interface Scalar {
+public interface Scalar extends Cloneable {
 
   BigDecimal bigDecimal = null;
 
@@ -17,10 +17,15 @@ public interface Scalar {
   // 12. 값을 String으로 조회
   String getValueAsString();
 
+  // 17. 객체 복제를 할 수 있다.
+  Scalar clone() throws CloneNotSupportedException;
+
   // 18. 스칼라는 다른 스칼라와 덧셈이 가능하다
   Scalar add(Scalar other);
 
   // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다.
   Scalar multiply(Scalar other);
 
+  // 추가. 역수
+  Scalar reciprocal();
 }

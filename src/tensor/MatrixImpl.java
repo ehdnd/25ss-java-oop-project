@@ -7,6 +7,7 @@ package tensor;
  */
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +51,8 @@ class MatrixImpl implements Matrix {
   // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
   @Override
   // 11. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
-  public Scalar get(int index) {
-    return null;
+  public Scalar get(int row, int col) {
+    return getMatrixValue().get(row).get(col);
   }
 
   @Override
@@ -85,8 +86,8 @@ class MatrixImpl implements Matrix {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  protected Object clone() throws CloneNotSupportedException {
-    return super.clone();
+  protected Matrix clone() throws CloneNotSupportedException {
+    return (Matrix) super.clone();
   }
 
   @Override
@@ -207,18 +208,33 @@ class MatrixImpl implements Matrix {
   // 48. 지정된 열 column에 Scalar factor를 곱해 상수배한다.
   public void scaleColumn(int column, Scalar factor) {
     // TODO: 모든 행의 column 인덱스 요소에 factor를 곱함
+    for (int r = 0; r < getRowSize(); ++r) {
+      matrixValue.get(r).get(column).multiply(factor);
+    }
   }
 
   @Override
   // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
-  public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor) {
+  public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor)
+      throws CloneNotSupportedException {
     // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
+    for (int c = 0; c < getColSize(); ++c) {
+      Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
+      sourceScalar.multiply(factor);
+      matrixValue.get(targetRow).get(c).add(sourceScalar);
+    }
   }
 
   @Override
   // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
-  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
+  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
+      throws CloneNotSupportedException {
     // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
+    for (int r = 0; r < getRowSize(); ++r) {
+      Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
+      sourceScalar.multiply(factor);
+      matrixValue.get(r).get(targetColumn).add(sourceScalar);
+    }
   }
 
   @Override
@@ -232,7 +248,7 @@ class MatrixImpl implements Matrix {
   // 52. 이 행렬이 이미 RREF 형태인지 검사하여 true/false를 반환한다.
   public boolean isReducedRowEchelonForm() {
     // TODO: 각 피벗 위치, 0-행, 피벗 위의 값 등 RREF 조건 검사
-    return false;
+    return equals(toReducedRowEchelonForm());
   }
 
   // 40. 정사각 행렬인지 반환
