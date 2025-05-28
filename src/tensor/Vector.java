@@ -7,18 +7,26 @@ package tensor;
  */
 
 interface Vector {
-    // 11. 요소 조회
-    Scalar get(int index);
-    // 11. 요소 지정
-    void set(int index, Scalar value);
-    // 13. 크기 정보를 조회할 수 있다.
-    int size();
 
-    /** 20. 벡터-벡터 덧셈 (in-place) */
-    Vector add(Vector other);
+  // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
+  // 11v. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
+  Scalar get(int index);
 
-    /** 21. 벡터-스칼라 곱셈 (in-place) */
-    Vector multiply(Scalar scalar);
+  // 11.지정: 지정한 인덱스 위치에 Scalar 값을 설정
+  void set(int index, Scalar value);
+
+  // 13v. 크기 정보를 조회할 수 있다. (벡터는 차원)
+  int size();
+
+  /**
+   * 20. 벡터-벡터 덧셈 (in-place)
+   */
+  Vector add(Vector other);
+
+  /**
+   * 21. 벡터-스칼라 곱셈 (in-place)
+   */
+  Vector multiply(Scalar scalar);
 
   /* ===== 디폴트 static 메서드 : 명세 26, 27 ===== */
 
