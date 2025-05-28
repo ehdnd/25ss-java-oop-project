@@ -7,7 +7,6 @@ package tensor;
  */
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,9 +103,9 @@ class MatrixImpl implements Matrix {
       for (int c = 0; c < matrixValue.get(r).size(); c++) {
         // mutable Scalar에 직접 더해서 내부 값 변경
         matrixValue
-            .get(r)
-            .get(c)
-            .add(other.get(r).get(c));
+                .get(r)
+                .get(c)
+                .add(other.get(r).get(c));
       }
     }
   }
@@ -129,8 +128,8 @@ class MatrixImpl implements Matrix {
 
     if (!canAB && !canBA) {
       throw new IllegalArgumentException(
-          String.format("Cannot multiply: A is %dx%d, B is %dx%d",
-              rowsA, colsA, rowsB, colsB));
+              String.format("Cannot multiply: A is %dx%d, B is %dx%d",
+                      rowsA, colsA, rowsB, colsB));
     }
 
     // 실제 곱셈 수행 헬퍼
@@ -152,9 +151,9 @@ class MatrixImpl implements Matrix {
    * 객체 반환한다고 가정
    */
   private List<List<Scalar>> multiply(
-      List<List<Scalar>> left,
-      List<List<Scalar>> right,
-      int m, int n, int p) {
+          List<List<Scalar>> left,
+          List<List<Scalar>> right,
+          int m, int n, int p) {
 
     List<List<Scalar>> res = new ArrayList<>(m);
     for (int i = 0; i < m; i++) {
@@ -216,7 +215,7 @@ class MatrixImpl implements Matrix {
   @Override
   // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
   public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor)
-      throws CloneNotSupportedException {
+          throws CloneNotSupportedException {
     // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
     for (int c = 0; c < getColSize(); ++c) {
       Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
@@ -228,7 +227,7 @@ class MatrixImpl implements Matrix {
   @Override
   // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
   public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
-      throws CloneNotSupportedException {
+          throws CloneNotSupportedException {
     // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
     for (int r = 0; r < getRowSize(); ++r) {
       Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
@@ -426,5 +425,82 @@ class MatrixImpl implements Matrix {
     return sum;
   }
 
-}
+  //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
+  @Override
+  public Scalar determinant() {
+    if (!isSquare()) throw new IllegalStateException("정사각행렬만 지원");
 
+    int n = getRowSize();
+
+    if (n == 1) {
+      return matrixValue.get(0).get(0); // 1x1 행렬
+    }
+
+    if (n == 2) {
+
+      Scalar a = matrixValue.get(0).get(0);
+      Scalar b = matrixValue.get(0).get(1);
+      Scalar c = matrixValue.get(1).get(0);
+      Scalar d = matrixValue.get(1).get(1);
+
+      Scalar ac = a.multiply(d);
+      Scalar bd = b.multiply(c).multiply(new ScalarImpl("-1"));
+      ac.add(bd);
+      return ac;
+    }
+
+    Scalar det = new ScalarImpl("0");
+    for (int j = 0; j < n; j++) {
+      Scalar sign = new ScalarImpl((j % 2 == 0) ? "1" : "-1");
+      Scalar aij = matrixValue.get(0).get(j);
+      MatrixImpl minor = this.minor(0, j);
+      Scalar cofactor = aij.multiply(minor.determinant()).multiply(sign);
+      det.add(cofactor);
+    }
+    return det;
+  }
+
+
+  // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
+  @Override
+  public MatrixImpl inverse() {
+    if (!isSquare()) throw new IllegalStateException("정사각행렬만 역행렬 존재");
+
+    Scalar det = this.determinant();
+    if (det.getValueAsString().equals("0")) {
+      throw new ArithmeticException("행렬식이 0이므로 역행렬이 존재하지 않습니다.");
+    }
+
+    int n = getRowSize();
+    List<List<Scalar>> cofactorMatrix = new ArrayList<>();
+
+    // Cofactor 행렬 생성
+    for (int i = 0; i < n; i++) {
+      List<Scalar> cofactorRow = new ArrayList<>();
+      for (int j = 0; j < n; j++) {
+        Scalar sign = new ScalarImpl(((i + j) % 2 == 0) ? "1" : "-1");
+        Scalar minorDet = this.minor(i, j).determinant();
+        Scalar cofactor = sign.multiply(minorDet);
+        cofactorRow.add(cofactor);
+      }
+      cofactorMatrix.add(cofactorRow);
+    }
+
+    MatrixImpl adjugate = new MatrixImpl(cofactorMatrix).transpose();
+    Scalar detReciprocal = det.reciprocal();
+
+    // 역행렬 = (1/det) * adjugate
+    List<List<Scalar>> invMatrix = new ArrayList<>();
+    for (int i = 0; i < n; i++) {
+      List<Scalar> row = new ArrayList<>();
+      for (int j = 0; j < n; j++) {
+        Scalar elem = adjugate.matrixValue.get(i).get(j);
+        elem = elem.multiply(detReciprocal);  // 역수를 곱함
+        row.add(elem);
+      }
+      invMatrix.add(row);
+    }
+    return new MatrixImpl(invMatrix);
+  }
+
+}
