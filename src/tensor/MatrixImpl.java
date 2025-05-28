@@ -12,7 +12,7 @@ import java.util.List;
 
 class MatrixImpl implements Matrix {
 
-  // 행렬은 논리적으로 스칼라 객체를 2차원 배열 구조로 관리
+  // 자료구조 - 행렬은 논리적으로 스칼라 객체를 2차원 배열 구조로 관리
   private List<List<Scalar>> matrixValue;
 
   // +. default 생성자
@@ -85,8 +85,16 @@ class MatrixImpl implements Matrix {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  protected Matrix clone() throws CloneNotSupportedException {
-    return (Matrix) super.clone();
+  public Matrix clone() {
+    List<List<Scalar>> copy = new ArrayList<>(matrixValue.size());
+    for (List<Scalar> row : matrixValue) {
+      List<Scalar> newRow = new ArrayList<>(row.size());
+      for (Scalar s : row) {
+        newRow.add(s.clone());
+      }
+      copy.add(newRow);
+    }
+    return new MatrixImpl(copy);      // Collection<Collection<Scalar>> 생성자 가정
   }
 
   @Override

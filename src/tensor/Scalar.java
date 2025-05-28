@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 
 public interface Scalar extends Cloneable {
 
-  BigDecimal bigDecimal = null;
-
   // 12. String으로 값을 지정
   void setValueFromString(String s);
 
@@ -18,7 +16,7 @@ public interface Scalar extends Cloneable {
   String getValueAsString();
 
   // 17. 객체 복제를 할 수 있다.
-  Scalar clone() throws CloneNotSupportedException;
+  Scalar clone();
 
   // 18. 스칼라는 다른 스칼라와 덧셈이 가능하다
   Scalar add(Scalar other);

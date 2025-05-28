@@ -20,21 +20,27 @@ interface Vector {
     /** 21. 벡터-스칼라 곱셈 (in-place) */
     Vector multiply(Scalar scalar);
 
-    /* ===== 디폴트 static 메서드 : 명세 26, 27 ===== */
-    /** 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place) */
-    static Vector add(Vector v1, Vector v2) {
-        return null;
-    }
-    // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
-    static Vector multiply(Scalar s, Vector v) {
-        return null;
-    }
-    /** 30. 자신을 열벡터 (nx1 행렬)로 변환 */
-    default Matrix toColumnMatrix() {
-        return null;
-    }
-    /** 31. 자신을 행벡터 (1xn 행렬)로 변환 */
-    default Matrix toRowMatrix() {
-        return null;
-    }
+  /* ===== 디폴트 static 메서드 : 명세 26, 27 ===== */
+
+  /**
+   * 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
+   */
+  static Vector add(Vector v1, Vector v2) {
+    return null;
+  }
+
+  // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
+  static Vector multiply(Scalar s, Vector v) {
+    return null;
+  }
+
+  /**
+   * 30. 자신을 열벡터 (nx1 행렬)로 변환
+   */
+  Matrix toColumnMatrix();
+
+  /**
+   * 31. 자신을 행벡터 (1xn 행렬)로 변환
+   */
+  Matrix toRowMatrix();
 }
