@@ -109,4 +109,9 @@ interface Matrix {
 
   // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
   Scalar trace();
+
+  Scalar determinant();
+
+  // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
+  MatrixImpl inverse();
 }
