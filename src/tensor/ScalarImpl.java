@@ -103,7 +103,6 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     return new ScalarImpl(v1.multiply(v2).toString());
   }
 
-
   // 추가. 역수
   @Override
   public Scalar reciprocal() {
