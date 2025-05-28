@@ -30,11 +30,7 @@ interface Vector {
         return null;
     }
     /** 30. 자신을 열벡터 (nx1 행렬)로 변환 */
-    default Matrix toColumnMatrix() {
-        return null;
-    }
+    Matrix toColumnMatrix();
     /** 31. 자신을 행벡터 (1xn 행렬)로 변환 */
-    default Matrix toRowMatrix() {
-        return null;
-    }
+    Matrix toRowMatrix();
 }
