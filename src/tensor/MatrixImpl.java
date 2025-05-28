@@ -49,38 +49,55 @@ class MatrixImpl implements Matrix {
 
   // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
   @Override
-  // 11. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
+  // 11m. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
   public Scalar get(int row, int col) {
     return getMatrixValue().get(row).get(col);
   }
 
   @Override
-  // 11. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
-  public void set(int index, Scalar value) {
+  // 11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
+  public void set(int row, int col, Scalar value) {
+    matrixValue.get(row).set(col, value.clone());
   }
 
   // 13. 행렬의 행개수를 조회
   @Override
   public int getRowSize() {
-    return 0;
+    return matrixValue.size();
   }
 
   // 13. 행렬의 열개수를 조회
   @Override
   public int getColSize() {
-    return 0;
+    return matrixValue.isEmpty() ? 0 : matrixValue.get(0).size();
   }
 
   // 14m. 값들을 2차원 배열 모양으로 출력할 수 있다.
   @Override
   public String toString() {
-    return super.toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    for (int i = 0; i < getRowSize(); i++) {
+      sb.append("[");
+      for (int j = 0; j < getColSize(); j++) {
+        sb.append(get(i, j).toString());
+        if (j < getColSize() - 1) {
+          sb.append(", ");
+        }
+      }
+      sb.append("]");
+      if (i < getRowSize() - 1) {
+        sb.append(System.lineSeparator());
+      }
+    }
+    sb.append("]");
+    return sb.toString();
   }
 
   // 15. 객체의 동등성을 판단할 수 있다.
   @Override
-  public boolean equals(Object obj) {
-    return super.equals(obj);
+  public boolean equals(Object other) {
+    return toString().equals(other.toString());
   }
 
   // 17. 객체 복제를 할 수 있다.
@@ -111,9 +128,9 @@ class MatrixImpl implements Matrix {
       for (int c = 0; c < matrixValue.get(r).size(); c++) {
         // mutable Scalar에 직접 더해서 내부 값 변경
         matrixValue
-                .get(r)
-                .get(c)
-                .add(other.get(r).get(c));
+            .get(r)
+            .get(c)
+            .add(other.get(r).get(c));
       }
     }
   }
@@ -136,8 +153,8 @@ class MatrixImpl implements Matrix {
 
     if (!canAB && !canBA) {
       throw new IllegalArgumentException(
-              String.format("Cannot multiply: A is %dx%d, B is %dx%d",
-                      rowsA, colsA, rowsB, colsB));
+          String.format("Cannot multiply: A is %dx%d, B is %dx%d",
+              rowsA, colsA, rowsB, colsB));
     }
 
     // 실제 곱셈 수행 헬퍼
@@ -159,9 +176,9 @@ class MatrixImpl implements Matrix {
    * 객체 반환한다고 가정
    */
   private List<List<Scalar>> multiply(
-          List<List<Scalar>> left,
-          List<List<Scalar>> right,
-          int m, int n, int p) {
+      List<List<Scalar>> left,
+      List<List<Scalar>> right,
+      int m, int n, int p) {
 
     List<List<Scalar>> res = new ArrayList<>(m);
     for (int i = 0; i < m; i++) {
@@ -223,7 +240,7 @@ class MatrixImpl implements Matrix {
   @Override
   // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
   public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor)
-          throws CloneNotSupportedException {
+      throws CloneNotSupportedException {
     // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
     for (int c = 0; c < getColSize(); ++c) {
       Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
@@ -235,7 +252,7 @@ class MatrixImpl implements Matrix {
   @Override
   // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
   public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
-          throws CloneNotSupportedException {
+      throws CloneNotSupportedException {
     // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
     for (int r = 0; r < getRowSize(); ++r) {
       Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
@@ -436,7 +453,9 @@ class MatrixImpl implements Matrix {
   //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
   @Override
   public Scalar determinant() {
-    if (!isSquare()) throw new IllegalStateException("정사각행렬만 지원");
+    if (!isSquare()) {
+      throw new IllegalStateException("정사각행렬만 지원");
+    }
 
     int n = getRowSize();
 
@@ -472,7 +491,9 @@ class MatrixImpl implements Matrix {
   // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
   @Override
   public MatrixImpl inverse() {
-    if (!isSquare()) throw new IllegalStateException("정사각행렬만 역행렬 존재");
+    if (!isSquare()) {
+      throw new IllegalStateException("정사각행렬만 역행렬 존재");
+    }
 
     Scalar det = this.determinant();
     if (det.getValueAsString().equals("0")) {
