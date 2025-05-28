@@ -24,22 +24,40 @@ interface Matrix {
 
   // 28. 전달받은 두 행렬의 덧셈이 가능하다. (크기가 같을 때)
   static Matrix add(Matrix a, Matrix b) {
-    /*TODO
-     * Matrix 객체 생성
-     * Matrix 객체 a, b로 수정
-     * Matrix 반환
-     */
-    return null;
+      if (a.getRowSize() != b.getRowSize() || a.getColSize() != b.getColSize()) {
+          throw new IllegalArgumentException("Matrix dimensions must match for addition.");
+      }
+
+      List<List<Scalar>> result = new java.util.ArrayList<>();
+      for (int i = 0; i < a.getRowSize(); i++) {
+          List<Scalar> row = new java.util.ArrayList<>();
+          for (int j = 0; j < a.getColSize(); j++) {
+              row.add(a.get(i, j).add(b.get(i, j)));
+          }
+          result.add(row);
+      }
+      return new MatrixImpl(result);
   }
 
   // 29. 전달받은 두 행렬의 곱셈이 가능하다. ((m x n) x (n x l) 일 때)
   static Matrix mul(Matrix a, Matrix b) {
-    /*TODO
-     * Matrix 객체 생성
-     * Matrix 객체 a, b로 수정
-     * Matrix 반환
-     */
-    return null;
+      if (a.getColSize() != b.getRowSize()) {
+          throw new IllegalArgumentException("Matrix dimensions do not allow multiplication.");
+      }
+
+      List<List<Scalar>> result = new java.util.ArrayList<>();
+      for (int i = 0; i < a.getRowSize(); i++) {
+          List<Scalar> row = new java.util.ArrayList<>();
+          for (int j = 0; j < b.getColSize(); j++) {
+              Scalar sum = a.get(i, 0).multiply(b.get(0, j));
+              for (int k = 1; k < a.getColSize(); k++) {
+                  sum = sum.add(a.get(i, k).multiply(b.get(k, j)));
+              }
+              row.add(sum);
+          }
+          result.add(row);
+      }
+      return new MatrixImpl(result);
   }
 
   /**

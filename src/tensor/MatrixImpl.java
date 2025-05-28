@@ -510,5 +510,4 @@ class MatrixImpl implements Matrix {
     }
     return new MatrixImpl(invMatrix);
   }
-
 }
