@@ -1,6 +1,5 @@
 package tensor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 interface Matrix {
@@ -28,7 +27,7 @@ interface Matrix {
   // 15. 객체의 동등성을 판단할 수 있다.
   @Override
   boolean equals(Object other);
-  
+
   // 17. 객체 복제를 할 수 있다.
   Matrix clone();
 
@@ -77,29 +76,41 @@ interface Matrix {
     return new MatrixImpl(result);
   }
 
-  /**
-   * 40. 자신이 정사각 행렬인지 여부를 판별
-   */
+  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+
+  // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+  Vector getRowVector(int row);
+
+  // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
+  Vector getColVector(int col);
+
+  // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  Matrix subMatrix(int startRow, int endRow, int startCol, int endCol);
+
+  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  Matrix minor(int rowToRemove, int colToRemove);
+
+  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
+  Matrix transpose();
+
+  // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
+  Scalar trace();
+
+  // 40. 자신이 정사각 행렬인지 여부를 판별
   boolean isSquare();
 
-  /**
-   * 41. 자신이 상삼각 행렬인지 여부를 판별
-   */
+  // 41. 자신이 상삼각 행렬인지 여부를 판별
   boolean isUpperTriangular();
 
-  /**
-   * 42. 자신이 하삼각 행렬인지 여부를 판별
-   */
+  // 42. 자신이 하삼각 행렬인지 여부를 판별
   boolean isLowerTriangular();
 
-  /**
-   * 43. 자신이 단위 행렬인지 여부를 판별
-   */
+  // 43. 자신이 단위 행렬인지 여부를 판별
   boolean isIdentity();
 
-  /**
-   * 44. 자신이 영 행렬인지 여부를 판별
-   */
+  // 44. 자신이 영 행렬인지 여부를 판별
   boolean isZero();
 
   // 45. 특정 두 행의 위치를 맞교환
@@ -128,25 +139,9 @@ interface Matrix {
   // 52. 이 행렬이 RREF 형태인지 여부 판별
   boolean isReducedRowEchelonForm();
 
-  public VectorImpl getRowVector(int row);
-
-  // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
-  VectorImpl getColVector(int col);
-
-  // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
-  MatrixImpl subMatrix(int startRow, int endRow, int startCol, int endCol);
-
-  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
-  MatrixImpl minor(int rowToRemove, int colToRemove);
-
-  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
-  MatrixImpl transpose();
-
-  // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
-  Scalar trace();
-
+  //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
   Scalar determinant();
 
   // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
-  MatrixImpl inverse();
+  Matrix inverse();
 }
