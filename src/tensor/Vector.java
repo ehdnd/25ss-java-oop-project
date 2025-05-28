@@ -6,6 +6,9 @@ package tensor;
   - Collection 선택하자
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 interface Vector {
 
   // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
@@ -17,6 +20,17 @@ interface Vector {
 
   // 13v. 크기 정보를 조회할 수 있다. (벡터는 차원)
   int size();
+
+  // 14v. 값들을 1차원 배열 모양으로 출력할 수 있다.
+  @Override
+  String toString();
+
+  // 15. 객체의 동등성을 파악할 수 있다.
+  @Override
+  boolean equals(Object other);
+
+  // 17. 객체 복제를 할 수 있다.
+  Vector clone();
 
   /**
    * 20. 벡터-벡터 덧셈 (in-place)
@@ -34,26 +48,26 @@ interface Vector {
    * 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
    */
   static Vector add(Vector v1, Vector v2) {
-      if (v1.size() != v2.size()) {
-          throw new IllegalArgumentException("Vectors must be of the same length.");
-      }
+    if (v1.size() != v2.size()) {
+      throw new IllegalArgumentException("Vectors must be of the same length.");
+    }
 
-      Vector result = Factory.createVector(new java.util.ArrayList<>());
-      for (int i = 0; i < v1.size(); i++) {
-          Scalar sum = v1.get(i).add(v2.get(i));
-          result.set(i, sum);
-      }
-      return result;
+    Vector result = Factory.createVector(new java.util.ArrayList<>());
+    for (int i = 0; i < v1.size(); i++) {
+      Scalar sum = v1.get(i).add(v2.get(i));
+      result.set(i, sum);
+    }
+    return result;
   }
 
   // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
   static Vector multiply(Scalar s, Vector v) {
-      Vector result = Factory.createVector(new java.util.ArrayList<>());
-      for (int i = 0; i < v.size(); i++) {
-          Scalar product = s.multiply(v.get(i));
-          result.set(i, product);
-      }
-      return result;
+    Vector result = Factory.createVector(new java.util.ArrayList<>());
+    for (int i = 0; i < v.size(); i++) {
+      Scalar product = s.multiply(v.get(i));
+      result.set(i, product);
+    }
+    return result;
   }
 
   /**

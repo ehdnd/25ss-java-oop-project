@@ -15,6 +15,15 @@ public interface Scalar extends Cloneable {
   // 12. 값을 String으로 조회
   String getValueAsString();
 
+  // 14s. 값 하나를 콘솔에 출력할 수 있다.
+  String toString();
+
+  // 15. 객체의 동등성을 판단할 수 있다
+  boolean equals(Object other);
+
+  // 16. 스칼라의 경우 값의 대소 비교를 할 수 있다.
+  int compareTo(Scalar other);
+
   // 17. 객체 복제를 할 수 있다.
   Scalar clone();
 
