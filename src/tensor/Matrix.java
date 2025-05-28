@@ -7,9 +7,12 @@ interface Matrix {
   // +. MatrixValue getter
   List<List<Scalar>> getMatrixValue();
 
+  // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
+  // 11m. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
   Scalar get(int row, int col);
 
-  void set(int index, Scalar value);
+  // 11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
+  void set(int row, int col, Scalar value);
 
   int getRowSize();
 

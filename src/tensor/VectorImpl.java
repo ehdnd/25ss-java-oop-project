@@ -47,21 +47,22 @@ class VectorImpl implements Vector {
   }
 
   // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
-  // 11.조회: 지정한 인덱스 위치의 Scalar 값을 반환
+  // 11v. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
   @Override
   public Scalar get(int index) {
-    return null;
+    return vectorValue.get(index);
   }
 
   // 11.지정: 지정한 인덱스 위치에 Scalar 값을 설정
   @Override
   public void set(int index, Scalar value) {
+    vectorValue.set(index, value.clone());
   }
 
   // 13v. 차원의 개수를 조회할 수 있다.
   @Override
   public int size() {
-    return 0;
+    return vectorValue.size();
   }
 
   // 14v. 값들을 1차원 배열 모양으로 출력할 수 있다.
@@ -119,16 +120,16 @@ class VectorImpl implements Vector {
   // 30. n-차원 벡터 객체는 자신으로부터 nx1 행렬을 생성하여 반환할 수 있다.
   @Override
   public Matrix toColumnMatrix() {
-      List<List<Scalar>> rows = vectorValue.stream()
-          .map(scalar -> List.of(scalar)) // 각 스칼라를 행으로 만듦
-          .toList();
-      return new MatrixImpl(rows);
+    List<List<Scalar>> rows = vectorValue.stream()
+        .map(scalar -> List.of(scalar)) // 각 스칼라를 행으로 만듦
+        .toList();
+    return new MatrixImpl(rows);
   }
 
   // 31. n-차원 벡터 객체는 자신으로부터 1xn 행렬을 생성하여 반환할 수 있다.
   @Override
   public Matrix toRowMatrix() {
-      List<List<Scalar>> row = List.of(vectorValue); // 한 행에 모든 스칼라 포함
-      return new MatrixImpl(row);
+    List<List<Scalar>> row = List.of(vectorValue); // 한 행에 모든 스칼라 포함
+    return new MatrixImpl(row);
   }
 }

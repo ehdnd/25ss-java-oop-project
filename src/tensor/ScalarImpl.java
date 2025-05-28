@@ -36,12 +36,13 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   // 12. 값을 지정
   @Override
   public void setValueFromString(String s) {
+    scalarValue = new BigDecimal(s);
   }
 
   // 12. 값을 조회
   @Override
   public String getValueAsString() {
-    return null;
+    return scalarValue.toString();
   }
 
   // 14s. 값 하나를 콘솔에 출력할 수 있다.
