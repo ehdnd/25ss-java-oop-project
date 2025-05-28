@@ -251,28 +251,29 @@ class MatrixImpl implements Matrix {
 
 
   // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
-  // ????
-  static MatrixImpl concatHorizontally(MatrixImpl a, MatrixImpl b) {
-    if (a.getRowSize() != b.getRowSize()) {
+  @Override
+  public Matrix concatHorizontally(Matrix other) {
+    if (getRowSize() != other.getRowSize()) {
       throw new IllegalArgumentException("행 개수가 다릅니다.");
     }
     List<List<Scalar>> result = new ArrayList<>();
-    for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new ArrayList<>(a.getMatrixValue().get(i));
-      row.addAll(b.getMatrixValue().get(i));
+    for (int i = 0; i < getRowSize(); i++) {
+      List<Scalar> row = new ArrayList<>(getMatrixValue().get(i));
+      row.addAll(other.getMatrixValue().get(i));
       result.add(row);
     }
     return new MatrixImpl(result);
   }
 
   // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
-  static MatrixImpl concatVertically(MatrixImpl a, MatrixImpl b) {
-    if (a.getColSize() != b.getColSize()) {
+  @Override
+  public Matrix concatVertically(Matrix other) {
+    if (getColSize() != other.getColSize()) {
       throw new IllegalArgumentException("열 개수가 다릅니다.");
     }
     List<List<Scalar>> result = new ArrayList<>();
-    result.addAll(a.getMatrixValue());
-    result.addAll(b.getMatrixValue());
+    result.addAll(getMatrixValue());
+    result.addAll(other.getMatrixValue());
     return new MatrixImpl(result);
   }
 
