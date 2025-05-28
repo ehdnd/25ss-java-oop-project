@@ -10,7 +10,6 @@ package tensor;
 import java.io.*;
 import java.util.*;
 
-
 class MatrixImpl implements Matrix {
 
   // 자료구조 - 행렬은 논리적으로 스칼라 객체를 2차원 배열 구조로 관리
@@ -250,6 +249,184 @@ class MatrixImpl implements Matrix {
     return res;
   }
 
+
+  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+  @Override
+  public Matrix concatHorizontally(Matrix other) {
+    if (getRowSize() != other.getRowSize()) {
+      throw new IllegalArgumentException("행 개수가 다릅니다.");
+    }
+    List<List<Scalar>> result = new ArrayList<>();
+    for (int i = 0; i < getRowSize(); i++) {
+      List<Scalar> row = new ArrayList<>(getMatrixValue().get(i));
+      row.addAll(other.getMatrixValue().get(i));
+      result.add(row);
+    }
+    return new MatrixImpl(result);
+  }
+
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+  @Override
+  public Matrix concatVertically(Matrix other) {
+    if (getColSize() != other.getColSize()) {
+      throw new IllegalArgumentException("열 개수가 다릅니다.");
+    }
+    List<List<Scalar>> result = new ArrayList<>();
+    result.addAll(getMatrixValue());
+    result.addAll(other.getMatrixValue());
+    return new MatrixImpl(result);
+  }
+
+  // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+  @Override
+  public Vector getRowVector(int row) {
+    return new VectorImpl(new ArrayList<>(matrixValue.get(row)));
+  }
+
+  // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
+  @Override
+  public Vector getColVector(int col) {
+    List<Scalar> colVec = new ArrayList<>();
+    for (List<Scalar> row : matrixValue) {
+      colVec.add(row.get(col));
+    }
+    return new VectorImpl(colVec);
+  }
+
+  // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  @Override
+  public Matrix subMatrix(int startRow, int endRow, int startCol, int endCol) {
+    List<List<Scalar>> sub = new ArrayList<>();
+    for (int i = startRow; i < endRow; i++) {
+      List<Scalar> row = new ArrayList<>();
+      for (int j = startCol; j < endCol; j++) {
+        row.add(matrixValue.get(i).get(j));
+      }
+      sub.add(row);
+    }
+    return new MatrixImpl(sub);
+  }
+
+  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  @Override
+  public Matrix minor(int rowToRemove, int colToRemove) {
+    List<List<Scalar>> sub = new ArrayList<>();
+    for (int i = 0; i < matrixValue.size(); i++) {
+      if (i == rowToRemove) {
+        continue;
+      }
+      List<Scalar> row = new ArrayList<>();
+      for (int j = 0; j < matrixValue.get(i).size(); j++) {
+        if (j == colToRemove) {
+          continue;
+        }
+        row.add(matrixValue.get(i).get(j));
+      }
+      sub.add(row);
+    }
+    return new MatrixImpl(sub);
+  }
+
+  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
+  @Override
+  public Matrix transpose() {
+    int rows = getRowSize();
+    int cols = getColSize();
+    List<List<Scalar>> trans = new ArrayList<>();
+    for (int c = 0; c < cols; c++) {
+      List<Scalar> newRow = new ArrayList<>();
+      for (int r = 0; r < rows; r++) {
+        newRow.add(matrixValue.get(r).get(c));
+      }
+      trans.add(newRow);
+    }
+    return new MatrixImpl(trans);
+  }
+
+  // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
+  @Override
+  public Scalar trace() {
+    if (!isSquare()) {
+      throw new IllegalStateException("정사각 행렬 아님");
+    }
+    Scalar sum = new ScalarImpl("0");
+    for (int i = 0; i < getRowSize(); i++) {
+      sum.add(matrixValue.get(i).get(i));
+    }
+    return sum;
+  }
+
+  // 40. 정사각 행렬인지 반환
+  @Override
+  public boolean isSquare() {
+    return getRowSize() == getColSize();
+  }
+
+  // 41. 상삼각 행렬인지 반환
+  @Override
+  public boolean isUpperTriangular() {
+    if (!isSquare()) {
+      return false;
+    }
+    int n = getRowSize();
+    for (int i = 1; i < n; i++) {
+      for (int j = 0; j < i; j++) {
+        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 42. 하삼각 행렬인지 반환
+  @Override
+  public boolean isLowerTriangular() {
+    if (!isSquare()) {
+      return false;
+    }
+    int n = getRowSize();
+    for (int i = 0; i < n; i++) {
+      for (int j = i + 1; j < n; j++) {
+        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 43. 단위 행렬(Identity)인지 반환
+  @Override
+  public boolean isIdentity() {
+    if (!isSquare()) {
+      return false;
+    }
+    int n = getRowSize();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        Scalar expected = (i == j) ? new ScalarImpl("1") : new ScalarImpl("0");
+        if (!matrixValue.get(i).get(j).equals(expected)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // 44. 영행렬(Zero)인지 반환
+  @Override
+  public boolean isZero() {
+    for (List<Scalar> row : matrixValue) {
+      for (Scalar val : row) {
+        if (!val.equals(new ScalarImpl("0"))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   @Override
   // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
   public void swapRows(int row1, int row2) {
@@ -326,181 +503,6 @@ class MatrixImpl implements Matrix {
     return equals(toReducedRowEchelonForm());
   }
 
-  // 40. 정사각 행렬인지 반환
-  @Override
-  public boolean isSquare() {
-    return getRowSize() == getColSize();
-  }
-
-  // 41. 상삼각 행렬인지 반환
-  @Override
-  public boolean isUpperTriangular() {
-    if (!isSquare()) {
-      return false;
-    }
-    int n = getRowSize();
-    for (int i = 1; i < n; i++) {
-      for (int j = 0; j < i; j++) {
-        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // 42. 하삼각 행렬인지 반환
-  @Override
-  public boolean isLowerTriangular() {
-    if (!isSquare()) {
-      return false;
-    }
-    int n = getRowSize();
-    for (int i = 0; i < n; i++) {
-      for (int j = i + 1; j < n; j++) {
-        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // 43. 단위 행렬(Identity)인지 반환
-  @Override
-  public boolean isIdentity() {
-    if (!isSquare()) {
-      return false;
-    }
-    int n = getRowSize();
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        Scalar expected = (i == j) ? new ScalarImpl("1") : new ScalarImpl("0");
-        if (!matrixValue.get(i).get(j).equals(expected)) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // 44. 영행렬(Zero)인지 반환
-  @Override
-  public boolean isZero() {
-    for (List<Scalar> row : matrixValue) {
-      for (Scalar val : row) {
-        if (!val.equals(new ScalarImpl("0"))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
-  static MatrixImpl concatHorizontally(MatrixImpl a, MatrixImpl b) {
-    if (a.getRowSize() != b.getRowSize()) {
-      throw new IllegalArgumentException("행 개수가 다릅니다.");
-    }
-    List<List<Scalar>> result = new ArrayList<>();
-    for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new ArrayList<>(a.getMatrixValue().get(i));
-      row.addAll(b.getMatrixValue().get(i));
-      result.add(row);
-    }
-    return new MatrixImpl(result);
-  }
-
-  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
-  static MatrixImpl concatVertically(MatrixImpl a, MatrixImpl b) {
-    if (a.getColSize() != b.getColSize()) {
-      throw new IllegalArgumentException("열 개수가 다릅니다.");
-    }
-    List<List<Scalar>> result = new ArrayList<>();
-    result.addAll(a.getMatrixValue());
-    result.addAll(b.getMatrixValue());
-    return new MatrixImpl(result);
-  }
-
-  // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
-  @Override
-  public VectorImpl getRowVector(int row) {
-    return new VectorImpl(new ArrayList<>(matrixValue.get(row)));
-  }
-
-  // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
-  @Override
-  public VectorImpl getColVector(int col) {
-    List<Scalar> colVec = new ArrayList<>();
-    for (List<Scalar> row : matrixValue) {
-      colVec.add(row.get(col));
-    }
-    return new VectorImpl(colVec);
-  }
-
-  // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
-  @Override
-  public MatrixImpl subMatrix(int startRow, int endRow, int startCol, int endCol) {
-    List<List<Scalar>> sub = new ArrayList<>();
-    for (int i = startRow; i < endRow; i++) {
-      List<Scalar> row = new ArrayList<>();
-      for (int j = startCol; j < endCol; j++) {
-        row.add(matrixValue.get(i).get(j));
-      }
-      sub.add(row);
-    }
-    return new MatrixImpl(sub);
-  }
-
-  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
-  @Override
-  public MatrixImpl minor(int rowToRemove, int colToRemove) {
-    List<List<Scalar>> sub = new ArrayList<>();
-    for (int i = 0; i < matrixValue.size(); i++) {
-      if (i == rowToRemove) {
-        continue;
-      }
-      List<Scalar> row = new ArrayList<>();
-      for (int j = 0; j < matrixValue.get(i).size(); j++) {
-        if (j == colToRemove) {
-          continue;
-        }
-        row.add(matrixValue.get(i).get(j));
-      }
-      sub.add(row);
-    }
-    return new MatrixImpl(sub);
-  }
-
-  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
-  @Override
-  public MatrixImpl transpose() {
-    int rows = getRowSize();
-    int cols = getColSize();
-    List<List<Scalar>> trans = new ArrayList<>();
-    for (int c = 0; c < cols; c++) {
-      List<Scalar> newRow = new ArrayList<>();
-      for (int r = 0; r < rows; r++) {
-        newRow.add(matrixValue.get(r).get(c));
-      }
-      trans.add(newRow);
-    }
-    return new MatrixImpl(trans);
-  }
-
-  // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
-  @Override
-  public Scalar trace() {
-    if (!isSquare()) {
-      throw new IllegalStateException("정사각 행렬 아님");
-    }
-    Scalar sum = new ScalarImpl("0");
-    for (int i = 0; i < getRowSize(); i++) {
-      sum.add(matrixValue.get(i).get(i));
-    }
-    return sum;
-  }
-
   //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
   @Override
   public Scalar determinant() {
@@ -511,15 +513,15 @@ class MatrixImpl implements Matrix {
     int n = getRowSize();
 
     if (n == 1) {
-      return matrixValue.get(0).get(0); // 1x1 행렬
+      return matrixValue.get(0).get(0).clone(); // 1x1 행렬
     }
 
     if (n == 2) {
 
-      Scalar a = matrixValue.get(0).get(0);
-      Scalar b = matrixValue.get(0).get(1);
-      Scalar c = matrixValue.get(1).get(0);
-      Scalar d = matrixValue.get(1).get(1);
+      Scalar a = matrixValue.get(0).get(0).clone();
+      Scalar b = matrixValue.get(0).get(1).clone();
+      Scalar c = matrixValue.get(1).get(0).clone();
+      Scalar d = matrixValue.get(1).get(1).clone();
 
       Scalar ac = a.multiply(d);
       Scalar bd = b.multiply(c).multiply(new ScalarImpl("-1"));
@@ -530,8 +532,8 @@ class MatrixImpl implements Matrix {
     Scalar det = new ScalarImpl("0");
     for (int j = 0; j < n; j++) {
       Scalar sign = new ScalarImpl((j % 2 == 0) ? "1" : "-1");
-      Scalar aij = matrixValue.get(0).get(j);
-      MatrixImpl minor = this.minor(0, j);
+      Scalar aij = matrixValue.get(0).get(j).clone();
+      Matrix minor = this.minor(0, j);
       Scalar cofactor = aij.multiply(minor.determinant()).multiply(sign);
       det.add(cofactor);
     }
@@ -566,7 +568,7 @@ class MatrixImpl implements Matrix {
       cofactorMatrix.add(cofactorRow);
     }
 
-    MatrixImpl adjugate = new MatrixImpl(cofactorMatrix).transpose();
+    Matrix adjugate = new MatrixImpl(cofactorMatrix).transpose();
     Scalar detReciprocal = det.reciprocal();
 
     // 역행렬 = (1/det) * adjugate
@@ -574,7 +576,7 @@ class MatrixImpl implements Matrix {
     for (int i = 0; i < n; i++) {
       List<Scalar> row = new ArrayList<>();
       for (int j = 0; j < n; j++) {
-        Scalar elem = adjugate.matrixValue.get(i).get(j);
+        Scalar elem = adjugate.get(i, j);
         elem = elem.multiply(detReciprocal);  // 역수를 곱함
         row.add(elem);
       }
