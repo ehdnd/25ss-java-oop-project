@@ -1,5 +1,6 @@
 package tensor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 interface Matrix {
@@ -14,9 +15,22 @@ interface Matrix {
   // 11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
   void set(int row, int col, Scalar value);
 
+  // 13. 행렬의 행개수를 조회
   int getRowSize();
 
+  // 13. 행렬의 열개수를 조회
   int getColSize();
+
+  // 14m. 값들을 2차원 배열 모양으로 출력할 수 있다.
+  @Override
+  String toString();
+
+  // 15. 객체의 동등성을 판단할 수 있다.
+  @Override
+  boolean equals(Object other);
+  
+  // 17. 객체 복제를 할 수 있다.
+  Matrix clone();
 
   // 22. 행렬은 다른 행렬과 덧셈이 가능하다. (크기가 같을 때)
   void add(Matrix otherMatrix);
@@ -27,40 +41,40 @@ interface Matrix {
 
   // 28. 전달받은 두 행렬의 덧셈이 가능하다. (크기가 같을 때)
   static Matrix add(Matrix a, Matrix b) {
-      if (a.getRowSize() != b.getRowSize() || a.getColSize() != b.getColSize()) {
-          throw new IllegalArgumentException("Matrix dimensions must match for addition.");
-      }
+    if (a.getRowSize() != b.getRowSize() || a.getColSize() != b.getColSize()) {
+      throw new IllegalArgumentException("Matrix dimensions must match for addition.");
+    }
 
-      List<List<Scalar>> result = new java.util.ArrayList<>();
-      for (int i = 0; i < a.getRowSize(); i++) {
-          List<Scalar> row = new java.util.ArrayList<>();
-          for (int j = 0; j < a.getColSize(); j++) {
-              row.add(a.get(i, j).add(b.get(i, j)));
-          }
-          result.add(row);
+    List<List<Scalar>> result = new java.util.ArrayList<>();
+    for (int i = 0; i < a.getRowSize(); i++) {
+      List<Scalar> row = new java.util.ArrayList<>();
+      for (int j = 0; j < a.getColSize(); j++) {
+        row.add(a.get(i, j).add(b.get(i, j)));
       }
-      return new MatrixImpl(result);
+      result.add(row);
+    }
+    return new MatrixImpl(result);
   }
 
   // 29. 전달받은 두 행렬의 곱셈이 가능하다. ((m x n) x (n x l) 일 때)
   static Matrix mul(Matrix a, Matrix b) {
-      if (a.getColSize() != b.getRowSize()) {
-          throw new IllegalArgumentException("Matrix dimensions do not allow multiplication.");
-      }
+    if (a.getColSize() != b.getRowSize()) {
+      throw new IllegalArgumentException("Matrix dimensions do not allow multiplication.");
+    }
 
-      List<List<Scalar>> result = new java.util.ArrayList<>();
-      for (int i = 0; i < a.getRowSize(); i++) {
-          List<Scalar> row = new java.util.ArrayList<>();
-          for (int j = 0; j < b.getColSize(); j++) {
-              Scalar sum = a.get(i, 0).multiply(b.get(0, j));
-              for (int k = 1; k < a.getColSize(); k++) {
-                  sum = sum.add(a.get(i, k).multiply(b.get(k, j)));
-              }
-              row.add(sum);
-          }
-          result.add(row);
+    List<List<Scalar>> result = new java.util.ArrayList<>();
+    for (int i = 0; i < a.getRowSize(); i++) {
+      List<Scalar> row = new java.util.ArrayList<>();
+      for (int j = 0; j < b.getColSize(); j++) {
+        Scalar sum = a.get(i, 0).multiply(b.get(0, j));
+        for (int k = 1; k < a.getColSize(); k++) {
+          sum = sum.add(a.get(i, k).multiply(b.get(k, j)));
+        }
+        row.add(sum);
       }
-      return new MatrixImpl(result);
+      result.add(row);
+    }
+    return new MatrixImpl(result);
   }
 
   /**

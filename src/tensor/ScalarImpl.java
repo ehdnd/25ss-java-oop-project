@@ -48,19 +48,19 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   // 14s. 값 하나를 콘솔에 출력할 수 있다.
   @Override
   public String toString() {
-    return super.toString();
+    return scalarValue.toPlainString();
   }
 
   // 15. 객체의 동등성을 판단할 수 있다.
   @Override
-  public boolean equals(Object obj) {
-    return super.equals(obj);
+  public boolean equals(Object other) {
+    return toString().equals(other.toString());
   }
 
   // 16. 스칼라의 경우 값의 대소 비교를 할 수 있다.
   @Override
-  public int compareTo(Scalar another) {
-    return 0;
+  public int compareTo(Scalar other) {
+    return scalarValue.compareTo(new BigDecimal(other.getValueAsString()));
   }
 
   // 17. 객체 복제를 할 수 있다.

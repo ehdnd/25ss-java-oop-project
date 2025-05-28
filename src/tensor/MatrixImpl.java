@@ -75,13 +75,29 @@ class MatrixImpl implements Matrix {
   // 14m. 값들을 2차원 배열 모양으로 출력할 수 있다.
   @Override
   public String toString() {
-    return super.toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    for (int i = 0; i < getRowSize(); i++) {
+      sb.append("[");
+      for (int j = 0; j < getColSize(); j++) {
+        sb.append(get(i, j).toString());
+        if (j < getColSize() - 1) {
+          sb.append(", ");
+        }
+      }
+      sb.append("]");
+      if (i < getRowSize() - 1) {
+        sb.append(System.lineSeparator());
+      }
+    }
+    sb.append("]");
+    return sb.toString();
   }
 
   // 15. 객체의 동등성을 판단할 수 있다.
   @Override
-  public boolean equals(Object obj) {
-    return super.equals(obj);
+  public boolean equals(Object other) {
+    return toString().equals(other.toString());
   }
 
   // 17. 객체 복제를 할 수 있다.
