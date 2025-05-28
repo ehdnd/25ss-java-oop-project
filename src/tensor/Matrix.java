@@ -3,7 +3,7 @@ package tensor;
 import java.util.ArrayList;
 import java.util.List;
 
-interface Matrix {
+public interface Matrix {
 
   // +. MatrixValue getter
   List<List<Scalar>> getMatrixValue();
