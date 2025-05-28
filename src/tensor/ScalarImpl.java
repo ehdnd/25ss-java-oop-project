@@ -8,18 +8,27 @@ package tensor;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Random;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
-  // 스칼라는 java.math.BigDecimal 타입 객체 하나를 가진다
+  // 자료구조 - 스칼라는 java.math.BigDecimal 타입 객체 하나를 가진다
   private BigDecimal scalarValue;
+  private static final Random RANDOM = new Random();
 
   // 01. 값 (String) 지정하여 스칼라 생성
   ScalarImpl(String bigDecimalString) {
+    scalarValue = new BigDecimal(bigDecimalString);
   }
 
   // 02. i 이상 j 미만의 무작위 값을 요소로 하는 스칼라 생성
   ScalarImpl(String i, String j) {
+    BigDecimal lower = new BigDecimal(i);
+    BigDecimal upper = new BigDecimal(j);
+    BigDecimal range = upper.subtract(lower);
+    // 0.0 <= factor < 1.0
+    BigDecimal factor = BigDecimal.valueOf(RANDOM.nextDouble());
+    scalarValue = lower.add(range.multiply(factor));
   }
 
 
@@ -55,8 +64,9 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  public Scalar clone() throws CloneNotSupportedException {
-    return (Scalar) super.clone();
+  public Scalar clone() {
+    // BigDecimal이 불변(immutable)이므로 toString() → 새 BigDecimal 생성도 OK
+    return new ScalarImpl(scalarValue.toString());
   }
 
   // 스칼라의 연산(non-static 메소드로 구현)연산 결과는 자신의 새로운 값이 된다 .

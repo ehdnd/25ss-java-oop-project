@@ -10,24 +10,42 @@ package tensor;
  */
 
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 class VectorImpl implements Vector {
 
-  // 벡터는 논리적으로 스칼라 객체를 1차원 배열 구조로 관리한다
+  // 자료구조 - 벡터는 논리적으로 스칼라 객체를 1차원 배열 구조로 관리한다
   private List<Scalar> vectorValue;
+  private static final Random RANDOM = new Random();
+
 
   // 03. 지정한 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성
-  VectorImpl(String bigDecimalString) {
+  VectorImpl(String bigDecimalString, int dimension) {
+    vectorValue = new ArrayList<>(dimension);
+    for (int i = 0; i < dimension; ++i) {
+      vectorValue.add(new ScalarImpl(bigDecimalString));
+    }
   }
 
   // 04. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성
-  VectorImpl(String i, String j) {
+  VectorImpl(String i, String j, int dimension) {
+    vectorValue = new ArrayList<>(dimension);
+    for (int k = 0; k < dimension; ++k) {
+      vectorValue.add(new ScalarImpl(i, j));
+    }
   }
 
   // 05. 1차원 배열로부터 n-차원 벡터 생성
   VectorImpl(List<Scalar> dimOneList) {
+    vectorValue = new ArrayList<>(dimOneList.size());
+    for (Scalar s : dimOneList) {
+      vectorValue.add(s.clone());
+    }
   }
+
   // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
   // 11.조회: 지정한 인덱스 위치의 Scalar 값을 반환
   @Override
@@ -39,6 +57,7 @@ class VectorImpl implements Vector {
   @Override
   public void set(int index, Scalar value) {
   }
+
   // 13v. 차원의 개수를 조회할 수 있다.
   @Override
   public int size() {
@@ -59,9 +78,14 @@ class VectorImpl implements Vector {
 
   // 17. 객체 복제를 할 수 있다.
   @Override
-  protected Object clone() throws CloneNotSupportedException {
-    return super.clone();
+  public Vector clone() {
+    List<Scalar> copy = new ArrayList<>(vectorValue.size());
+    for (Scalar s : vectorValue) {
+      copy.add(s.clone());          // 스칼라까지 재귀적으로 복제
+    }
+    return new VectorImpl(copy);      // Collection<Scalar> 생성자 호출
   }
+
 
   // 20. 길이가 같을 때 다른 벡터와 덧셈 (자신을 수정한 뒤 자신 반환)
   @Override
