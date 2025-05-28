@@ -87,20 +87,6 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     return this;
   }
 
-  // 스칼라의 연산 디폴트 메소드로 구현연산 결과 스칼라는 새로 생성되어 반환( static ) ※
-  // 24. 전달받은 두 스칼라의 덧셈이 가능하다.
-  static Scalar add(Scalar a, Scalar b) {
-    BigDecimal v1 = new BigDecimal(a.getValueAsString());
-    BigDecimal v2 = new BigDecimal(b.getValueAsString());
-    return new ScalarImpl(v1.add(v2).toString());
-  }
-
-  // 25. 전달받은 두 스칼라의 곱셈이 가능하다.
-  static Scalar multiply(Scalar a, Scalar b) {
-    BigDecimal v1 = new BigDecimal(a.getValueAsString());
-    BigDecimal v2 = new BigDecimal(b.getValueAsString());
-    return new ScalarImpl(v1.multiply(v2).toString());
-  }
 
 
   // 추가. 역수

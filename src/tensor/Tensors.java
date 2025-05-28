@@ -28,12 +28,12 @@ public class Tensors {
 
   // 두 스칼라의 덧셈 결과를 반환
   public static Scalar add(Scalar a, Scalar b) {
-    return ScalarImpl.add(a, b);
+    return Scalar.add(a, b);
   }
 
   // 두 스칼라의 곱셈 결과를 반환
   public static Scalar multiply(Scalar a, Scalar b) {
-    return ScalarImpl.multiply(a, b);
+    return Scalar.multiply(a, b);
   }
 
     // ===== 벡터의 연산 =====

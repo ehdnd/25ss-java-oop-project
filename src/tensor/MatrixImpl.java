@@ -6,9 +6,10 @@ package tensor;
   - Collection 선택
  */
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.io.*;
+import java.util.*;
+
 
 class MatrixImpl implements Matrix {
 
@@ -24,27 +25,77 @@ class MatrixImpl implements Matrix {
   }
 
   // 06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성
-  MatrixImpl(String bigDecimalString) {
+  MatrixImpl(String bigDecimalString, int rowSize, int colSize) {
+    matrixValue = new ArrayList<>();
+    for (int i = 0; i < rowSize; i++) {
+      List<Scalar> row = new ArrayList<>();
+      for (int j = 0; j < colSize; j++) {
+        row.add(new ScalarImpl(bigDecimalString));
+      }
+      matrixValue.add(row);
+    }
   }
 
   // 07. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성
-  MatrixImpl(String i, String j) {
+  MatrixImpl(String i, String j, int rowSize, int colSize) {
+    matrixValue = new ArrayList<>();
+    for (int r = 0; r < rowSize; r++) {
+      List<Scalar> row = new ArrayList<>();
+      for (int c = 0; c < colSize; c++) {
+        // 각 원소마다 새로운 난수 생성
+        row.add(new ScalarImpl(i, j));
+      }
+      matrixValue.add(row);
+    }
   }
 
   // 08. csv 파일로부터 m x n 행렬을 생성
   //  - comma(,): 열 구분자
   //  - 라인: 행 구분자
-  MatrixImpl(File cssvFile) {
-    // csv 파일의 경로를 매개변수로 받음
+  MatrixImpl(File csvFile) {
+    matrixValue = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        // 한 줄을 콤마(,)로 분리
+        String[] tokens = line.split(",");
+        List<Scalar> row = new ArrayList<>();
+        for (String token : tokens) {
+          row.add(new ScalarImpl(token.trim()));
+        }
+        matrixValue.add(row);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("CSV 파일 읽기 실패: " + csvFile.getPath(), e);
+    }
   }
 
   // 09. 2차원 배열로부터 m x n 행렬 생성
   MatrixImpl(List<List<Scalar>> dimTwoList) {
+    // 깊은 복사 권장
+    matrixValue = new ArrayList<>();
+    for (List<Scalar> row : dimTwoList) {
+      List<Scalar> newRow = new ArrayList<>();
+      for (Scalar s : row) {
+        newRow.add(s.clone());
+      }
+      matrixValue.add(newRow);
+    }
   }
 
   // 10. 단위 행렬 생성
   MatrixImpl(MatrixImpl matrix) {
     // 내부 단위 행렬 생성
+    int n = matrix.getRowSize();
+    int m = matrix.getColSize();
+    matrixValue = new ArrayList<>();
+    for (int i = 0; i < n; i++) {
+      List<Scalar> row = new ArrayList<>();
+      for (int j = 0; j < m; j++) {
+        row.add(new ScalarImpl(i == j ? "1" : "0"));
+      }
+      matrixValue.add(row);
+    }
   }
 
   // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
