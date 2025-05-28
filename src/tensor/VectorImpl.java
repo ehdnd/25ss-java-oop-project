@@ -116,4 +116,19 @@ class VectorImpl implements Vector {
     return this;
   }
 
+  // 30. n-차원 벡터 객체는 자신으로부터 nx1 행렬을 생성하여 반환할 수 있다.
+  @Override
+  public Matrix toColumnMatrix() {
+      List<List<Scalar>> rows = vectorValue.stream()
+          .map(scalar -> List.of(scalar)) // 각 스칼라를 행으로 만듦
+          .toList();
+      return new MatrixImpl(rows);
+  }
+
+  // 31. n-차원 벡터 객체는 자신으로부터 1xn 행렬을 생성하여 반환할 수 있다.
+  @Override
+  public Matrix toRowMatrix() {
+      List<List<Scalar>> row = List.of(vectorValue); // 한 행에 모든 스칼라 포함
+      return new MatrixImpl(row);
+  }
 }
