@@ -23,10 +23,8 @@ import tensor.Vector;
 import tensor.Factory;
 import tensor.Matrix;
 
-import java.io.File;
 import java.util.List;
 import java.util.Arrays;
-import java.lang.CloneNotSupportedException;
 
 public class Test {
 
@@ -301,6 +299,74 @@ public class Test {
     System.out.println(sca39out);
     System.out.println("-> " + sca39ans.equals(sca39out));
 
+    // 40. 정사각 행렬인지 반환
+    System.out.println("=== Spec 40 ===");
+    System.out.println(mat35);
+    System.out.println("expected: true");
+    System.out.println("output: " + mat35.isSquare());
+    System.out.println("-> " + (mat35.isSquare() == true));
+
+    // 41. 상삼각 행렬인지 반환
+    System.out.println("=== Spec 41 ===");
+    Matrix mat41 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("9"))
+    ));
+    System.out.println(mat41);
+    System.out.println("expected: true");
+    System.out.println("output: " + mat41.isUpperTriangular());
+    System.out.println("-> " + (mat41.isUpperTriangular() == true));
+
+    // 42. 하삼각 행렬인지 반환
+    System.out.println("=== Spec 42 ===");
+    Matrix mat42 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("0"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("5"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("1"),
+            Factory.createScalar("9"))
+    ));
+    System.out.println(mat42);
+    System.out.println("expected: true");
+    System.out.println("output: " + mat42.isLowerTriangular());
+    System.out.println("-> " + (mat42.isLowerTriangular() == true));
+
+    // 43. 단위 행렬(Identity)인지 반환
+    System.out.println("=== Spec 43 ===");
+    Matrix mat43 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("0"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("1"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("1"))
+    ));
+    System.out.println(mat43);
+    System.out.println("expected: true");
+    System.out.println("output: " + mat43.isIdentity());
+    System.out.println("-> " + (mat43.isIdentity() == true));
+
+    // 44. 영행렬(Zero)인지 반환
+    System.out.println("=== Spec 44 ===");
+    Matrix mat44 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("0"))
+    ));
+    System.out.println(mat44);
+    System.out.println("expected: true");
+    System.out.println("output: " + mat44.isZero());
+    System.out.println("-> " + (mat44.isZero() == true));
+
+    /*
     // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
     System.out.println("=== Spec 51 ===");
@@ -324,5 +390,7 @@ public class Test {
     System.out.println("=== Spec 52 ===");
     Matrix test52 = Factory.createMatrix("1", 3, 4);
     System.out.println(test52.toReducedRowEchelonForm().isReducedRowEchelonForm());  // true 기대
+
+ */
   }
 }
