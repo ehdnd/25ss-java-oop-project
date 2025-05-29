@@ -366,6 +366,32 @@ public class Test {
     System.out.println("output: " + mat44.isZero());
     System.out.println("-> " + (mat44.isZero() == true));
 
+    // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
+    System.out.println("=== Spec 45 ===");
+    Matrix mat45 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Matrix mat45ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    mat45.swapRows(0, 1);
+    System.out.println("expected: ");
+    System.out.println(mat45ans);
+    System.out.println("output: ");
+    System.out.println(mat45);
+    System.out.println("-> " + mat45.equals(mat45ans));
+
+
     /*
     // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
