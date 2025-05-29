@@ -83,14 +83,13 @@ class MatrixImpl implements Matrix {
   }
 
   // 10. 단위 행렬 생성
-  MatrixImpl(MatrixImpl matrix) {
+  MatrixImpl(int size) {
     // 내부 단위 행렬 생성
-    int n = matrix.getRowSize();
-    int m = matrix.getColSize();
+
     matrixValue = new ArrayList<>();
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < size; i++) {
       List<Scalar> row = new ArrayList<>();
-      for (int j = 0; j < m; j++) {
+      for (int j = 0; j < size; j++) {
         row.add(new ScalarImpl(i == j ? "1" : "0"));
       }
       matrixValue.add(row);
