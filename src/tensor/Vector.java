@@ -46,7 +46,8 @@ public interface Vector {
       throw new IllegalArgumentException("Vectors must be of the same length.");
     }
 
-    Vector result = Factory.createVector(new java.util.ArrayList<>());
+
+    Vector result = Factory.createVector("0", v1.size());
     for (int i = 0; i < v1.size(); i++) {
       Scalar sum = v1.get(i).add(v2.get(i));
       result.set(i, sum);
@@ -56,9 +57,9 @@ public interface Vector {
 
   // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
   static Vector multiply(Scalar s, Vector v) {
-    Vector result = Factory.createVector(new java.util.ArrayList<>());
+    Vector result = Factory.createVector("0", v.size());
     for (int i = 0; i < v.size(); i++) {
-      Scalar product = s.multiply(v.get(i));
+      Scalar product = s.clone().multiply(v.get(i));
       result.set(i, product);
     }
     return result;
