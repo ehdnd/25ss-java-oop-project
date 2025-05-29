@@ -106,7 +106,7 @@ public class Test {
     Matrix m2 = Factory.createMatrix("0", 2, 2);
     System.out.println("15s - Scalar equals: " + s1.equals(s2));
     System.out.println("15v - Vector equals: " + v1.equals(v2));
-    System.out.println("15m - Matrix equals: \n" + m1.equals(m2));
+    System.out.println("15m - Matrix equals: \n" + (m1.equals(m2) ? "PASS" : "FAIL"));
 
     System.out.println("=== Spec 16 ===");
     List<Scalar> list = Arrays.asList(s1, scalar01, scalar12);
@@ -270,7 +270,7 @@ public class Test {
     System.out.println("output: ");
     Matrix mat32out = mat32.concatHorizontally(mat32);
     System.out.println(mat32out);
-    System.out.println("-> " + mat32ans.equals(mat32out));
+    System.out.println("-> " + (mat32ans.equals(mat32out) ? "PASS" : "FAIL"));
 
     // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
     System.out.println("=== Spec 33 ===");
@@ -281,7 +281,7 @@ public class Test {
     System.out.println("output: ");
     Matrix mat33out = mat33.concatVertically(mat33);
     System.out.println(mat33out);
-    System.out.println("-> " + mat33ans.equals(mat33out));
+    System.out.println("-> " + (mat33ans.equals(mat33out) ? "PASS" : "FAIL"));
 
     // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
     System.out.println("=== Spec 34 ===");
@@ -292,7 +292,7 @@ public class Test {
     System.out.println(vec34ans);
     System.out.println("output: ");
     System.out.println(vec34out);
-    System.out.println("-> " + vec34out.equals(vec34ans));
+    System.out.println("-> " + (vec34out.equals(vec34ans) ? "PASS" : "FAIL"));
 
     // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
     System.out.println("=== Spec 35 ===");
@@ -314,7 +314,7 @@ public class Test {
     System.out.println(vec35ans);
     System.out.println("output: ");
     System.out.println(vec35out);
-    System.out.println("-> " + vec35out.equals(vec35ans));
+    System.out.println("-> " + (vec35out.equals(vec35ans) ? "PASS" : "FAIL"));
 
     // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
     System.out.println("=== Spec 36 ===");
@@ -329,7 +329,7 @@ public class Test {
     System.out.println(mat36ans);
     System.out.println("output: ");
     System.out.println(mat36out);
-    System.out.println("-> " + mat36out.equals(mat36ans));
+    System.out.println("-> " + (mat36out.equals(mat36ans) ? "PASS" : "FAIL"));
 
     // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
     System.out.println("=== Spec 37 ===");
@@ -344,7 +344,7 @@ public class Test {
     System.out.println(mat37ans);
     System.out.println("output: ");
     System.out.println(mat37out);
-    System.out.println("-> " + mat37out.equals(mat37ans));
+    System.out.println("-> " + (mat37out.equals(mat37ans) ? "PASS" : "FAIL"));
 
     // 38. 행렬은 전치행렬을 구해 줄 수 있다.
     System.out.println("=== Spec 38 ===");
@@ -361,7 +361,7 @@ public class Test {
     System.out.println(mat38ans);
     System.out.println("output: ");
     System.out.println(mat38out);
-    System.out.println("-> " + mat38out.equals(mat38ans));
+    System.out.println("-> " + (mat38out.equals(mat38ans) ? "PASS" : "FAIL"));
 
     // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
     System.out.println("=== Spec 39 ===");
@@ -372,14 +372,14 @@ public class Test {
     System.out.println(sca39ans);
     System.out.println("output: ");
     System.out.println(sca39out);
-    System.out.println("-> " + sca39ans.equals(sca39out));
+    System.out.println("-> " + (sca39ans.equals(sca39out) ? "PASS" : "FAIL"));
 
     // 40. 정사각 행렬인지 반환
     System.out.println("=== Spec 40 ===");
     System.out.println(mat35);
     System.out.println("expected: true");
     System.out.println("output: " + mat35.isSquare());
-    System.out.println("-> " + (mat35.isSquare() == true));
+    System.out.println("-> " + ((mat35.isSquare() == true) ? "PASS" : "FAIL"));
 
     // 41. 상삼각 행렬인지 반환
     System.out.println("=== Spec 41 ===");
@@ -394,7 +394,7 @@ public class Test {
     System.out.println(mat41);
     System.out.println("expected: true");
     System.out.println("output: " + mat41.isUpperTriangular());
-    System.out.println("-> " + (mat41.isUpperTriangular() == true));
+    System.out.println("-> " + ((mat41.isUpperTriangular() == true) ? "PASS" : "FAIL"));
 
     // 42. 하삼각 행렬인지 반환
     System.out.println("=== Spec 42 ===");
@@ -409,7 +409,7 @@ public class Test {
     System.out.println(mat42);
     System.out.println("expected: true");
     System.out.println("output: " + mat42.isLowerTriangular());
-    System.out.println("-> " + (mat42.isLowerTriangular() == true));
+    System.out.println("-> " + ((mat42.isLowerTriangular() == true) ? "PASS" : "FAIL"));
 
     // 43. 단위 행렬(Identity)인지 반환
     System.out.println("=== Spec 43 ===");
@@ -424,7 +424,7 @@ public class Test {
     System.out.println(mat43);
     System.out.println("expected: true");
     System.out.println("output: " + mat43.isIdentity());
-    System.out.println("-> " + (mat43.isIdentity() == true));
+    System.out.println("-> " + ((mat43.isIdentity() == true) ? "PASS" : "FAIL"));
 
     // 44. 영행렬(Zero)인지 반환
     System.out.println("=== Spec 44 ===");
@@ -439,7 +439,7 @@ public class Test {
     System.out.println(mat44);
     System.out.println("expected: true");
     System.out.println("output: " + mat44.isZero());
-    System.out.println("-> " + (mat44.isZero() == true));
+    System.out.println("-> " + ((mat44.isZero() == true) ? "PASS" : "FAIL"));
 
     // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
     System.out.println("=== Spec 45 ===");
@@ -464,7 +464,7 @@ public class Test {
     System.out.println(mat45ans);
     System.out.println("output: ");
     System.out.println(mat45);
-    System.out.println("-> " + mat45.equals(mat45ans));
+    System.out.println("-> " + (mat45.equals(mat45ans) ? "PASS" : "FAIL"));
 
     // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
     System.out.println("=== Spec 45 ===");
@@ -512,12 +512,36 @@ public class Test {
 
     System.out.println("=== Spec 52 ===");
     Matrix test52 = Factory.createMatrix("1", 3, 4);
-    System.out.println(test52.toReducedRowEchelonForm().isReducedRowEchelonForm());  // true 기대
+    System.out.println(
+        (test52.toReducedRowEchelonForm().isReducedRowEchelonForm()) ? "PASS" : "FAIL");  // true 기대
 
     // 53. 행렬은 자신의 행렬식을 구해줄 수 있다.
     System.out.println("=== Spec 53 ===");
+    Matrix mat53 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("5"))
+    ));
+    Scalar det53 = mat53.determinant();
+    Scalar det53ans = Factory.createScalar("-1");
+    System.out.println("expected: " + det53ans);
+    System.out.println("output: " + det53);
+    System.out.println("-> " + (det53.equals(det53ans) ? "PASS" : "FAIL"));
 
     // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
     System.out.println("=== Spec 54 ===");
+    Matrix mat54 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("5"))
+    ));
+    Matrix mat54ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("-5"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("-1"))
+    ));
+    Matrix inv54 = mat54.inverse();
+    System.out.println("expected: ");
+    System.out.println(mat54ans);
+    System.out.println("output: ");
+    System.out.println(inv54);
+    System.out.println("-> " + (inv54.equals(mat54ans) ? "PASS" : "FAIL"));
   }
 }
