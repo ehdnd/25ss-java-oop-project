@@ -391,6 +391,30 @@ public class Test {
     System.out.println(mat45);
     System.out.println("-> " + mat45.equals(mat45ans));
 
+    // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
+    System.out.println("=== Spec 45 ===");
+    Matrix mat46 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Matrix mat46ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("1"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("5"), Factory.createScalar("4"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("8"), Factory.createScalar("7"),
+            Factory.createScalar("9"))
+    ));
+    mat46.swapColumns(0, 1);
+    System.out.println("expected: ");
+    System.out.println(mat46ans);
+    System.out.println("output: ");
+    System.out.println(mat46);
+    System.out.println("-> " + (mat46.equals(mat46ans) ? "PASS" : "FAIL"));
 
     /*
     // HACK : csv 파일로 행렬 제작 수정
