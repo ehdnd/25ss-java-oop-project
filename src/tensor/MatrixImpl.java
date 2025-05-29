@@ -324,7 +324,7 @@ class MatrixImpl implements Matrix {
     return new MatrixImpl(sub);
   }
 
-  // 38. 행렬은 전치행렬을 구해 줄 수 있따.
+  // 38. 행렬은 전치행렬을 구해 줄 수 있다.
   @Override
   public Matrix transpose() {
     int rows = getRowSize();
@@ -344,7 +344,7 @@ class MatrixImpl implements Matrix {
   @Override
   public Scalar trace() {
     if (!isSquare()) {
-      throw new IllegalStateException("정사각 행렬 아님");
+      throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
     Scalar sum = new ScalarImpl("0");
     for (int i = 0; i < getRowSize(); i++) {
