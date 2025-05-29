@@ -623,7 +623,7 @@ class MatrixImpl implements Matrix {
 
   // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
   @Override
-  public MatrixImpl inverse() {
+  public Matrix inverse() {
     if (!isSquare()) {
       throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
