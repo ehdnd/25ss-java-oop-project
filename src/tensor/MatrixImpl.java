@@ -233,8 +233,9 @@ class MatrixImpl implements Matrix {
         Scalar sum = new ScalarImpl("0");
         for (int k = 0; k < n; k++) {
           // left(i,k) * right(k,j)
-          Scalar prod = left.get(i).get(k).multiply(right.get(k).get(j));
-          // mutable add
+          Scalar leftVal = left.get(i).get(k);
+          Scalar rightVal = right.get(k).get(j);
+          Scalar prod = Tensors.multiply(leftVal, rightVal);
           sum.add(prod);
         }
         row.add(sum);
