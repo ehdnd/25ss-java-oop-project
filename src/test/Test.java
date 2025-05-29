@@ -62,9 +62,9 @@ public class Test {
     System.out.println("07 - i이상 j미만의 무작위 값을 요소로 하는 m x n 행렬 생성: " + matrix07);
 
     System.out.println("=== Spec 08 ===");
-    String csv = "1,2,3\n4,5,6";
-    //Matrix matrix08 = Factory.createMatrix();
-    //System.out.println("08 - CSV로부터 행렬 생성: " + matrix08);
+    File csvFile = new File("src/matrix.csv");
+    Matrix matrix08 = Factory.createMatrix(csvFile);
+    System.out.println("08 - CSV로부터 행렬 생성: " + matrix08);
 
     System.out.println("=== Spec 09 ===");
     Matrix matrix09 = Factory.createMatrix(List.of(
