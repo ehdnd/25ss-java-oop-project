@@ -15,14 +15,6 @@ class MatrixImpl implements Matrix {
   // 자료구조 - 행렬은 논리적으로 스칼라 객체를 2차원 배열 구조로 관리
   private List<List<Scalar>> matrixValue;
 
-  // +. default 생성자
-  MatrixImpl() {
-    /*TODO
-     * default 생성자 제작
-     * 다른 생성자 default 생성자와 엮어야하나?
-     */
-  }
-
   // 06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성
   MatrixImpl(String bigDecimalString, int rowSize, int colSize) {
     matrixValue = new ArrayList<>();
@@ -141,9 +133,32 @@ class MatrixImpl implements Matrix {
 
   // 15. 객체의 동등성을 판단할 수 있다.
   @Override
-  public boolean equals(Object other) {
-    return toString().equals(other.toString());
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (!(obj instanceof Matrix)) {
+      return false;
+    }
+
+    Matrix other = (Matrix) obj;
+
+    if (getRowSize() != other.getRowSize() ||
+        getColSize() != other.getColSize()) {
+      return false;
+    }
+
+    for (int r = 0; r < getRowSize(); ++r) {
+      for (int c = 0; c < getColSize(); ++c) {
+        if (!get(r, c).equals(other.get(r, c))) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
+
 
   // 17. 객체 복제를 할 수 있다.
   @Override

@@ -76,9 +76,14 @@ public class Test {
 
     System.out.println("=== Spec 11 ===");
     Scalar element11v = vector03.get(2); // 3번째 요소 가져오기
-    Scalar element11m = matrix06.get(1, 0); // 2행 1열 요소
     System.out.println("11v - 벡터 특정 위치 조회: " + element11v);
+    // TODO 지정
+    System.out.println("11v - 벡터 특정 위치 지정: " + element11v);
+
+    Scalar element11m = matrix06.get(1, 0); // 2행 1열 요소
     System.out.println("11m - 행렬 특정 위치 조회: " + element11m);
+    // TODO 지정
+    System.out.println("11m - 행렬 특정 위치 지정: " + element11m);
 
     System.out.println("=== Spec 12 ===");
     Scalar scalar12 = Factory.createScalar("7.77");
@@ -94,6 +99,7 @@ public class Test {
 
     System.out.println("=== Spec 14 ===");
     System.out.println("14s - 스칼라 toString(): " + scalar01);
+    // TODO vector03 수정
     System.out.println("14v - 벡터 toString(): " + vector03);
     System.out.println("14m - 행렬 toString(): \n" + matrix06);
 
@@ -116,6 +122,7 @@ public class Test {
     //  이런식으로 정확하게 복사되었는지 확인해야하지 않을까요?
     System.out.println("=== Spec 17 ===");
     Scalar cloneS = (Scalar) scalar01.clone();
+    // TODO vector03 여기서도 쓰네
     Vector cloneV = (Vector) vector03.clone();
     Matrix cloneM = (Matrix) matrix06.clone();
     System.out.println("17s - Scalar clone");
@@ -304,6 +311,7 @@ public class Test {
     System.out.println("-> " + (mat33ans.equals(mat33out) ? "PASS" : "FAIL"));
 
     // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+    /*
     System.out.println("=== Spec 34 ===");
     Matrix mat34 = Factory.createMatrix("1", 2, 2);
     Vector vec34out = mat34.getColVector(0);
@@ -313,6 +321,20 @@ public class Test {
     System.out.println("output: ");
     System.out.println(vec34out);
     System.out.println("-> " + (vec34out.equals(vec34ans) ? "PASS" : "FAIL"));
+     */
+
+    System.out.println("=== Spec 34-row ===");
+    Matrix mat34r = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Vector vec34rExp = Factory.createVector(Arrays.asList(
+        Factory.createScalar("3"), Factory.createScalar("4")
+    ));
+    Vector vec34rOut = mat34r.getRowVector(1);   // 두 번째 행
+    System.out.println("expected: " + vec34rExp);
+    System.out.println("output  : " + vec34rOut);
+    System.out.println("-> " + (vec34rExp.equals(vec34rOut) ? "PASS" : "FAIL"));
 
     // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
     System.out.println("=== Spec 35 ===");
@@ -433,18 +455,14 @@ public class Test {
 
     // 43. 단위 행렬(Identity)인지 반환
     System.out.println("=== Spec 43 ===");
-    Matrix mat43 = Factory.createMatrix(Arrays.asList(
-        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("0"),
-            Factory.createScalar("0")),
-        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("1"),
-            Factory.createScalar("0")),
-        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
-            Factory.createScalar("1"))
-    ));
-    System.out.println(mat43);
+    Matrix id43 = Factory.createMatrix("0", 3, 3);
+    id43.set(0, 0, Factory.createScalar("1"));
+    id43.set(1, 1, Factory.createScalar("1"));
+    id43.set(2, 2, Factory.createScalar("1"));
+    System.out.println(id43);
     System.out.println("expected: true");
-    System.out.println("output: " + mat43.isIdentity());
-    System.out.println("-> " + ((mat43.isIdentity() == true) ? "PASS" : "FAIL"));
+    System.out.println("output  : " + id43.isIdentity());
+    System.out.println("-> " + (id43.isIdentity() ? "PASS" : "FAIL"));
 
     // 44. 영행렬(Zero)인지 반환
     System.out.println("=== Spec 44 ===");
@@ -487,7 +505,7 @@ public class Test {
     System.out.println("-> " + (mat45.equals(mat45ans) ? "PASS" : "FAIL"));
 
     // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
-    System.out.println("=== Spec 45 ===");
+    System.out.println("=== Spec 46 ===");
     Matrix mat46 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
             Factory.createScalar("3")),
@@ -599,12 +617,14 @@ public class Test {
     );
     Matrix test = Factory.createMatrix(data);
     Matrix rref = test.toReducedRowEchelonForm();
-    System.out.println("origin Matrix");
+    Matrix expect = Factory.createMatrix(3);
+    System.out.println("origin Matrix: ");
     System.out.println(test.toString());
-    System.out.println("expect Matrix");
-    System.out.println(Factory.createMatrix(3));
+    System.out.println("expect Matrix: ");
+    System.out.println(expect);
     System.out.println("rref Matrix");
     System.out.println(rref.toString());
+    System.out.println("-> " + (rref.equals(expect)));
 
     System.out.println("=== Spec 52 ===");
     Matrix test52 = Factory.createMatrix("1", 3, 4);

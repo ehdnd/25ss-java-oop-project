@@ -9,6 +9,7 @@ package tensor;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Random;
+import javax.print.attribute.standard.MediaSize.Other;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
@@ -52,9 +53,21 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
   }
 
   // 15. 객체의 동등성을 판단할 수 있다.
+  /*
   @Override
   public boolean equals(Object other) {
     return toString().equals(other.toString());
+  }
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return false;
+    }
+    if (!(obj instanceof Scalar)) {
+      return false;
+    }
+    return this.compareTo((Scalar) obj) == 0;
   }
 
   // 16. 스칼라의 경우 값의 대소 비교를 할 수 있다.
@@ -102,7 +115,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     BigDecimal v2 = new BigDecimal(b.getValueAsString());
     return new ScalarImpl(v1.multiply(v2).toString());
   }
-  
+
   // 추가. 역수
   @Override
   public Scalar reciprocal() {

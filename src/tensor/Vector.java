@@ -6,9 +6,6 @@ package tensor;
   - Collection 선택하자
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 public interface Vector {
 
   // 11v. 특정 위치의 요소를 지정/조회할 수 있다.
@@ -37,7 +34,7 @@ public interface Vector {
 
   // 21. 벡터-스칼라 곱셈 (in-place)
   Vector multiply(Scalar scalar);
-  
+
 
   // 30. 자신을 열벡터 (nx1 행렬)로 변환
   Matrix toColumnMatrix();

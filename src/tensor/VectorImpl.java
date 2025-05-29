@@ -9,8 +9,6 @@ package tensor;
 -
  */
 
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -80,9 +78,29 @@ class VectorImpl implements Vector {
 
   // 15. 객체의 동등성을 파악할 수 있다.
   @Override
-  public boolean equals(Object other) {
-    return toString().equals(other.toString());
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (!(obj instanceof Vector)) {
+      return false;
+    }
+
+    Vector other = (Vector) obj;
+
+    if (size() != other.size()) {
+      return false;
+    }
+    
+    for (int i = 0; i < size(); ++i) {
+      if (!get(i).equals(other.get(i))) {
+        return false;
+      }
+    }
+    return true;
   }
+
 
   // 17. 객체 복제를 할 수 있다.
   @Override
