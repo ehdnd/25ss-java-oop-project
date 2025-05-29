@@ -23,12 +23,15 @@ import tensor.Vector;
 import tensor.Factory;
 import tensor.Matrix;
 
+import java.io.File;
 import java.util.List;
 import java.util.Arrays;
+import java.lang.CloneNotSupportedException;
 
 public class Test {
 
   public static void main(String[] args) {
+    /*
     System.out.println("=== Spec 01 ===");
     Scalar scalar01 = Factory.createScalar("3.14");
     System.out.println("01 - 문자열을 통한 스칼라 생성: " + scalar01);
@@ -182,10 +185,37 @@ public class Test {
     System.out.println("actual  : \n" + m23a);
     System.out.println("result  : " + (m23a.equals(expected23) ? "PASS" : "FAIL"));
 
-    // 24 - 27
+    System.out.println("=== Spec 30 ===");
+    Vector vec30 = Factory.createVector("5", 3); // [5, 5, 5]
+    Matrix expectedColMatrix = Factory.createMatrix(Arrays.asList(
+            List.of(Factory.createScalar("5")),
+            List.of(Factory.createScalar("5")),
+            List.of(Factory.createScalar("5"))
+    ));
+    Matrix actualColMatrix = vec30.toColumnMatrix();
+    System.out.println("expected: ");
+    System.out.println(expectedColMatrix);
+    System.out.println("output: ");
+    System.out.println(actualColMatrix);
+    System.out.println("result: " + (expectedColMatrix.equals(actualColMatrix) ? "PASS" : "FAIL"));
 
-    // 28 - 31
-
+    System.out.println("=== Spec 31 ===");
+    Vector vec31 = Factory.createVector("7", 4); // [7, 7, 7, 7]
+    Matrix expectedRowMatrix = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(
+                    Factory.createScalar("7"),
+                    Factory.createScalar("7"),
+                    Factory.createScalar("7"),
+                    Factory.createScalar("7")
+            )
+    ));
+    Matrix actualRowMatrix = vec31.toRowMatrix();
+    System.out.println("expected: ");
+    System.out.println(expectedRowMatrix);
+    System.out.println("output: ");
+    System.out.println(actualRowMatrix);
+    System.out.println("result: " + (expectedRowMatrix.equals(actualRowMatrix) ? "PASS" : "FAIL"));
+*/
     // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
     System.out.println("=== Spec 32 ===");
     Matrix mat32 = Factory.createMatrix("1", 2, 2);
@@ -440,7 +470,6 @@ public class Test {
     System.out.println("=== Spec 52 ===");
     Matrix test52 = Factory.createMatrix("1", 3, 4);
     System.out.println(test52.toReducedRowEchelonForm().isReducedRowEchelonForm());  // true 기대
-
- */
+    */
   }
 }
