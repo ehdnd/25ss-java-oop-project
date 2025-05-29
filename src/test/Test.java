@@ -18,10 +18,15 @@ NOTE
  * toString -> 행렬 출력하도록 오버라이드
  */
 
+import java.lang.invoke.VolatileCallSite;
+import java.util.ArrayList;
 import tensor.Scalar;
 import tensor.Vector;
 import tensor.Factory;
 import tensor.Matrix;
+import tensor.Scalar;
+import tensor.Vector;
+import tensor.Tensors;
 
 import java.io.File;
 import java.util.List;
@@ -184,6 +189,55 @@ public class Test {
     System.out.println("actual  : \n" + m23a);
     System.out.println("result  : " + (m23a.equals(expected23) ? "PASS" : "FAIL"));
 
+
+    System.out.println("=== Spec 24 ===");
+    Scalar s24a = Factory.createScalar("10.5");
+    Scalar s24b = Factory.createScalar("2.5");
+    System.out.println("original: \n" + s24a + " +\n" + s24b);
+    Scalar sum24 = Tensors.add(s24a,s24b); // 결과
+    Scalar expected24 = Factory.createScalar("13.0");
+    System.out.println("expected: \n" + expected24);
+    System.out.println("actual  : \n" + sum24);
+    System.out.println("result  : " + (sum24.equals(expected24) ? "PASS" : "FAIL")); //?
+    System.out.println("24 - 전달받은 두 스칼라의 덧셈: " + sum24);
+
+    System.out.println("=== Spec 25 ===");
+    Scalar s25a = Factory.createScalar("10.5");
+    Scalar s25b = Factory.createScalar("2.5");
+    System.out.println("original: \n" + s25a + " *\n" + s25b);
+    Scalar sum25 = Tensors.multiply(s25a,s25b); // 결과
+    Scalar expected25 = Factory.createScalar("26.25");
+    System.out.println("expected: \n" + expected25);
+    System.out.println("actual  : \n" + sum25);
+    System.out.println("result  : " + (sum25.equals(expected25) ? "PASS" : "FAIL"));
+    System.out.println("25 - 전달받은 두 스칼라의 곱셈: " + sum25);
+
+
+    System.out.println("=== Spec 26 ===");
+    Vector v26a = Factory.createVector("7", 4);
+    Vector v26b = Factory.createVector("3", 4);
+    System.out.println("original: \n" + v26a + " +\n" + v26b);
+    Vector sum26 = Tensors.add(v26a, v26b);
+    Vector expected26 = Factory.createVector("10", 4);
+    System.out.println("expected: \n" + expected26);
+    System.out.println("actual  : \n" + sum26);
+    System.out.println("result  : " + (sum26.equals(expected26) ? "PASS" : "FAIL"));
+    System.out.println("26 - 전달받은 두 벡터의 덧셈 : " + sum26);
+
+    System.out.println("=== Spec 27 ===");
+    Scalar v27a = Factory.createScalar("7");
+    Vector v27b = Factory.createVector("3", 4);
+    System.out.println("original: \n" + v26a + " *\n" + v26b);
+    Vector sum27 = Tensors.multiply(v27a, v27b);
+    Vector expected27 = Factory.createVector("21", 4);
+    System.out.println("expected: \n" + expected27);
+    System.out.println("actual  : \n" + sum27);
+    System.out.println("result  : " + (sum27.equals(expected27) ? "PASS" : "FAIL"));
+    System.out.println("27 - 전달받은 두 벡터의 곱셈 : " + sum27);
+
+    System.out.println("=== Spec 28 ===");
+
+
     // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
     System.out.println("=== Spec 32 ===");
     Matrix mat32 = Factory.createMatrix("1", 2, 2);
@@ -238,6 +292,9 @@ public class Test {
     System.out.println("output: ");
     System.out.println(vec35out);
     System.out.println("-> " + vec35out.equals(vec35ans));
+
+
+
 
     // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
