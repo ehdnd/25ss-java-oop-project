@@ -184,6 +184,10 @@ public class Test {
     System.out.println("actual  : \n" + m23a);
     System.out.println("result  : " + (m23a.equals(expected23) ? "PASS" : "FAIL"));
 
+    // 24 - 27
+
+    // 28 - 31
+
     // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
     System.out.println("=== Spec 32 ===");
     Matrix mat32 = Factory.createMatrix("1", 2, 2);
@@ -238,6 +242,64 @@ public class Test {
     System.out.println("output: ");
     System.out.println(vec35out);
     System.out.println("-> " + vec35out.equals(vec35ans));
+
+    // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+    System.out.println("=== Spec 36 ===");
+    Matrix mat36out = mat35.subMatrix(0, 2, 0, 2);
+    Matrix mat36ans = Factory.createMatrix(
+        Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"))
+        )
+    );
+    System.out.println("expected: ");
+    System.out.println(mat36ans);
+    System.out.println("output: ");
+    System.out.println(mat36out);
+    System.out.println("-> " + mat36out.equals(mat36ans));
+
+    // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+    System.out.println("=== Spec 37 ===");
+    Matrix mat37out = mat35.minor(1, 1);
+    Matrix mat37ans = Factory.createMatrix(
+        Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("3")),
+            Arrays.asList(Factory.createScalar("7"), Factory.createScalar("9"))
+        )
+    );
+    System.out.println("expected: ");
+    System.out.println(mat37ans);
+    System.out.println("output: ");
+    System.out.println(mat37out);
+    System.out.println("-> " + mat37out.equals(mat37ans));
+
+    // 38. 행렬은 전치행렬을 구해 줄 수 있다.
+    System.out.println("=== Spec 38 ===");
+    Matrix mat38out = mat35.transpose();
+    Matrix mat38ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("4"),
+            Factory.createScalar("7")),
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("5"),
+            Factory.createScalar("8")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("6"),
+            Factory.createScalar("9"))
+    ));
+    System.out.println("expected: ");
+    System.out.println(mat38ans);
+    System.out.println("output: ");
+    System.out.println(mat38out);
+    System.out.println("-> " + mat38out.equals(mat38ans));
+
+    // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
+    System.out.println("=== Spec 39 ===");
+    Scalar sca39ans = Factory.createScalar("15");
+    Scalar sca39out = mat35.trace();
+
+    System.out.println("expected: ");
+    System.out.println(sca39ans);
+    System.out.println("output: ");
+    System.out.println(sca39out);
+    System.out.println("-> " + sca39ans.equals(sca39out));
 
     // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
