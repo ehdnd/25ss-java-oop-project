@@ -55,7 +55,7 @@ public class Factory {
   }
 
   // TODO 10번 수정 이후 수정 필요
-  public static Matrix createMatrix(Matrix matrix) {
-    return new MatrixImpl((MatrixImpl) matrix);
+  public static Matrix createMatrix(int size) {
+    return new MatrixImpl(size);
   }
 }
