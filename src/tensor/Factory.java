@@ -50,7 +50,11 @@ public class Factory {
     return new MatrixImpl(i, j, rowSize, colSize);
   }
 
-  public static Matrix createMatrix(File csvFile) {
+  public static Matrix createMatrix(String filePath) {
+    File csvFile = new File(filePath);
+    if (!csvFile.exists() || !csvFile.isFile()) {
+      throw new FileNotFoundException();
+    }
     return new MatrixImpl(csvFile);
   }
 

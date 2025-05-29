@@ -18,12 +18,10 @@ NOTE
  * toString -> 행렬 출력하도록 오버라이드
  */
 
-import java.util.ArrayList;
-import tensor.Factory;
-import tensor.Matrix;
 import tensor.Scalar;
 import tensor.Vector;
-import tensor.Tensors;
+import tensor.Factory;
+import tensor.Matrix;
 
 import java.io.File;
 import java.util.List;
@@ -62,8 +60,7 @@ public class Test {
     System.out.println("07 - i이상 j미만의 무작위 값을 요소로 하는 m x n 행렬 생성: " + matrix07);
 
     System.out.println("=== Spec 08 ===");
-    File csvFile = new File("src/matrix.csv");
-    Matrix matrix08 = Factory.createMatrix(csvFile);
+    Matrix matrix08 = Factory.createMatrix("src/matrix.csv");
     System.out.println("08 - CSV로부터 행렬 생성: " + matrix08);
 
     System.out.println("=== Spec 09 ===");
@@ -127,6 +124,121 @@ public class Test {
     System.out.println("17v - Vector clone: " + cloneV);
     System.out.println("17m - Matrix clone: \n" + cloneM);
 
+    System.out.println("=== Spec 18 ===");
+    Scalar s18a = Factory.createScalar("3.0");
+    Scalar s18b = Factory.createScalar("2.0");
+    System.out.println("original: " + s18a + " + " + s18b);
+    s18a.add(s18b);
+    Scalar expected18 = Factory.createScalar("5.0");
+    System.out.println("expected: " + expected18);
+    System.out.println("actual  : " + s18a);
+    System.out.println("result  : " + (s18a.equals(expected18) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 19 ===");
+    Scalar s19a = Factory.createScalar("3.0");
+    Scalar s19b = Factory.createScalar("2.0");
+    System.out.println("original: " + s19a + " * " + s19b);
+    s19a.multiply(s19b);
+    Scalar expected19 = Factory.createScalar("6.00");
+    System.out.println("expected: " + expected19);
+    System.out.println("actual  : " + s19a);
+    System.out.println("result  : " + (s19a.equals(expected19) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 20 ===");
+    Vector v20a = Factory.createVector("1", 3);
+    Vector v20b = Factory.createVector("2", 3);
+    System.out.println("original: " + v20a + " + " + v20b);
+    v20a.add(v20b);
+    Vector expected20 = Factory.createVector("3", 3);
+    System.out.println("expected: " + expected20);
+    System.out.println("actual  : " + v20a);
+    System.out.println("result  : " + (v20a.equals(expected20) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 21 ===");
+    Vector v21 = Factory.createVector("2", 4);
+    Scalar s21 = Factory.createScalar("3");
+    System.out.println("original: " + v21 + " * " + s21);
+    v21.multiply(s21);
+    Vector expected21 = Factory.createVector("6", 4);
+    System.out.println("expected: " + expected21);
+    System.out.println("actual  : " + v21);
+    System.out.println("result  : " + (v21.equals(expected21) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 22 ===");
+    Matrix m22a = Factory.createMatrix("1", 2, 2);
+    Matrix m22b = Factory.createMatrix("2", 2, 2);
+    System.out.println("original: \n" + m22a + " +\n" + m22b);
+    m22a.add(m22b);
+    Matrix expected22 = Factory.createMatrix("3", 2, 2);
+    System.out.println("expected: \n" + expected22);
+    System.out.println("actual  : \n" + m22a);
+    System.out.println("result  : " + (m22a.equals(expected22) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 23 ===");
+    Matrix m23a = Factory.createMatrix("1", 2, 3); // 2x3
+    Matrix m23b = Factory.createMatrix("2", 3, 2); // 3x2
+    System.out.println("original: \n" + m23a + " *\n" + m23b);
+    m23a.mul(m23b); // 2x2 결과
+    Matrix expected23 = Factory.createMatrix("6", 2, 2);
+    System.out.println("expected: \n" + expected23);
+    System.out.println("actual  : \n" + m23a);
+    System.out.println("result  : " + (m23a.equals(expected23) ? "PASS" : "FAIL"));
+
+    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+    System.out.println("=== Spec 32 ===");
+    Matrix mat32 = Factory.createMatrix("1", 2, 2);
+    Matrix mat32ans = Factory.createMatrix("1", 2, 4);
+    System.out.println("expected: ");
+    System.out.println(mat32ans);
+    System.out.println("output: ");
+    Matrix mat32out = mat32.concatHorizontally(mat32);
+    System.out.println(mat32out);
+    System.out.println("-> " + mat32ans.equals(mat32out));
+
+    // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+    System.out.println("=== Spec 33 ===");
+    Matrix mat33 = Factory.createMatrix("1", 2, 2);
+    Matrix mat33ans = Factory.createMatrix("1", 4, 2);
+    System.out.println("expected: ");
+    System.out.println(mat33ans);
+    System.out.println("output: ");
+    Matrix mat33out = mat33.concatVertically(mat33);
+    System.out.println(mat33out);
+    System.out.println("-> " + mat33ans.equals(mat33out));
+
+    // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+    System.out.println("=== Spec 34 ===");
+    Matrix mat34 = Factory.createMatrix("1", 2, 2);
+    Vector vec34out = mat34.getColVector(0);
+    Vector vec34ans = Factory.createVector("1", 2);
+    System.out.println("expected: ");
+    System.out.println(vec34ans);
+    System.out.println("output: ");
+    System.out.println(vec34out);
+    System.out.println("-> " + vec34out.equals(vec34ans));
+
+    // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
+    System.out.println("=== Spec 35 ===");
+    Matrix mat35 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Vector vec35out = mat35.getColVector(0);
+    Vector vec35ans = Factory.createVector(Arrays.asList(
+        Factory.createScalar("1"),
+        Factory.createScalar("4"),
+        Factory.createScalar("7")
+    ));
+    System.out.println("expected: ");
+    System.out.println(vec35ans);
+    System.out.println("output: ");
+    System.out.println(vec35out);
+    System.out.println("-> " + vec35out.equals(vec35ans));
+
     // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
     System.out.println("=== Spec 51 ===");
@@ -142,7 +254,7 @@ public class Test {
     Matrix rref = test.toReducedRowEchelonForm();
     System.out.println("origin Matrix");
     System.out.println(test.toString());
-    System.out.println("expecte Matrix");
+    System.out.println("expect Matrix");
     System.out.println(Factory.createMatrix(3));
     System.out.println("rref Matrix");
     System.out.println(rref.toString());
