@@ -48,7 +48,12 @@ public interface Scalar extends Cloneable {
     return new ScalarImpl(v1.multiply(v2).toString());
   }
 
-
   // 추가. 역수
   Scalar reciprocal();
+
+  // 추가. 헬퍼
+  boolean isZero();
+
+  // 추가. 헬퍼
+  Scalar negate();
 }

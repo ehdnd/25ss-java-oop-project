@@ -32,21 +32,15 @@ public interface Vector {
   // 17. 객체 복제를 할 수 있다.
   Vector clone();
 
-  /**
-   * 20. 벡터-벡터 덧셈 (in-place)
-   */
+  // 20. 벡터-벡터 덧셈 (in-place)
   Vector add(Vector other);
 
-  /**
-   * 21. 벡터-스칼라 곱셈 (in-place)
-   */
+  // 21. 벡터-스칼라 곱셈 (in-place)
   Vector multiply(Scalar scalar);
 
-  /* ===== 디폴트 static 메서드 : 명세 26, 27 ===== */
+  // FIXME : default static을 Impl에 구현하라고?
 
-  /**
-   * 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
-   */
+  // 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
   static Vector add(Vector v1, Vector v2) {
     if (v1.size() != v2.size()) {
       throw new IllegalArgumentException("Vectors must be of the same length.");
@@ -70,13 +64,10 @@ public interface Vector {
     return result;
   }
 
-  /**
-   * 30. 자신을 열벡터 (nx1 행렬)로 변환
-   */
+  // 30. 자신을 열벡터 (nx1 행렬)로 변환
   Matrix toColumnMatrix();
 
-  /**
-   * 31. 자신을 행벡터 (1xn 행렬)로 변환
-   */
+
+  // 31. 자신을 행벡터 (1xn 행렬)로 변환
   Matrix toRowMatrix();
 }

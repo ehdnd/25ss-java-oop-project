@@ -54,7 +54,6 @@ public class Factory {
     return new MatrixImpl(csvFile);
   }
 
-  // TODO 10번 수정 이후 수정 필요
   public static Matrix createMatrix(int size) {
     return new MatrixImpl(size);
   }

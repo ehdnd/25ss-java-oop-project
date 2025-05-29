@@ -109,4 +109,17 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     this.scalarValue = BigDecimal.ONE.divide(this.scalarValue, MathContext.DECIMAL128);
     return this;
   }
+
+  // 추가. 헬퍼
+  @Override
+  public boolean isZero() {
+    return scalarValue.compareTo(BigDecimal.ZERO) == 0;
+  }
+
+  // 추가. 헬퍼
+  @Override
+  public Scalar negate() {
+    BigDecimal negated = scalarValue.negate();
+    return new ScalarImpl(negated.toString());
+  }
 }

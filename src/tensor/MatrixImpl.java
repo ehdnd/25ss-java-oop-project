@@ -125,21 +125,17 @@ class MatrixImpl implements Matrix {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("[");
     for (int i = 0; i < getRowSize(); i++) {
-      sb.append("[");
       for (int j = 0; j < getColSize(); j++) {
         sb.append(get(i, j).toString());
         if (j < getColSize() - 1) {
           sb.append(", ");
         }
       }
-      sb.append("]");
       if (i < getRowSize() - 1) {
         sb.append(System.lineSeparator());
       }
     }
-    sb.append("]");
     return sb.toString();
   }
 
@@ -488,18 +484,102 @@ class MatrixImpl implements Matrix {
     }
   }
 
+  // 51. 이 행렬의 RREF(row-reduced echelon form) 버전을 새 Matrix로 계산하여 반환한다.
   @Override
-  // 51. 이 행렬의 RREF(row reduced echelon form) 버전을 새 Matrix로 계산하여 반환한다.
   public Matrix toReducedRowEchelonForm() {
-    // TODO: Gaussian elimination 알고리즘으로 RREF 계산 후 새 Matrix 반환
-    return null;
+    // 깊은 복사 – 원본 보존
+    Matrix m = (MatrixImpl) this.clone();
+
+    int rowCount = m.getRowSize();
+    int colCount = m.getColSize();
+    int lead = 0;                       // 현재 피벗 열
+
+    for (int r = 0; r < rowCount && lead < colCount; r++) {
+      // (1)   피벗이 0이면, 아래 행 중 0 이 아닌 것이 나올 때까지 swap
+      int pivotRow = r;
+      while (pivotRow < rowCount && m.get(pivotRow, lead).isZero()) {
+        pivotRow++;
+      }
+      if (pivotRow == rowCount) {     // 전체 열이 0 → 다음 열로
+        lead++;
+        r--;                        // 같은 행에서 다시 시도
+        continue;
+      }
+      if (pivotRow != r) {
+        m.swapRows(pivotRow, r);    // 45. swapRows 활용
+      }
+
+      // (2)   피벗을 1로 만들기
+      Scalar pivot = m.get(r, lead);
+      if (!pivot.equals(new ScalarImpl("1"))) {
+        m.scaleRow(r, pivot.reciprocal()); // 47. scaleRow(k = 1/pivot)
+      }
+
+      // (3)   같은 열의 다른 행을 0 으로
+      for (int i = 0; i < rowCount; i++) {
+        if (i == r) {
+          continue;
+        }
+        Scalar factor = m.get(i, lead);
+        if (!factor.isZero()) {
+          m.addMultipleOfRow(i, r, factor.negate()); // 49. R_i ← R_i − factor·R_r
+        }
+      }
+      lead++;
+    }
+    return m;
   }
 
-  @Override
   // 52. 이 행렬이 이미 RREF 형태인지 검사하여 true/false를 반환한다.
+  @Override
   public boolean isReducedRowEchelonForm() {
-    // TODO: 각 피벗 위치, 0-행, 피벗 위의 값 등 RREF 조건 검사
-    return equals(toReducedRowEchelonForm());
+    int rowCount = getRowSize();
+    int colCount = getColSize();
+    int lastPivot = -1;                 // 이전 피벗 열 인덱스
+
+    for (int r = 0; r < rowCount; r++) {
+      // (a) 0-행이면 아래쪽도 전부 0-행이어야 함
+      int firstNonZero = -1;
+      for (int c = 0; c < colCount; c++) {
+        if (!get(r, c).isZero()) {
+          firstNonZero = c;
+          break;
+        }
+      }
+      if (firstNonZero == -1) {       // 전부 0
+        // 0-행 이후에 0이 아닌 행이 있으면 RREF 아님
+        for (int k = r + 1; k < rowCount; k++) {
+          for (int c = 0; c < colCount; c++) {
+            if (!get(k, c).isZero()) {
+              return false;
+            }
+          }
+        }
+        break;                      // 남은 행 모두 0 — 조건 충족
+      }
+
+      // (b) 피벗은 1 이어야 함
+      if (!get(r, firstNonZero).equals(new ScalarImpl("1"))) {
+        return false;
+      }
+
+      // (c) 피벗 열은 다른 행에서 모두 0
+      for (int i = 0; i < rowCount; i++) {
+        if (i == r) {
+          continue;
+        }
+        if (!get(i, firstNonZero).isZero()) {
+          return false;
+        }
+      }
+
+      // (d) 피벗 열은 오른쪽으로 Strictly 증가
+      if (firstNonZero <= lastPivot) {
+        return false;
+      }
+      lastPivot = firstNonZero;
+    }
+    return true;
   }
 
   //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
