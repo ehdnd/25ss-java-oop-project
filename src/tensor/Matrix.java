@@ -66,9 +66,9 @@ public interface Matrix {
     for (int i = 0; i < a.getRowSize(); i++) {
       List<Scalar> row = new java.util.ArrayList<>();
       for (int j = 0; j < b.getColSize(); j++) {
-        Scalar sum = a.get(i, 0).multiply(b.get(0, j));
+        Scalar sum = Tensors.multiply(a.get(i, 0),b.get(0, j));
         for (int k = 1; k < a.getColSize(); k++) {
-          sum = sum.add(a.get(i, k).multiply(b.get(k, j)));
+          sum = sum.add(Tensors.multiply(a.get(i, k),b.get(k, j)));
         }
         row.add(sum);
       }

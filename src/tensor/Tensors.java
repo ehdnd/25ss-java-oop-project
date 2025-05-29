@@ -48,4 +48,12 @@ public class Tensors {
   public static Vector multiply(Scalar a, Vector b) {
     return Vector.multiply(a, b);
   }
+
+  public static Matrix add(Matrix a, Matrix b) {
+    return Matrix.add(a,b);
+  }
+
+  public static Matrix multiply(Matrix a, Matrix b) {
+    return Matrix.mul(a,b);
+  }
 }

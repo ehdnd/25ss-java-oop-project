@@ -220,7 +220,7 @@ public class Test {
     System.out.println("=== Spec 27 ===");
     Scalar v27a = Factory.createScalar("7");
     Vector v27b = Factory.createVector("3", 4);
-    System.out.println("original: \n" + v26a + " *\n" + v26b);
+    System.out.println("original: \n" + v27a + " *\n" + v27b);
     Vector sum27 = Tensors.multiply(v27a, v27b);
     Vector expected27 = Factory.createVector("21", 4);
     System.out.println("expected: \n" + expected27);
@@ -229,6 +229,30 @@ public class Test {
     System.out.println("27 - 전달받은 두 벡터의 곱셈 : " + sum27);
 
     System.out.println("=== Spec 28 ===");
+    Matrix m28a = Factory.createMatrix("1", 3,3);
+    Matrix m28b = Factory.createMatrix("2", 3,3);
+    System.out.println("original: \n" + m28a + " +\n" + m28b);
+    Matrix sum28 = Tensors.add(m28a, m28b);
+    Matrix expected28 = Factory.createMatrix("3", 3, 3);
+    System.out.println("expected: \n" + expected28);
+    System.out.println("actual  : \n" + sum28);
+    System.out.println("result  : " + (sum28.equals(expected28) ? "PASS" : "FAIL"));
+    System.out.println("28 - 전달받은 두 행렬의 덧셈 : " + sum28);
+
+
+    System.out.println("=== Spec 29 ===");
+    Matrix m29a = Factory.createMatrix("1", 3,3);
+    Matrix m29b = Factory.createMatrix("2", 3,3);
+    System.out.println("original: \n" + m29a + " *\n" + m29b);
+    Matrix sum29 = Tensors.multiply(m29a, m29b);
+    Matrix expected29 = Factory.createMatrix("2", 3, 3);
+    System.out.println("expected: \n" + expected29);
+    System.out.println("actual  : \n" + sum29);
+    System.out.println("result  : " + (sum29.equals(expected29) ? "PASS" : "FAIL"));
+    System.out.println("29 - 전달받은 두 행렬의 곱셈 : " + sum29);
+
+
+
 
     System.out.println("=== Spec 30 ===");
     Vector vec30 = Factory.createVector("5", 3); // [5, 5, 5]
