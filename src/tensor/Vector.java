@@ -37,33 +37,7 @@ public interface Vector {
 
   // 21. 벡터-스칼라 곱셈 (in-place)
   Vector multiply(Scalar scalar);
-
-  // FIXME : default static을 Impl에 구현하라고?
-
-  // 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
-  static Vector add(Vector v1, Vector v2) {
-    if (v1.size() != v2.size()) {
-      throw new IllegalArgumentException("Vectors must be of the same length.");
-    }
-
-
-    Vector result = Factory.createVector("0", v1.size());
-    for (int i = 0; i < v1.size(); i++) {
-      Scalar sum = v1.get(i).add(v2.get(i));
-      result.set(i, sum);
-    }
-    return result;
-  }
-
-  // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
-  static Vector multiply(Scalar s, Vector v) {
-    Vector result = Factory.createVector("0", v.size());
-    for (int i = 0; i < v.size(); i++) {
-      Scalar product = s.clone().multiply(v.get(i));
-      result.set(i, product);
-    }
-    return result;
-  }
+  
 
   // 30. 자신을 열벡터 (nx1 행렬)로 변환
   Matrix toColumnMatrix();

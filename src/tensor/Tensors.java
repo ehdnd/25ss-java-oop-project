@@ -38,14 +38,30 @@ public class Tensors {
     return ScalarImpl.multiply(a, b);
   }
 
-    // ===== 벡터의 연산 =====
+  // ===== 벡터의 연산 =====
 
   // 두 벡터의 연산 결과를 반환
   public static Vector add(Vector a, Vector b) {
-    return Vector.add(a, b);
+    return VectorImpl.add(a, b);
   }
 
   public static Vector multiply(Scalar a, Vector b) {
-    return Vector.multiply(a, b);
+    return VectorImpl.multiply(a, b);
+  }
+
+  public static Matrix add(Matrix a, Matrix b) {
+    return MatrixImpl.add(a, b);
+  }
+
+  public static Matrix multiply(Matrix a, Matrix b) {
+    return MatrixImpl.mul(a, b);
+  }
+
+  public static Matrix concatHorizontally(Matrix a, Matrix b) {
+    return MatrixImpl.concatHorizontally(a, b);
+  }
+
+  public static Matrix concatVertically(Matrix a, Matrix b) {
+    return MatrixImpl.concatVertically(a, b);
   }
 }

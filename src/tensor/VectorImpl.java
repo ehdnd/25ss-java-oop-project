@@ -124,6 +124,30 @@ class VectorImpl implements Vector {
     return this;
   }
 
+  // 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
+  static Vector add(Vector v1, Vector v2) {
+    if (v1.size() != v2.size()) {
+      throw new IllegalArgumentException("Vectors must be of the same length.");
+    }
+
+    Vector result = Factory.createVector("0", v1.size());
+    for (int i = 0; i < v1.size(); i++) {
+      Scalar sum = v1.get(i).add(v2.get(i));
+      result.set(i, sum);
+    }
+    return result;
+  }
+
+  // 27. 전달받은 스칼라와 벡터의 곱셈이 가능하다(벡터의 모든 요소에 스칼라를 곱한다.)
+  static Vector multiply(Scalar s, Vector v) {
+    Vector result = Factory.createVector("0", v.size());
+    for (int i = 0; i < v.size(); i++) {
+      Scalar product = s.clone().multiply(v.get(i));
+      result.set(i, product);
+    }
+    return result;
+  }
+
   // 30. n-차원 벡터 객체는 자신으로부터 nx1 행렬을 생성하여 반환할 수 있다.
   @Override
   public Matrix toColumnMatrix() {

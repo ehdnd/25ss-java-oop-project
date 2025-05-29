@@ -102,7 +102,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     BigDecimal v2 = new BigDecimal(b.getValueAsString());
     return new ScalarImpl(v1.multiply(v2).toString());
   }
-
+  
   // 추가. 역수
   @Override
   public Scalar reciprocal() {

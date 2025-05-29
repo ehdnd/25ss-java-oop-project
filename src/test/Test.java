@@ -220,7 +220,7 @@ public class Test {
     System.out.println("=== Spec 27 ===");
     Scalar v27a = Factory.createScalar("7");
     Vector v27b = Factory.createVector("3", 4);
-    System.out.println("original: \n" + v26a + " *\n" + v26b);
+    System.out.println("original: \n" + v27a + " *\n" + v27b);
     Vector sum27 = Tensors.multiply(v27a, v27b);
     Vector expected27 = Factory.createVector("21", 4);
     System.out.println("expected: \n" + expected27);
@@ -229,6 +229,26 @@ public class Test {
     System.out.println("27 - 전달받은 두 벡터의 곱셈 : " + sum27);
 
     System.out.println("=== Spec 28 ===");
+    Matrix m28a = Factory.createMatrix("1", 3, 3);
+    Matrix m28b = Factory.createMatrix("2", 3, 3);
+    System.out.println("original: \n" + m28a + " +\n" + m28b);
+    Matrix sum28 = Tensors.add(m28a, m28b);
+    Matrix expected28 = Factory.createMatrix("3", 3, 3);
+    System.out.println("expected: \n" + expected28);
+    System.out.println("actual  : \n" + sum28);
+    System.out.println("result  : " + (sum28.equals(expected28) ? "PASS" : "FAIL"));
+    System.out.println("28 - 전달받은 두 행렬의 덧셈 : " + sum28);
+
+    System.out.println("=== Spec 29 ===");
+    Matrix m29a = Factory.createMatrix("1", 3, 3);
+    Matrix m29b = Factory.createMatrix("2", 3, 3);
+    System.out.println("original: \n" + m29a + " *\n" + m29b);
+    Matrix sum29 = Tensors.multiply(m29a, m29b);
+    Matrix expected29 = Factory.createMatrix("6", 3, 3);
+    System.out.println("expected: \n" + expected29);
+    System.out.println("actual  : \n" + sum29);
+    System.out.println("result  : " + (sum29.equals(expected29) ? "PASS" : "FAIL"));
+    System.out.println("29 - 전달받은 두 행렬의 곱셈 : \n" + sum29);
 
     System.out.println("=== Spec 30 ===");
     Vector vec30 = Factory.createVector("5", 3); // [5, 5, 5]
@@ -493,15 +513,15 @@ public class Test {
 
     System.out.println("=== Spec 47 ===");
     Matrix m47 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
     ));
     Scalar factor47 = Factory.createScalar("10");
     m47.scaleRow(1, factor47); // 두 번째 행에 10을 곱함
 
     Matrix expected47 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("30"), Factory.createScalar("40"))
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("30"), Factory.createScalar("40"))
     ));
 
     System.out.println("expected: ");
@@ -512,15 +532,15 @@ public class Test {
 
     System.out.println("=== Spec 48 ===");
     Matrix m48 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
     ));
     Scalar factor48 = Factory.createScalar("2");
     m48.scaleColumn(0, factor48); // 첫 번째 열에 2를 곱함
 
     Matrix expected48 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("2"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("6"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("6"), Factory.createScalar("4"))
     ));
 
     System.out.println("expected: ");
@@ -531,15 +551,15 @@ public class Test {
 
     System.out.println("=== Spec 49 ===");
     Matrix m49 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
     ));
     Scalar factor49 = Factory.createScalar("2");
     m49.addMultipleOfRow(0, 1, factor49); // 첫 번째 행에 두 번째 행 * 2를 더함
 
     Matrix expected49 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("7"), Factory.createScalar("10")), // 1 + 3*2, 2 + 4*2
-            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("10")), // 1 + 3*2, 2 + 4*2
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
     ));
 
     System.out.println("expected: ");
@@ -550,15 +570,15 @@ public class Test {
 
     System.out.println("=== Spec 50 ===");
     Matrix m50 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
-            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
     ));
     Scalar factor50 = Factory.createScalar("3");
     m50.addMultipleOfColumn(0, 1, factor50); // 첫 번째 열에 두 번째 열 * 3을 더함
 
     Matrix expected50 = Factory.createMatrix(Arrays.asList(
-            Arrays.asList(Factory.createScalar("7"), Factory.createScalar("2")), // 1 + 2*3, 2
-            Arrays.asList(Factory.createScalar("15"), Factory.createScalar("4")) // 3 + 4*3, 4
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("2")), // 1 + 2*3, 2
+        Arrays.asList(Factory.createScalar("15"), Factory.createScalar("4")) // 3 + 4*3, 4
     ));
 
     System.out.println("expected: ");
