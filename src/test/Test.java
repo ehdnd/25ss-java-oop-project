@@ -491,6 +491,82 @@ public class Test {
     System.out.println(mat46);
     System.out.println("-> " + (mat46.equals(mat46ans) ? "PASS" : "FAIL"));
 
+    System.out.println("=== Spec 47 ===");
+    Matrix m47 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Scalar factor47 = Factory.createScalar("10");
+    m47.scaleRow(1, factor47); // 두 번째 행에 10을 곱함
+
+    Matrix expected47 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("30"), Factory.createScalar("40"))
+    ));
+
+    System.out.println("expected: ");
+    System.out.println(expected47);
+    System.out.println("output: ");
+    System.out.println(m47);
+    System.out.println("result: " + (expected47.equals(m47) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 48 ===");
+    Matrix m48 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Scalar factor48 = Factory.createScalar("2");
+    m48.scaleColumn(0, factor48); // 첫 번째 열에 2를 곱함
+
+    Matrix expected48 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("2"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("6"), Factory.createScalar("4"))
+    ));
+
+    System.out.println("expected: ");
+    System.out.println(expected48);
+    System.out.println("output: ");
+    System.out.println(m48);
+    System.out.println("result: " + (expected48.equals(m48) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 49 ===");
+    Matrix m49 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Scalar factor49 = Factory.createScalar("2");
+    m49.addMultipleOfRow(0, 1, factor49); // 첫 번째 행에 두 번째 행 * 2를 더함
+
+    Matrix expected49 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("7"), Factory.createScalar("10")), // 1 + 3*2, 2 + 4*2
+            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+
+    System.out.println("expected: ");
+    System.out.println(expected49);
+    System.out.println("output: ");
+    System.out.println(m49);
+    System.out.println("result: " + (expected49.equals(m49) ? "PASS" : "FAIL"));
+
+    System.out.println("=== Spec 50 ===");
+    Matrix m50 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+            Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Scalar factor50 = Factory.createScalar("3");
+    m50.addMultipleOfColumn(0, 1, factor50); // 첫 번째 열에 두 번째 열 * 3을 더함
+
+    Matrix expected50 = Factory.createMatrix(Arrays.asList(
+            Arrays.asList(Factory.createScalar("7"), Factory.createScalar("2")), // 1 + 2*3, 2
+            Arrays.asList(Factory.createScalar("15"), Factory.createScalar("4")) // 3 + 4*3, 4
+    ));
+
+    System.out.println("expected: ");
+    System.out.println(expected50);
+    System.out.println("output: ");
+    System.out.println(m50);
+    System.out.println("result: " + (expected50.equals(m50) ? "PASS" : "FAIL"));
+    // HACK : csv 파일로 행렬 제작 수정
     // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
     System.out.println("=== Spec 51 ===");
     List<List<Scalar>> data = Arrays.asList(
