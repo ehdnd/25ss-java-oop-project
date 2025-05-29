@@ -254,7 +254,8 @@ class MatrixImpl implements Matrix {
   @Override
   public Matrix concatHorizontally(Matrix other) {
     if (getRowSize() != other.getRowSize()) {
-      throw new IllegalArgumentException("행 개수가 다릅니다.");
+      throw new DimensionMismatchException("other row size = " + getRowSize(),
+          "acture row size = " + other.getRowSize());
     }
     List<List<Scalar>> result = new ArrayList<>();
     for (int i = 0; i < getRowSize(); i++) {
@@ -269,7 +270,8 @@ class MatrixImpl implements Matrix {
   @Override
   public Matrix concatVertically(Matrix other) {
     if (getColSize() != other.getColSize()) {
-      throw new IllegalArgumentException("열 개수가 다릅니다.");
+      throw new DimensionMismatchException("other col size = " + getColSize(),
+          "acture col size = " + other.getColSize());
     }
     List<List<Scalar>> result = new ArrayList<>();
     result.addAll(getMatrixValue());
@@ -467,8 +469,7 @@ class MatrixImpl implements Matrix {
 
   @Override
   // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
-  public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor)
-      throws CloneNotSupportedException {
+  public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor) {
     // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
     for (int c = 0; c < getColSize(); ++c) {
       Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
@@ -479,8 +480,7 @@ class MatrixImpl implements Matrix {
 
   @Override
   // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
-  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor)
-      throws CloneNotSupportedException {
+  public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
     // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
     for (int r = 0; r < getRowSize(); ++r) {
       Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
@@ -507,7 +507,8 @@ class MatrixImpl implements Matrix {
   @Override
   public Scalar determinant() {
     if (!isSquare()) {
-      throw new IllegalStateException("정사각행렬만 지원");
+      throw new DimensionMismatchException(getRowSize() + "x" + getRowSize(),
+          getRowSize() + "x" + getColSize());
     }
 
     int n = getRowSize();
@@ -545,12 +546,12 @@ class MatrixImpl implements Matrix {
   @Override
   public MatrixImpl inverse() {
     if (!isSquare()) {
-      throw new IllegalStateException("정사각행렬만 역행렬 존재");
+      throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
 
     Scalar det = this.determinant();
     if (det.getValueAsString().equals("0")) {
-      throw new ArithmeticException("행렬식이 0이므로 역행렬이 존재하지 않습니다.");
+      throw new SingularMatrixException();
     }
 
     int n = getRowSize();

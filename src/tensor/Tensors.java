@@ -22,6 +22,8 @@ import java.math.BigDecimal;
  * 전달받은 두 행렬의 곱셈
  */
 
+// 계산과 변환을 묶는 유틸리티 허브
+
 public class Tensors {
 
   // ===== 스칼라 연산 =====
@@ -38,12 +40,12 @@ public class Tensors {
 
     // ===== 벡터의 연산 =====
 
-    // 두 벡터의 연산 결과를 반환
-  public static Vector add(Vector a, Vector b){
-      return Vector.add(a,b);
-    }
+  // 두 벡터의 연산 결과를 반환
+  public static Vector add(Vector a, Vector b) {
+    return Vector.add(a, b);
+  }
 
-    public static Vector multiply(Scalar a, Vector b){
-      return Vector.multiply(a,b);
-    }
+  public static Vector multiply(Scalar a, Vector b) {
+    return Vector.multiply(a, b);
+  }
 }
