@@ -29,28 +29,32 @@ import java.util.List;
 
 public class Test {
 
+  private static void printHeader(String specExplain, String methodName) {
+    System.out.println("==============================");
+    System.out.println("// " + specExplain);
+    System.out.println("// " + methodName);
+  }
+
   private static void printResult(Object ans, Object res) {
     System.out.println("expect: ");
     System.out.println(ans);
     System.out.println("output: ");
     System.out.println(res);
-    System.out.println("-----> " + (ans.equals(res) ? "PASS" : "FAIL"));
+    System.out.println("-----> " + (ans.equals(res) ? "✅" : "❌"));
   }
 
   public static void main(String[] args) {
 
-    // 01. 값 (String) 지정하여 스칼라 생성
-    System.out.println("====================");
-    System.out.println("// 01. 값 (String) 지정하여 스칼라 생성");
+    // 01. 값 (String) 지정하여 스칼라
+    printHeader("01. 값 (String) 지정하여 스칼라 생성", "public static Scalar createScalar(String value)");
     Scalar sca01 = Factory.createScalar("123");
     System.out.println("output: ");
     System.out.println(sca01);
-    System.out.println("-----> PASS");
+    System.out.println("-----> ✅");
 
     // 02. i 이상 j 미만의 무작위 값을 요소로 하는 스칼라 생성
-    System.out.println("====================");
-    System.out.println("// 02. i 이상 j 미만의 무작위 스칼라 생성");
-
+    printHeader("02. i 이상 j 미만의 무작위 값을 요소로 하는 스칼라 생성",
+        "public static Scalar createScalar(String value1, String value2)");
     String i02 = "5", j02 = "10";
     BigDecimal lo02 = new BigDecimal(i02), hi02 = new BigDecimal(j02);
     boolean res02 = true;
@@ -61,13 +65,13 @@ public class Test {
 
       boolean ok = val.compareTo(lo02) >= 0 && val.compareTo(hi02) < 0;
       res02 &= ok;
-      System.out.println("test " + (t + 1) + " : " + val + " -> " + (ok ? "PASS" : "FAIL"));
+      System.out.println("test " + (t + 1) + " : " + val + " -> " + (ok ? "✅" : "❌"));
     }
-    System.out.println("----> " + (res02 ? "PASS" : "FAIL"));
+    System.out.println("----> " + (res02 ? "✅" : "❌"));
 
     // 03. 지정한 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성
-    System.out.println("====================");
-    System.out.println("// 03. 지정한 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성");
+    printHeader("03. 지정한 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성",
+        "public static Vector createVector(String value, int dimension)");
     Vector vec03 = Factory.createVector("1", 3);
     Vector vec03ans = Factory.createVector(
         List.of(Factory.createScalar("1"), Factory.createScalar("1"), Factory.createScalar("1"))
@@ -75,9 +79,8 @@ public class Test {
     printResult(vec03, vec03ans);
 
     // 04. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성
-    System.out.println("====================");
-    System.out.println("// 04. i 이상 j 미만의 무작위 값을 요소로 하는 길이 n 벡터 생성");
-
+    printHeader("04. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성",
+        "public static Vector createVector(String i, String j, int dimension)");
     String i04 = "5", j04 = "10";
     int vecLen = 4;
     BigDecimal lo04 = new BigDecimal(i04), hi04 = new BigDecimal(j04);
@@ -91,24 +94,24 @@ public class Test {
         BigDecimal val = new BigDecimal(vec04.get(idx).toString());
         if (val.compareTo(lo04) < 0 || val.compareTo(hi04) >= 0) {
           res04 = false;
-          System.out.println(" -> element out of range! FAIL");
+          System.out.println(" -> element out of range! ❌");
           break;
         }
       }
-      System.out.println("---> " + (res04 ? "PASS" : "FAIL"));
+      System.out.println("---> " + (res04 ? "✅" : "❌"));
     }
-    System.out.println("----> " + (res04 ? "PASS" : "FAIL"));
+    System.out.println("----> " + (res04 ? "✅" : "❌"));
 
     // 05. 1차원 배열로부터 n-차원 벡터 생성
-    System.out.println("====================");
-    System.out.println("// 05. 1차원 배열로부터 n-차원 벡터 생성");
+    printHeader("05. 1차원 배열로부터 n-차원 벡터 생성",
+        "public static Vector createVector(String value, int dimension)");
     Vector vec05 = Factory.createVector(List.of(sca01.clone(), sca01.clone()));
     Vector vec05ans = Factory.createVector("123", 2);
-    printResult(vec05, vec05);
+    printResult(vec05, vec05ans);
 
     // 06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성
-    System.out.println("====================");
-    System.out.println("// 06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성");
+    printHeader("06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성",
+        "public static Matrix createMatrix(String value, int rowSize, int colSize)");
     Matrix mat06ans = Factory.createMatrix(List.of(
         List.of(Factory.createScalar("2"), Factory.createScalar("2")),
         List.of(Factory.createScalar("2"), Factory.createScalar("2"))
@@ -117,9 +120,8 @@ public class Test {
     printResult(mat06, mat06ans);
 
     // 07. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성
-    System.out.println("====================");
-    System.out.println("// 07. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성");
-
+    printHeader("07. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성",
+        "public static Matrix createMatrix(String i, String j, int rowSize, int colSize)");
     String i = "5", j = "10";
     int rowSize = 3, colSize = 2;
     boolean res07 = true;
@@ -137,13 +139,12 @@ public class Test {
           }
         }
       }
-      System.out.println("---> " + (res07 ? "PASS" : "FAIL"));
+      System.out.println("---> " + (res07 ? "✅" : "❌"));
     }
-    System.out.println("-----> " + (res07 ? "PASS" : "FAIL"));
+    System.out.println("-----> " + (res07 ? "✅" : "❌"));
 
     // 08. csv 파일로부터 m x n 행렬을 생성
-    System.out.println("====================");
-    System.out.println("// 08. csv 파일로부터 m x n 행렬을 생성");
+    printHeader("08. csv 파일로부터 m x n 행렬을 생성", "public static Matrix createMatrix(String filePath)");
     Matrix mat08 = Factory.createMatrix("src/test/matrix.csv");
     Matrix mat08ans = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
@@ -153,16 +154,18 @@ public class Test {
         Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
             Factory.createScalar("9"))
     ));
-/*
-    // 09. 2차원 배열로부터 m x n 행렬 생성
-    System.out.println("====================");
-    System.out.println("// 09. 2차원 배열로부터 m x n 행렬 생성");
-    Matrix matrix09 = Factory.createMatrix(List.of(
-        List.of(scalar01, scalar02),
-        List.of(scalar02, scalar01)
-    ));
-    System.out.println("09 - 2차원 리스트로부터 행렬 생성: " + matrix09);
+    printResult(mat08, mat08ans);
 
+    // 09. 2차원 배열로부터 m x n 행렬 생성
+    printHeader("09. 2차원 배열로부터 m x n 행렬 생성",
+        "public static Matrix createMatrix(List<List<Scalar>> rows)");
+    Matrix mat09 = Factory.createMatrix(List.of(
+        List.of(Factory.createScalar("1"), Factory.createScalar("1")),
+        List.of(Factory.createScalar("1"), Factory.createScalar("1"))
+    ));
+    Matrix mat09ans = Factory.createMatrix("1", 2, 2);
+    printResult(mat09ans, mat09);
+/*
     System.out.println("=== Spec 10 ===");
     Matrix matrix10 = Factory.createMatrix(3);
     System.out.println("10 - Matrix 07의 단위행렬 생성: " + matrix10);
