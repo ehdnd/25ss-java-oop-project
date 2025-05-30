@@ -101,13 +101,13 @@ class MatrixImpl implements Matrix {
     matrixValue.get(row).set(col, value.clone());
   }
 
-  // 13. 행렬의 행개수를 조회
+  // 13m. 행렬의 행개수를 조회
   @Override
   public int getRowSize() {
     return matrixValue.size();
   }
 
-  // 13. 행렬의 열개수를 조회
+  // 13m. 행렬의 열개수를 조회
   @Override
   public int getColSize() {
     return matrixValue.isEmpty() ? 0 : matrixValue.get(0).size();

@@ -51,7 +51,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     return scalarValue.toPlainString();
   }
 
-  // 15. 객체의 동등성을 판단할 수 있다.
+  // 15s. 객체의 동등성을 판단할 수 있다.
   /*
   @Override
   public boolean equals(Object other) {

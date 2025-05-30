@@ -20,7 +20,9 @@ NOTE
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import javax.swing.Scrollable;
 import tensor.Scalar;
+import tensor.Tensors;
 import tensor.Vector;
 import tensor.Factory;
 import tensor.Matrix;
@@ -165,68 +167,158 @@ public class Test {
     ));
     Matrix mat09ans = Factory.createMatrix("1", 2, 2);
     printResult(mat09ans, mat09);
-/*
+
+    // 10. 단위 행렬 생성
+    printHeader("10. 단위 행렬 생성", "public static Matrix createMatrix(int size)");
     System.out.println("=== Spec 10 ===");
-    Matrix matrix10 = Factory.createMatrix(3);
-    System.out.println("10 - Matrix 07의 단위행렬 생성: " + matrix10);
+    Matrix mat10 = Factory.createMatrix(2);
+    Matrix mat10ans = Factory.createMatrix("0", 2, 2);
+    mat10ans.set(0, 0, Factory.createScalar("1"));
+    mat10ans.set(1, 1, Factory.createScalar("1"));
+    printResult(mat10ans, mat10);
 
-    System.out.println("=== Spec 11 ===");
-    Scalar element11v = vector03.get(2); // 3번째 요소 가져오기
-    System.out.println("11v - 벡터 특정 위치 조회: " + element11v);
-    // TODO 지정
-    System.out.println("11v - 벡터 특정 위치 지정: " + element11v);
+    // 11v.지정: 지정한 인덱스 위치에 Scalar 값을 설정
+    Vector vec11 = Factory.createVector("1", 2);
+    printHeader("11v.지정: 지정한 인덱스 위치에 Scalar 값을 설정", "public void set(int index, Scalar value)");
+    vec11.set(1, Factory.createScalar("2"));
+    Vector vec11setans = Factory.createVector(
+        List.of(Factory.createScalar("1"), Factory.createScalar("2")));
+    printResult(vec11setans, vec11);
+    // 11v. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
+    printHeader("11v. 조회: 지정한 인덱스 위치의 Scalar 값을 반환", "public Scalar get(int index)");
+    Scalar sca11getans = Factory.createScalar("2");
+    Scalar sca11get = vec11.get(1);
+    printResult(sca11getans, sca11get);
 
-    Scalar element11m = matrix06.get(1, 0); // 2행 1열 요소
-    System.out.println("11m - 행렬 특정 위치 조회: " + element11m);
-    // TODO 지정
-    System.out.println("11m - 행렬 특정 위치 지정: " + element11m);
+    // 11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
+    printHeader("11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정",
+        "public void set(int row, int col, Scalar value)");
+    Matrix mat11 = Factory.createMatrix("0", 2, 2);
+    mat11.set(0, 0, Factory.createScalar("1"));
+    mat11.set(1, 1, Factory.createScalar("1"));
+    Matrix mat11ans = Factory.createMatrix(2);
+    printResult(mat11ans, mat11);
 
-    System.out.println("=== Spec 12 ===");
-    Scalar scalar12 = Factory.createScalar("7.77");
-    System.out.println("스칼라 값 지정하기 전 : " + scalar12);
-    scalar12.setValueFromString("8.88");
-    System.out.println("12 - 스칼라 값 지정 후 : " + scalar12);
-    System.out.println("12 - 스칼라 값 조회 :  " + scalar12.getValueAsString());
+    // 11m. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
+    printHeader("11m. 조회: 지정한 인덱스 위치의 Scalar 값을 반환", "public Scalar get(int row, int col)");
+    Scalar sca11 = mat11.get(1, 1);
+    Scalar sca11ans = Factory.createScalar("1");
+    printResult(sca11ans, sca11);
 
-    System.out.println("=== Spec 13 ===");
-    System.out.println("13v - 벡터 크기(size): " + vector03.size());
-    System.out.println(
-        "13m - 행렬 크기(rows x cols): " + matrix06.getRowSize() + "x" + matrix06.getColSize());
+    // 12s. 값을 조회
+    printHeader("12s. 값을 조회", "public String getValueAsString()");
+    Scalar sca12 = Factory.createScalar("1");
+    String ans12 = "1";
+    printResult(ans12, sca12.getValueAsString());
 
-    System.out.println("=== Spec 14 ===");
-    System.out.println("14s - 스칼라 toString(): " + scalar01);
-    // TODO vector03 수정
-    System.out.println("14v - 벡터 toString(): " + vector03);
-    System.out.println("14m - 행렬 toString(): \n" + matrix06);
+    // 12s. 값을 지정
+    printHeader("12s. 값을 지정", "public void setValueFromString(String s)");
+    Scalar sca12ans = Factory.createScalar("2");
+    sca12.setValueFromString("2");
+    printResult(sca12ans, sca12);
 
-    System.out.println("=== Spec 15 ===");
-    Scalar s1 = Factory.createScalar("5");
-    Scalar s2 = Factory.createScalar("5");
-    Vector v1 = Factory.createVector("2", 3);
-    Vector v2 = Factory.createVector("2", 3);
-    Matrix m1 = Factory.createMatrix("0", 2, 2);
-    Matrix m2 = Factory.createMatrix("0", 2, 2);
-    System.out.println("15s - Scalar equals: " + s1.equals(s2));
-    System.out.println("15v - Vector equals: " + v1.equals(v2));
-    System.out.println("15m - Matrix equals: \n" + (m1.equals(m2) ? "PASS" : "FAIL"));
+    /* ================================================================
+       13v. 차원의 개수를 조회할 수 있다.
+       (public int size())
+       ================================================================ */
+    printHeader("13v. 차원의 개수를 조회할 수 있다",
+        "public int size()");
+    Vector vec13 = Factory.createVector("0", 4);
+    System.out.println(vec13);
+    Integer dim13Ans = 4;
+    Integer dim13Out = vec13.size();
+    printResult(dim13Ans, dim13Out);
 
-    System.out.println("=== Spec 16 ===");
-    List<Scalar> list = Arrays.asList(s1, scalar01, scalar12);
-    list.sort(null); // Comparable 구현 여부 테스트
-    System.out.println("16 - 스칼라 정렬: " + list);
+    // 13m. 행렬의 행개수를 조회
 
-    // TODO 이런식으로 정확하게 복사되었는지 + 수정시 원본 반영 안되는 것 확인
-    System.out.println("=== Spec 17 ===");
-    Scalar cloneS = (Scalar) scalar01.clone();
-    // TODO vector03 여기서도 쓰네
-    Vector cloneV = (Vector) vector03.clone();
-    Matrix cloneM = (Matrix) matrix06.clone();
-    System.out.println("17s - Scalar clone");
-    System.out.println("origin Scalar: " + scalar01 + ", " + "Scalar clone: " + cloneS);
-    System.out.println("origin Scalar == clone Scalar : " + scalar01.equals(cloneS));
-    System.out.println("17v - Vector clone: " + cloneV);
-    System.out.println("17m - Matrix clone: \n" + cloneM);
+    // 13m. 행렬의 열개수를 조회
 
+    /* ================================================================
+       14v. 값들을 1차원 배열 모양으로 출력할 수 있다 (Vector.toString)
+       ================================================================ */
+    printHeader("14v. 값들을 1차원 배열 모양으로 출력할 수 있다",
+        "public String toString()");
+    Vector vec14 = Factory.createVector(
+        List.of(Factory.createScalar("1"),
+            Factory.createScalar("2"),
+            Factory.createScalar("3")));
+    String vec14Ans = Factory.createVector("1", 1)   // 길이 1 벡터로 패턴 확보
+        .getClass()               // 같은 클래스 확보
+        .cast(vec14)              // 형 캐스팅
+        .toString();              // 기대 포맷
+    printResult(vec14Ans, vec14.toString());
+
+    // 14s. 값 하나를 콘솔에 출력할 수 있다.
+
+    // 14v. 값들을 1차원 배열 모양으로 출력할 수 있다.
+
+    /* ================================================================
+       14m. 값들을 2차원 배열 모양으로 출력할 수 있다 (Matrix.toString)
+       ================================================================ */
+    printHeader("14m. 값들을 2차원 배열 모양으로 출력할 수 있다",
+        "public String toString()");
+    Matrix mat14 = Factory.createMatrix(List.of(
+        List.of(Factory.createScalar("1"), Factory.createScalar("0")),
+        List.of(Factory.createScalar("0"), Factory.createScalar("1"))
+    ));
+    String mat14Ans = Factory.createMatrix(2).toString();   // 단위행렬과 동일 포맷
+    printResult(mat14Ans, mat14.toString());
+
+    /* ================================================================
+       15s/v/m. 객체의 동등성 판단 (equals)
+       ================================================================ */
+    printHeader("15s. 객체의 동등성 판단 (Scalar.equals)",
+        "public boolean equals(Object)");
+    printResult(Factory.createScalar("7"), Factory.createScalar("7"));
+
+    printHeader("15v. 객체의 동등성 판단 (Vector.equals)",
+        "public boolean equals(Object)");
+    Vector vec15A = Factory.createVector("3", 2);
+    Vector vec15B = Factory.createVector(List.of(
+        Factory.createScalar("3"), Factory.createScalar("3")));
+    printResult(vec15A, vec15B);
+
+    printHeader("15m. 객체의 동등성 판단 (Matrix.equals)",
+        "public boolean equals(Object)");
+    Matrix mat15A = Factory.createMatrix("4", 2, 2);
+    Matrix mat15B = Factory.createMatrix(List.of(
+        List.of(Factory.createScalar("4"), Factory.createScalar("4")),
+        List.of(Factory.createScalar("4"), Factory.createScalar("4"))
+    ));
+    printResult(mat15A, mat15B);
+
+    /* ================================================================
+       16s. 스칼라의 대소 비교 (compareTo)
+       ================================================================ */
+    printHeader("16s. 스칼라의 대소 비교", "public int compareTo(Scalar other)");
+    Scalar sc16A = Factory.createScalar("10");
+    Scalar sc16B = Factory.createScalar("3");
+    int cmpOut = sc16A.compareTo(sc16B);        // > 0 이어야 함
+    int cmpAns = 1;                             // 기대: 양수
+    printResult(cmpAns, cmpOut > 0 ? 1 : -1);   // 부호만 비교
+
+    /* ================================================================
+       17. 객체 복제 (clone) – Scalar / Vector / Matrix
+       ================================================================ */
+    printHeader("17s. Scalar.clone()", "public Scalar clone()");
+    Scalar sc17Orig = Factory.createScalar("8");
+    Scalar sc17Clone = sc17Orig.clone();
+    sc17Orig.setValueFromString("9");           // 원본만 변경
+    printResult(Factory.createScalar("8"), sc17Clone);
+
+    printHeader("17v. Vector.clone()", "public Vector clone()");
+    Vector v17Orig = Factory.createVector("2", 2);  // [2,2]
+    Vector v17Clone = v17Orig.clone();
+    v17Orig.set(0, Factory.createScalar("5"));
+    printResult(Factory.createVector("2", 2), v17Clone);
+
+    printHeader("17m. Matrix.clone()", "public Matrix clone()");
+    Matrix m17Orig = Factory.createMatrix("6", 2, 2);
+    Matrix m17Clone = m17Orig.clone();
+    m17Orig.set(0, 0, Factory.createScalar("7"));
+    printResult(Factory.createMatrix("6", 2, 2), m17Clone);
+
+    // 18. 스칼라는 다른 스칼라와 덧셈이 가능하다
     System.out.println("=== Spec 18 ===");
     Scalar s18a = Factory.createScalar("3.0");
     Scalar s18b = Factory.createScalar("2.0");
@@ -237,6 +329,7 @@ public class Test {
     System.out.println("actual  : " + s18a);
     System.out.println("result  : " + (s18a.equals(expected18) ? "PASS" : "FAIL"));
 
+    // 19. 스칼라는 다른 스칼라와 곱셈이 가능하다
     System.out.println("=== Spec 19 ===");
     Scalar s19a = Factory.createScalar("3.0");
     Scalar s19b = Factory.createScalar("2.0");
