@@ -9,7 +9,6 @@ package tensor;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Random;
-import javax.print.attribute.standard.MediaSize.Other;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
 
