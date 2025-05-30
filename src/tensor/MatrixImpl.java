@@ -568,7 +568,7 @@ class MatrixImpl implements Matrix {
   @Override
   public Matrix toReducedRowEchelonForm() {
     // 깊은 복사 – 원본 보존
-    Matrix m = (MatrixImpl) this.clone();
+    Matrix m = this.clone();
 
     int rowCount = m.getRowSize();
     int colCount = m.getColSize();

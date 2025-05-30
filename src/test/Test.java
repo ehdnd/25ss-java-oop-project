@@ -20,7 +20,6 @@ NOTE
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import javax.swing.Scrollable;
 import tensor.Scalar;
 import tensor.Tensors;
 import tensor.Vector;
