@@ -655,8 +655,8 @@ public class Test {
     Matrix out33B = Tensors.concatVertically(mat33B1, mat33B2);
     printResult(exp33A, out33B);                        // exp33A 재사용
 
-    // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
     /*
+    // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
     System.out.println("=== Spec 34 ===");
     Matrix mat34 = Factory.createMatrix("1", 2, 2);
     Vector vec34out = mat34.getColVector(0);
@@ -872,7 +872,154 @@ public class Test {
     System.out.println("output: ");
     System.out.println(mat46);
     System.out.println("-> " + (mat46.equals(mat46ans) ? "PASS" : "FAIL"));
+     */
 
+    // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+    printHeader("34. 행렬은 특정 행을 벡터 추출해 주 수 있다.",
+        "public Vector getRowVector(int row)");
+    Matrix mat34r = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    Vector vec34rExp = Factory.createVector(Arrays.asList(
+        Factory.createScalar("3"), Factory.createScalar("4")));
+    System.out.println(mat34r);
+    printResult(vec34rExp, mat34r.getRowVector(1));
+
+    // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
+    printHeader("35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다",
+        "public Vector getColVector(int col)");
+    Matrix mat35 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Vector vec35ans = Factory.createVector(Arrays.asList(
+        Factory.createScalar("1"), Factory.createScalar("4"), Factory.createScalar("7")));
+    printResult(vec35ans, mat35.getColVector(0));
+
+    // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+    printHeader("36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.",
+        "public Matrix subMatrix(int r0,int r1,int c0,int c1)");
+    Matrix mat36ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"))
+    ));
+    printResult(mat36ans, mat35.subMatrix(0, 2, 0, 2));
+
+    // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+    printHeader("37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.",
+        "public Matrix minor(int row,int col)");
+    Matrix mat37ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("9"))
+    ));
+    printResult(mat37ans, mat35.minor(1, 1));
+
+    // 38. 행렬은 전치행렬을 (새로 생성하여) 구해 줄 수 있다.
+    printHeader("38. 행렬은 전치행렬을 (새로 생성하여) 구해 줄 수 있다.",
+        "public Matrix transpose()");
+    Matrix mat38ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("4"),
+            Factory.createScalar("7")),
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("5"),
+            Factory.createScalar("8")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("6"),
+            Factory.createScalar("9"))
+    ));
+    printResult(mat38ans, mat35.transpose());
+
+    // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
+    printHeader("39. 행렬은 대각 요소의 합을 구해줄 수 있다.",
+        "public Scalar trace()");
+    printResult(Factory.createScalar("15"), mat35.trace());
+
+    // 40. 정사각 행렬인지 반환
+    printHeader("40. 정사각 행렬인지 반환", "public boolean isSquare()");
+    printResult(Boolean.TRUE, mat35.isSquare());
+
+    // 41. 상삼각 행렬인지 반환
+    printHeader("41. 상삼각 행렬인지 반환", "public boolean isUpperTriangular()");
+    Matrix mat41 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"),
+            Factory.createScalar("9"))
+    ));
+    printResult(Boolean.TRUE, mat41.isUpperTriangular());
+
+    // 42. 하삼각 행렬인지 반환
+    printHeader("42. 하삼각 행렬인지 반환", "public boolean isLowerTriangular()");
+    Matrix mat42 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("0"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("5"),
+            Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("1"),
+            Factory.createScalar("9"))
+    ));
+    printResult(Boolean.TRUE, mat42.isLowerTriangular());
+
+    // 43. 단위 행렬(Identity)인지 반환
+    printHeader("43. 단위 행렬(Identity)인지 반환", "public boolean isIdentity()");
+    Matrix id43 = Factory.createMatrix(3);
+    printResult(Boolean.TRUE, id43.isIdentity());
+
+    // 44. 영행렬(Zero)인지 반환
+    printHeader("44. 영행렬(Zero)인지 반환", "public boolean isZero()");
+    Matrix zero44 = Factory.createMatrix("0", 3, 3);
+    printResult(Boolean.TRUE, zero44.isZero());
+
+    // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
+    printHeader("45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.",
+        "public void swapRows(int row1,int row2)");
+    Matrix mat45 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Matrix mat45ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    mat45.swapRows(0, 1);
+    printResult(mat45ans, mat45);
+
+    // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
+    printHeader("46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.",
+        "public void swapColumns(int col1,int col2)");
+    Matrix mat46 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("4"), Factory.createScalar("5"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"),
+            Factory.createScalar("9"))
+    ));
+    Matrix mat46ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("1"),
+            Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("5"), Factory.createScalar("4"),
+            Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("8"), Factory.createScalar("7"),
+            Factory.createScalar("9"))
+    ));
+    mat46.swapColumns(0, 1);
+    printResult(mat46ans, mat46);
+
+    //
     System.out.println("=== Spec 47 ===");
     Matrix m47 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
@@ -1003,6 +1150,5 @@ public class Test {
     System.out.println("output: ");
     System.out.println(inv54);
     System.out.println("-> " + (inv54.equals(mat54ans) ? "PASS" : "FAIL"));
- */
   }
 }
