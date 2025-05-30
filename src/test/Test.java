@@ -119,7 +119,7 @@ public class Test {
     list.sort(null); // Comparable 구현 여부 테스트
     System.out.println("16 - 스칼라 정렬: " + list);
 
-    //  이런식으로 정확하게 복사되었는지 확인해야하지 않을까요?
+    // TODO 이런식으로 정확하게 복사되었는지 + 수정시 원본 반영 안되는 것 확인
     System.out.println("=== Spec 17 ===");
     Scalar cloneS = (Scalar) scalar01.clone();
     // TODO vector03 여기서도 쓰네
@@ -287,6 +287,8 @@ public class Test {
     System.out.println("output: ");
     System.out.println(actualRowMatrix);
     System.out.println("result: " + (expectedRowMatrix.equals(actualRowMatrix) ? "PASS" : "FAIL"));
+
+    // TODO 32 33 static concat 메서드 Tensors로 호출 필요
 
     // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
     System.out.println("=== Spec 32 ===");

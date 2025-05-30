@@ -1,7 +1,5 @@
 package tensor;
 
-import java.math.BigDecimal;
-
 /*TODO
  * 모든 메소드가 public static
  * 위의 디폴트 static 메소드를 구현하라고 한 스칼라, 벡터, 행렬의 연산 기능을 호출한 후 반환된 객체를 반환하는 메소드들
