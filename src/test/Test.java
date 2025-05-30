@@ -318,6 +318,8 @@ public class Test {
     m17Orig.set(0, 0, Factory.createScalar("7"));
     printResult(Factory.createMatrix("6", 2, 2), m17Clone);
 
+    /*
+
     // 18. 스칼라는 다른 스칼라와 덧셈이 가능하다
     System.out.println("=== Spec 18 ===");
     Scalar s18a = Factory.createScalar("3.0");
@@ -412,7 +414,82 @@ public class Test {
     System.out.println("actual  : \n" + sum26);
     System.out.println("result  : " + (sum26.equals(expected26) ? "PASS" : "FAIL"));
     System.out.println("26 - 전달받은 두 벡터의 덧셈 : " + sum26);
+*/
+    // ======================
 
+    /* 18. 스칼라는 다른 스칼라와 덧셈이 가능하다 (in-place) */
+    printHeader("18. 스칼라는 다른 스칼라와 덧셈이 가능하다",
+        "public void add(Scalar other)");
+    Scalar s18a = Factory.createScalar("3.0");
+    Scalar s18b = Factory.createScalar("2.0");
+    s18a.add(s18b);                               // in-place
+    printResult(Factory.createScalar("5.0"), s18a);
+
+    /* 19. 스칼라는 다른 스칼라와 곱셈이 가능하다 (in-place) */
+    printHeader("19. 스칼라는 다른 스칼라와 곱셈이 가능하다",
+        "public void multiply(Scalar other)");
+    Scalar s19a = Factory.createScalar("3.0");
+    Scalar s19b = Factory.createScalar("2.0");
+    s19a.multiply(s19b);                          // in-place
+    printResult(Factory.createScalar("6.0"), s19a);
+
+    /* 20. 벡터는 벡터와 덧셈이 가능하다 (in-place) */
+    printHeader("20. 벡터는 벡터와 덧셈이 가능하다",
+        "public void add(Vector other)");
+    Vector v20a = Factory.createVector("1", 3);
+    Vector v20b = Factory.createVector("2", 3);
+    v20a.add(v20b);
+    printResult(Factory.createVector("3", 3), v20a);
+
+    /* 21. 벡터는 스칼라와 곱셈이 가능하다 (in-place) */
+    printHeader("21. 벡터는 스칼라와 곱셈이 가능하다",
+        "public void multiply(Scalar k)");
+    Vector v21 = Factory.createVector("2", 4);
+    Scalar k21 = Factory.createScalar("3");
+    v21.multiply(k21);
+    printResult(Factory.createVector("6", 4), v21);
+
+    /* 22. 행렬은 행렬과 덧셈이 가능하다 (in-place) */
+    printHeader("22. 행렬은 행렬과 덧셈이 가능하다",
+        "public void add(Matrix other)");
+    Matrix m22a = Factory.createMatrix("1", 2, 2);
+    Matrix m22b = Factory.createMatrix("2", 2, 2);
+    m22a.add(m22b);
+    printResult(Factory.createMatrix("3", 2, 2), m22a);
+
+    /* 23. 행렬은 행렬과 곱셈이 가능하다 (in-place) */
+    printHeader("23. 행렬은 행렬과 곱셈이 가능하다",
+        "public void mul(Matrix other)");
+    Matrix m23a = Factory.createMatrix("1", 2, 3);   // 2×3
+    Matrix m23b = Factory.createMatrix("2", 3, 2);   // 3×2
+    m23a.mul(m23b);                                   // 2×2
+    printResult(Factory.createMatrix("6", 2, 2), m23a);
+
+    /* 24. 전달받은 두 스칼라의 덧셈 (static) */
+    printHeader("24. 전달받은 두 스칼라의 덧셈",
+        "public static Scalar Tensors.add(Scalar a, Scalar b)");
+    Scalar s24a = Factory.createScalar("10.5");
+    Scalar s24b = Factory.createScalar("2.5");
+    Scalar res24 = Tensors.add(s24a, s24b);          // 결과 새 객체
+    printResult(Factory.createScalar("13.0"), res24);
+
+    /* 25. 전달받은 두 스칼라의 곱셈 (static) */
+    printHeader("25. 전달받은 두 스칼라의 곱셈",
+        "public static Scalar Tensors.multiply(Scalar a, Scalar b)");
+    Scalar s25a = Factory.createScalar("10.5");
+    Scalar s25b = Factory.createScalar("2.5");
+    Scalar res25 = Tensors.multiply(s25a, s25b);
+    printResult(Factory.createScalar("26.25"), res25);
+
+    /* 26. 전달받은 두 벡터의 덧셈 (static) */
+    printHeader("26. 전달받은 두 벡터의 덧셈",
+        "public static Vector Tensors.add(Vector a, Vector b)");
+    Vector v26a = Factory.createVector("7", 4);
+    Vector v26b = Factory.createVector("3", 4);
+    Vector res26 = Tensors.add(v26a, v26b);
+    printResult(Factory.createVector("10", 4), res26);
+
+/*
     System.out.println("=== Spec 27 ===");
     Scalar v27a = Factory.createScalar("7");
     Vector v27b = Factory.createVector("3", 4);
@@ -500,6 +577,83 @@ public class Test {
     Matrix mat33out = mat33.concatVertically(mat33);
     System.out.println(mat33out);
     System.out.println("-> " + (mat33ans.equals(mat33out) ? "PASS" : "FAIL"));
+
+ */
+    /* 27. (static) Scalar × Vector → Vector */
+    printHeader("27. 전달받은 스칼라·벡터의 곱셈",
+        "public static Vector Tensors.multiply(Scalar k, Vector v)");
+    Scalar k27 = Factory.createScalar("7");
+    Vector v27 = Factory.createVector("3", 4);
+    Vector res27 = Tensors.multiply(k27, v27);
+    printResult(Factory.createVector("21", 4), res27);
+
+    /* 28. (static) 두 행렬 덧셈 – 래퍼·직접 둘 다 */
+    printHeader("28. 전달받은 두 행렬의 덧셈",
+        "public static Matrix Tensors.add(Matrix a, Matrix b)");
+    Matrix m28a = Factory.createMatrix("1", 3, 3);
+    Matrix m28b = Factory.createMatrix("2", 3, 3);
+    Matrix res28 = Tensors.add(m28a, m28b);
+    printResult(Factory.createMatrix("3", 3, 3), res28);
+
+
+    /* 29. (static) 두 행렬 곱셈 – 래퍼·직접 둘 다 */
+    printHeader("29. 전달받은 두 행렬의 곱셈",
+        "public static Matrix Tensors.multiply(Matrix a, Matrix b)");
+    Matrix m29a = Factory.createMatrix("1", 3, 3);
+    Matrix m29b = Factory.createMatrix("2", 3, 3);
+    Matrix res29 = Tensors.multiply(m29a, m29b);
+    printResult(Factory.createMatrix("6", 3, 3), res29);
+
+    // 30. n-차원 벡터 객체는 자신으로부터 nx1 행렬을 생성하여 반환할 수 있다.
+    printHeader("30. n-차원 벡터 객체는 자신으로부터 nx1 행렬을 생성하여 반환할 수 있다.", "public Matrix toColumnMatrix()");
+    Vector vec30 = Factory.createVector("5", 3);
+    Matrix expCol30 = Factory.createMatrix(List.of(
+        List.of(Factory.createScalar("5")),
+        List.of(Factory.createScalar("5")),
+        List.of(Factory.createScalar("5"))));
+    printResult(expCol30, vec30.toColumnMatrix());
+
+    // 31. n-차원 벡터 객체는 자신으로부터 1xn 행렬을 생성하여 반환할 수 있다.
+    printHeader("31. n-차원 벡터 객체는 자신으로부터 1xn 행렬을 생성하여 반환할 수 있다.", "public Matrix toRowMatrix()");
+    Vector vec31 = Factory.createVector("7", 4);
+    Matrix expRow31 = Factory.createMatrix(List.of(
+        List.of(Factory.createScalar("7"),
+            Factory.createScalar("7"),
+            Factory.createScalar("7"),
+            Factory.createScalar("7"))));
+    printResult(expRow31, vec31.toRowMatrix());
+
+    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+    printHeader("32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)",
+        "public Matrix concatHorizontally(Matrix other)");
+    Matrix mat32A = Factory.createMatrix("1", 2, 2);
+    Matrix exp32A = Factory.createMatrix("1", 2, 4);   // 2×2 → 2×4
+    Matrix out32A = mat32A.concatHorizontally(mat32A);
+    printResult(exp32A, out32A);
+
+    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+    printHeader("32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)",
+        "public static Matrix Tensors.concatHorizontally(Matrix a, Matrix b)");
+    Matrix mat32B1 = Factory.createMatrix("1", 2, 2);
+    Matrix mat32B2 = Factory.createMatrix("1", 2, 2);
+    Matrix out32B = Tensors.concatHorizontally(mat32B1, mat32B2);
+    printResult(exp32A, out32B);                        // exp32A 재사용
+
+    // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+    printHeader("33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)",
+        "public Matrix concatVertically(Matrix other)");
+    Matrix mat33A = Factory.createMatrix("1", 2, 2);
+    Matrix exp33A = Factory.createMatrix("1", 4, 2);   // 2×2 → 4×2
+    Matrix out33A = mat33A.concatVertically(mat33A);
+    printResult(exp33A, out33A);
+
+    // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+    printHeader("33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)",
+        "public static Matrix Tensors.concatVertically(Matrix a, Matrix b)");
+    Matrix mat33B1 = Factory.createMatrix("1", 2, 2);
+    Matrix mat33B2 = Factory.createMatrix("1", 2, 2);
+    Matrix out33B = Tensors.concatVertically(mat33B1, mat33B2);
+    printResult(exp33A, out33B);                        // exp33A 재사용
 
     // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
     /*
