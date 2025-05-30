@@ -1020,6 +1020,8 @@ public class Test {
     printResult(mat46ans, mat46);
 
     //
+ /*
+    // 47. 행렬은 특정 행에 상수배(스칼라)를 할 수 있다.
     System.out.println("=== Spec 47 ===");
     Matrix m47 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
@@ -1039,6 +1041,7 @@ public class Test {
     System.out.println(m47);
     System.out.println("result: " + (expected47.equals(m47) ? "PASS" : "FAIL"));
 
+    // 48. 행렬은 특정 열에 상수배(스칼라)를 할 수 있다.
     System.out.println("=== Spec 48 ===");
     Matrix m48 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
@@ -1058,6 +1061,7 @@ public class Test {
     System.out.println(m48);
     System.out.println("result: " + (expected48.equals(m48) ? "PASS" : "FAIL"));
 
+    // 49. 행렬은 특정 행에 다른 행의 상수배를 더할 수 있다.
     System.out.println("=== Spec 49 ===");
     Matrix m49 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
@@ -1077,6 +1081,7 @@ public class Test {
     System.out.println(m49);
     System.out.println("result: " + (expected49.equals(m49) ? "PASS" : "FAIL"));
 
+    // 50. 행렬은 특정 열에 다른 열의 상수배를 더할 수 있다.
     System.out.println("=== Spec 50 ===");
     Matrix m50 = Factory.createMatrix(Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
@@ -1095,8 +1100,8 @@ public class Test {
     System.out.println("output: ");
     System.out.println(m50);
     System.out.println("result: " + (expected50.equals(m50) ? "PASS" : "FAIL"));
-    // HACK : csv 파일로 행렬 제작 수정
-    // XXX : 테스트 하드코딩 시 분수 계산 없는 RREF 제작 필요 -> 논의 필요
+
+    // 51. 행렬은 자신으로부터 RREF 행렬을 구해서 반환해줄 수 있다.
     System.out.println("=== Spec 51 ===");
     List<List<Scalar>> data = Arrays.asList(
         Arrays.asList(Factory.createScalar("1"), Factory.createScalar("1"),
@@ -1117,6 +1122,7 @@ public class Test {
     System.out.println(rref.toString());
     System.out.println("-> " + (rref.equals(expect)));
 
+    // 52. 행렬은 자신이 RREF 행렬인지 여부를 판별해줄 수 있다.
     System.out.println("=== Spec 52 ===");
     Matrix test52 = Factory.createMatrix("1", 3, 4);
     System.out.println(
@@ -1150,5 +1156,107 @@ public class Test {
     System.out.println("output: ");
     System.out.println(inv54);
     System.out.println("-> " + (inv54.equals(mat54ans) ? "PASS" : "FAIL"));
+  */
+
+    // 47. 행렬은 특정 행에 상수배(스칼라)를 할 수 있다.
+    printHeader("47. 행렬은 특정 행에 상수배(스칼라)를 할 수 있다.",
+        "public void scaleRow(int row, Scalar k)");
+    Matrix m47 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    m47.scaleRow(1, Factory.createScalar("10"));
+    Matrix expected47 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("30"), Factory.createScalar("40"))
+    ));
+    printResult(expected47, m47);
+
+    // 48. 행렬은 특정 열에 상수배(스칼라)를 할 수 있다.
+    printHeader("48. 행렬은 특정 열에 상수배(스칼라)를 할 수 있다.",
+        "public void scaleColumn(int col, Scalar k)");
+    Matrix m48 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    m48.scaleColumn(0, Factory.createScalar("2"));
+    Matrix expected48 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("2"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("6"), Factory.createScalar("4"))
+    ));
+    printResult(expected48, m48);
+
+    // 49. 행렬은 특정 행에 다른 행의 상수배를 더할 수 있다.
+    printHeader("49. 행렬은 특정 행에 다른 행의 상수배를 더할 수 있다.",
+        "public void addMultipleOfRow(int target,int src,Scalar k)");
+    Matrix m49 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    m49.addMultipleOfRow(0, 1, Factory.createScalar("2"));
+    Matrix expected49 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("10")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    printResult(expected49, m49);
+
+    // 50. 행렬은 특정 열에 다른 열의 상수배를 더할 수 있다.
+    printHeader("50. 행렬은 특정 열에 다른 열의 상수배를 더할 수 있다.",
+        "public void addMultipleOfColumn(int target,int src,Scalar k)");
+    Matrix m50 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4"))
+    ));
+    m50.addMultipleOfColumn(0, 1, Factory.createScalar("3"));
+    Matrix expected50 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("15"), Factory.createScalar("4"))
+    ));
+    printResult(expected50, m50);
+
+    // 51. 행렬은 자신으로부터 RREF 행렬을 구해서 반환해줄 수 있다.
+    printHeader("51. 행렬은 자신으로부터 RREF 행렬을 구해서 반환해줄 수 있다.",
+        "public Matrix toReducedRowEchelonForm()");
+    Matrix test51 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("1"),
+            Factory.createScalar("1")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"),
+            Factory.createScalar("1")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("1"),
+            Factory.createScalar("2"))
+    ));
+    Matrix rref51 = test51.toReducedRowEchelonForm();
+    Matrix expect51 = Factory.createMatrix(3);   // 단위 행렬
+    printResult(expect51, rref51);
+
+    // 52. 행렬은 자신이 RREF 행렬인지 여부를 판별해줄 수 있다.
+    printHeader("52. 행렬은 자신이 RREF 행렬인지 여부를 판별해줄 수 있다.",
+        "public boolean isReducedRowEchelonForm()");
+    Matrix test52 = Factory.createMatrix("1", 3, 4);
+    boolean ok52 = test52.toReducedRowEchelonForm().isReducedRowEchelonForm();
+    printResult(Boolean.TRUE, ok52);
+
+    // 53. 행렬은 자신의 행렬식을 구해줄 수 있다.
+    printHeader("53. 행렬은 자신의 행렬식을 구해줄 수 있다.",
+        "public Scalar determinant()");
+    Matrix mat53 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("5"))
+    ));
+    printResult(Factory.createScalar("-1"), mat53.determinant());
+
+    // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
+    printHeader("54. 행렬은 자신의 역행렬을 구해줄 수 있다.",
+        "public Matrix inverse()");
+    Matrix mat54 = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("5"))
+    ));
+    Matrix mat54ans = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("-5"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("-1"))
+    ));
+    printResult(mat54ans, mat54.inverse());
+
   }
 }
