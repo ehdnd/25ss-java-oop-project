@@ -254,11 +254,7 @@ public class Test {
         List.of(Factory.createScalar("1"),
             Factory.createScalar("2"),
             Factory.createScalar("3")));
-    String vec14Ans = Factory.createVector("1", 1)   // 길이 1 벡터로 패턴 확보
-        .getClass()               // 같은 클래스 확보
-        .cast(vec14)              // 형 캐스팅
-        .toString();              // 기대 포맷
-    printResult(vec14Ans, vec14.toString());
+    printResult("1, 2, 3", vec14.toString());
 
     /* ================================================================
        14m. 값들을 2차원 배열 모양으로 출력할 수 있다 (Matrix.toString)
@@ -269,8 +265,7 @@ public class Test {
         List.of(Factory.createScalar("1"), Factory.createScalar("0")),
         List.of(Factory.createScalar("0"), Factory.createScalar("1"))
     ));
-    String mat14Ans = Factory.createMatrix(2).toString();   // 단위행렬과 동일 포맷
-    printResult(mat14Ans, mat14.toString());
+    printResult("1, 0\n0, 1", mat14.toString());
 
     /* ================================================================
        15s/v/m. 객체의 동등성 판단 (equals)
@@ -442,15 +437,15 @@ public class Test {
             Factory.createScalar("3"))));
     printResult(expRow31, vec31.toRowMatrix());
 
-    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) non static
     printHeader("32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)",
         "public Matrix concatHorizontally(Matrix other)");
     Matrix mat32A = Factory.createMatrix("11", 2, 2);
     Matrix exp32A = Factory.createMatrix("11", 2, 4);   // 2×2 → 2×4
-    Matrix out32A = mat32A.concatHorizontally(mat32A);
-    printResult(exp32A, out32A);
+    mat32A.concatHorizontally(mat32A);
+    printResult(exp32A, mat32A);
 
-    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+    // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) default static
     printHeader("32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)",
         "public static Matrix Tensors.concatHorizontally(Matrix a, Matrix b)");
     Matrix mat32B1 = Factory.createMatrix("11", 2, 2);
@@ -458,13 +453,13 @@ public class Test {
     Matrix out32B = Tensors.concatHorizontally(mat32B1, mat32B2);
     printResult(exp32A, out32B);                        // exp32A 재사용
 
-    // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+    // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) non static
     printHeader("33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)",
         "public Matrix concatVertically(Matrix other)");
     Matrix mat33A = Factory.createMatrix("17", 2, 2);
     Matrix exp33A = Factory.createMatrix("17", 4, 2);   // 2×2 → 4×2
-    Matrix out33A = mat33A.concatVertically(mat33A);
-    printResult(exp33A, out33A);
+    mat33A.concatVertically(mat33A);
+    printResult(exp33A, mat33A);
 
     // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
     printHeader("33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)",

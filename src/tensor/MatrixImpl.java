@@ -304,19 +304,37 @@ class MatrixImpl implements Matrix {
   @Override
   public Matrix concatHorizontally(Matrix other) {
     if (getRowSize() != other.getRowSize()) {
-      throw new DimensionMismatchException("other row size = " + getRowSize(),
-          "acture row size = " + other.getRowSize());
+      throw new DimensionMismatchException(
+          "this row size = " + getRowSize(),
+          "other row size = " + other.getRowSize()
+      );
     }
-    List<List<Scalar>> result = new ArrayList<>();
+    // 각 행마다 this.matrixValue의 오른쪽 끝에 other.matrixValue의 요소를 덧붙인다.
     for (int i = 0; i < getRowSize(); i++) {
-      List<Scalar> row = new ArrayList<>(getMatrixValue().get(i));
-      row.addAll(other.getMatrixValue().get(i));
-      result.add(row);
+      // getMatrixValue().get(i) 는 내부 리스트(현재 행)를 반환하므로,
+      // 여기에 other의 같은 행 리스트를 모두 추가하면 this가 변경된다.
+      this.getMatrixValue()
+          .get(i)
+          .addAll(other.getMatrixValue().get(i));
     }
-    return new MatrixImpl(result);
+    return this;
   }
+//  @Override
+//  public Matrix concatHorizontally(Matrix other) {
+//    if (getRowSize() != other.getRowSize()) {
+//      throw new DimensionMismatchException("other row size = " + getRowSize(),
+//          "acture row size = " + other.getRowSize());
+//    }
+//    List<List<Scalar>> result = new ArrayList<>();
+//    for (int i = 0; i < getRowSize(); i++) {
+//      List<Scalar> row = new ArrayList<>(getMatrixValue().get(i));
+//      row.addAll(other.getMatrixValue().get(i));
+//      result.add(row);
+//    }
+//    return new MatrixImpl(result);
+//  }
 
-  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
+  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) static
   static Matrix concatHorizontally(Matrix a, Matrix b) {
     if (a.getRowSize() != b.getRowSize()) {
       throw new IllegalArgumentException("행 개수가 다릅니다.");
@@ -330,20 +348,33 @@ class MatrixImpl implements Matrix {
     return new MatrixImpl(result);
   }
 
-  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) non static
+  //    이 메서드는 호출된 객체(this)를 직접 수정합니다.
   @Override
   public Matrix concatVertically(Matrix other) {
     if (getColSize() != other.getColSize()) {
-      throw new DimensionMismatchException("other col size = " + getColSize(),
-          "acture col size = " + other.getColSize());
+      throw new DimensionMismatchException(
+          "this col size = " + getColSize(),
+          "other col size = " + other.getColSize()
+      );
     }
-    List<List<Scalar>> result = new ArrayList<>();
-    result.addAll(getMatrixValue());
-    result.addAll(other.getMatrixValue());
-    return new MatrixImpl(result);
+    // this.matrixValue 에 other.matrixValue의 모든 행을 덧붙여 this를 수정한다.
+    this.getMatrixValue().addAll(other.getMatrixValue());
+    return this;
   }
+//  @Override
+//  public Matrix concatVertically(Matrix other) {
+//    if (getColSize() != other.getColSize()) {
+//      throw new DimensionMismatchException("other col size = " + getColSize(),
+//          "acture col size = " + other.getColSize());
+//    }
+//    List<List<Scalar>> result = new ArrayList<>();
+//    result.addAll(getMatrixValue());
+//    result.addAll(other.getMatrixValue());
+//    return new MatrixImpl(result);
+//  }
 
-  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) default static
   static Matrix concatVertically(Matrix a, Matrix b) {
     if (a.getColSize() != b.getColSize()) {
       throw new IllegalArgumentException("열 개수가 다릅니다.");
