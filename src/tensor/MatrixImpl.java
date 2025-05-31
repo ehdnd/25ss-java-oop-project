@@ -334,18 +334,23 @@ class MatrixImpl implements Matrix {
   //    이 메서드는 호출된 객체(this)를 직접 수정합니다.
   @Override
   public Matrix concatVertically(Matrix other) {
-    if (this.getColSize() != other.getColSize()) {
-      throw new IllegalArgumentException("열 개수가 다릅니다.");
+    if (this.getRowSize() != other.getRowSize()) {
+      throw new IllegalArgumentException("행 개수가 다릅니다.");
     }
-    for (List<Scalar> otherRow : other.getMatrixValue()) {
-      List<Scalar> newRow = new ArrayList<>();
-      for (Scalar s : otherRow) {
+
+    List<List<Scalar>> rowsToAdd = new ArrayList<>();
+    for (List<Scalar> row : other.getMatrixValue()) {
+      List<Scalar> newRow = new ArrayList<>(row.size());
+      for (Scalar s : row) {
         newRow.add(s.clone());
       }
-      this.matrixValue.add(newRow);
+      rowsToAdd.add(newRow);
     }
+
+    this.matrixValue.addAll(rowsToAdd);
     return this;
   }
+
 
   // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) default static
   static Matrix concatVertically(Matrix a, Matrix b) {
