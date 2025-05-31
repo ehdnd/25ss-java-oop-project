@@ -720,5 +720,64 @@ public class Test {
     ));
     printResult(mat54ans, mat54.inverse());
 
+    // 40a. 정사각 행렬인지 반환
+    printHeader("40a. 정사각 행렬인지 반환", "public boolean isSquare()");
+    Matrix test40a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2")),
+        Arrays.asList(Factory.createScalar("3"), Factory.createScalar("4")),
+        Arrays.asList(Factory.createScalar("5"), Factory.createScalar("6"))
+    ));  // 3×2 비정방
+    System.out.println(test40a);
+    printResult(Boolean.FALSE, test40a.isSquare());
+
+// 41a. 상삼각 행렬인지 반환
+    printHeader("41a. 상삼각 행렬인지 반환", "public boolean isUpperTriangular()");
+    Matrix test41a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("5"), Factory.createScalar("6")),
+        Arrays.asList(Factory.createScalar("7"), Factory.createScalar("8"), Factory.createScalar("9"))
+    ));  // (1,0)에 1이 있어 상삼각 아님
+    System.out.println(test41a);
+    printResult(Boolean.FALSE, test41a.isUpperTriangular());
+
+// 42a. 하삼각 행렬인지 반환
+    printHeader("42a. 하삼각 행렬인지 반환", "public boolean isLowerTriangular()");
+    Matrix test42a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("5"), Factory.createScalar("1")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("9"))
+    ));  // (0,1)에 2가 있어 하삼각 아님
+    System.out.println(test42a);
+    printResult(Boolean.FALSE, test42a.isLowerTriangular());
+
+// 43a. 단위 행렬인지 반환
+    printHeader("43a. 단위 행렬인지 반환", "public boolean isIdentity()");
+    Matrix test43a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("0"), Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("2"), Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("1"))
+    ));  // (1,1)가 2 → 단위행렬 아님
+    System.out.println(test43a);
+    printResult(Boolean.FALSE, test43a.isIdentity());
+
+// 44a. 영행렬인지 반환
+    printHeader("44a. 영행렬인지 반환", "public boolean isZero()");
+    Matrix test44a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("1"))
+    ));  // (1,1)에 1 → 영행렬 아님
+    System.out.println(test44a);
+    printResult(Boolean.FALSE, test44a.isZero());
+
+// 52a. 행렬은 자신이 RREF 행렬인지 여부를 판별해줄 수 있다.
+    printHeader("52a. 행렬은 자신이 RREF 행렬인지 여부를 판별해줄 수 있다.", "public boolean isReducedRowEchelonForm()");
+    Matrix test52a = Factory.createMatrix(Arrays.asList(
+        Arrays.asList(Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("0")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("1"), Factory.createScalar("3")),
+        Arrays.asList(Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("1"))
+    ));  // 첫 행 두 번째 원소가 2 → RREF 아님
+    System.out.println(test52a);
+    printResult(Boolean.FALSE, test52a.isReducedRowEchelonForm());
+
   }
 }
