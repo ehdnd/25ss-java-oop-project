@@ -1,64 +1,50 @@
 package tensor;
 
 import java.util.List;
-import java.io.File;
-
-/*TODO
- * 행렬, 벡터, 스칼라를 생성한다
- * 모든 메서드가 public static
- * 생성 자체는 구현 클래스 내부에서 담당
- * Factory의 static 메서드는 구현 클래스에 객체 생성을 요청 -> 획득한 객체를 반환만
- */
-
-// 객체를 만드는 단일 관문
 
 public class Factory {
 
   private Factory() {
   }
 
+  // 1차 제출에서는 구현체가 없으므로 null 반환 또는 더미 값 사용
   public static Scalar createScalar(String value) {
-    return new ScalarImpl(value);
+    return null;
   }
 
   public static Scalar createScalar(String value1, String value2) {
-    return new ScalarImpl(value1, value2);
+    return null;
   }
 
   public static Vector createVector(List<Scalar> values) {
-    return new VectorImpl(values);
+    return null;
   }
 
   public static Vector createVector(String value, int dimension) {
-    return new VectorImpl(value, dimension);
+    return null;
   }
 
   public static Vector createVector(String i, String j, int dimension) {
-    return new VectorImpl(i, j, dimension);
+    return null;
   }
 
-
   public static Matrix createMatrix(List<List<Scalar>> rows) {
-    return new MatrixImpl(rows);
+    return null;
   }
 
   public static Matrix createMatrix(String value, int rowSize, int colSize) {
-    return new MatrixImpl(value, rowSize, colSize);
+    return null;
   }
 
   public static Matrix createMatrix(String i, String j, int rowSize, int colSize) {
-    return new MatrixImpl(i, j, rowSize, colSize);
+    return null;
   }
 
   public static Matrix createMatrix(String filePath) {
-    File csvFile = new File(filePath);
-    if (!csvFile.exists() || !csvFile.isFile()) {
-      throw new FileNotFoundException();
-    }
-    return new MatrixImpl(csvFile);
+    return null;
   }
 
   public static Matrix createMatrix(int size) {
-    return new MatrixImpl(size);
+    return null;
   }
 }
