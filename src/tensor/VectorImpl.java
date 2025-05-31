@@ -120,8 +120,7 @@ class VectorImpl implements Vector {
       throw new NullPointerException("other vector is null");
     }
     if (this.size() != other.size()) {
-      throw new IllegalArgumentException(
-          "두 벡터의 길이가 다릅니다: " + this.size() + " vs " + other.size());
+      throw new DimensionMismatchException(this.size(), other.size());
     }
     for (int i = 0; i < vectorValue.size(); i++) {
       // Scalar의 non‑static add 는 자신의 값을 바꾼 뒤 this를 리턴
@@ -145,12 +144,12 @@ class VectorImpl implements Vector {
   // 26. 전달받은 두 벡터의 덧셈이 가능하다.(길이가 같을때) (out-place)
   static Vector add(Vector v1, Vector v2) {
     if (v1.size() != v2.size()) {
-      throw new IllegalArgumentException("Vectors must be of the same length.");
+      throw new DimensionMismatchException(v1.size(), v2.size());
     }
 
     Vector result = Factory.createVector("0", v1.size());
     for (int i = 0; i < v1.size(); i++) {
-      Scalar sum = v1.get(i).add(v2.get(i));
+      Scalar sum = v1.get(i).clone().add(v2.get(i));
       result.set(i, sum);
     }
     return result;

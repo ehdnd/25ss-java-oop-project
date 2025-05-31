@@ -250,7 +250,7 @@ class MatrixImpl implements Matrix {
           // left(i,k) * right(k,j)
           Scalar leftVal = left.get(i).get(k);
           Scalar rightVal = right.get(k).get(j);
-          Scalar prod = Tensors.multiply(leftVal, rightVal);
+          Scalar prod = Tensors.multiply(leftVal.clone(), rightVal.clone());
           sum.add(prod);
         }
         row.add(sum);
@@ -303,36 +303,18 @@ class MatrixImpl implements Matrix {
   // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
   @Override
   public Matrix concatHorizontally(Matrix other) {
-    if (getRowSize() != other.getRowSize()) {
-      throw new DimensionMismatchException(
-          "this row size = " + getRowSize(),
-          "other row size = " + other.getRowSize()
-      );
+    if (this.getRowSize() != other.getRowSize()) {
+      throw new IllegalArgumentException("행 개수가 다릅니다.");
     }
-    // 각 행마다 this.matrixValue의 오른쪽 끝에 other.matrixValue의 요소를 덧붙인다.
     for (int i = 0; i < getRowSize(); i++) {
-      // getMatrixValue().get(i) 는 내부 리스트(현재 행)를 반환하므로,
-      // 여기에 other의 같은 행 리스트를 모두 추가하면 this가 변경된다.
-      this.getMatrixValue()
-          .get(i)
-          .addAll(other.getMatrixValue().get(i));
+      List<Scalar> copyOfOtherRow = new ArrayList<>();
+      for (Scalar s : other.getMatrixValue().get(i)) {
+        copyOfOtherRow.add(s.clone());
+      }
+      this.getMatrixValue().get(i).addAll(copyOfOtherRow);
     }
     return this;
   }
-//  @Override
-//  public Matrix concatHorizontally(Matrix other) {
-//    if (getRowSize() != other.getRowSize()) {
-//      throw new DimensionMismatchException("other row size = " + getRowSize(),
-//          "acture row size = " + other.getRowSize());
-//    }
-//    List<List<Scalar>> result = new ArrayList<>();
-//    for (int i = 0; i < getRowSize(); i++) {
-//      List<Scalar> row = new ArrayList<>(getMatrixValue().get(i));
-//      row.addAll(other.getMatrixValue().get(i));
-//      result.add(row);
-//    }
-//    return new MatrixImpl(result);
-//  }
 
   // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) static
   static Matrix concatHorizontally(Matrix a, Matrix b) {
@@ -352,27 +334,18 @@ class MatrixImpl implements Matrix {
   //    이 메서드는 호출된 객체(this)를 직접 수정합니다.
   @Override
   public Matrix concatVertically(Matrix other) {
-    if (getColSize() != other.getColSize()) {
-      throw new DimensionMismatchException(
-          "this col size = " + getColSize(),
-          "other col size = " + other.getColSize()
-      );
+    if (this.getColSize() != other.getColSize()) {
+      throw new IllegalArgumentException("열 개수가 다릅니다.");
     }
-    // this.matrixValue 에 other.matrixValue의 모든 행을 덧붙여 this를 수정한다.
-    this.getMatrixValue().addAll(other.getMatrixValue());
+    for (List<Scalar> otherRow : other.getMatrixValue()) {
+      List<Scalar> newRow = new ArrayList<>();
+      for (Scalar s : otherRow) {
+        newRow.add(s.clone());
+      }
+      this.matrixValue.add(newRow);
+    }
     return this;
   }
-//  @Override
-//  public Matrix concatVertically(Matrix other) {
-//    if (getColSize() != other.getColSize()) {
-//      throw new DimensionMismatchException("other col size = " + getColSize(),
-//          "acture col size = " + other.getColSize());
-//    }
-//    List<List<Scalar>> result = new ArrayList<>();
-//    result.addAll(getMatrixValue());
-//    result.addAll(other.getMatrixValue());
-//    return new MatrixImpl(result);
-//  }
 
   // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) default static
   static Matrix concatVertically(Matrix a, Matrix b) {
@@ -538,7 +511,6 @@ class MatrixImpl implements Matrix {
   @Override
   // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
   public void swapRows(int row1, int row2) {
-    // TODO: row1과 row2의 리스트 요소를 서로 교환
     List<Scalar> tmp = matrixValue.get(row1);
     matrixValue.set(row1, matrixValue.get(row2));
     matrixValue.set(row2, tmp);
@@ -547,7 +519,6 @@ class MatrixImpl implements Matrix {
   @Override
   // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
   public void swapColumns(int col1, int col2) {
-    // TODO: 모든 행에 대해 col1과 col2의 값을 교환
     for (int r = 0; r < getRowSize(); ++r) {
       Scalar tmp = matrixValue.get(r).get(col1);
       matrixValue.get(r).set(col1, matrixValue.get(r).get(col2));
