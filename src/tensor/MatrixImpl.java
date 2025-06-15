@@ -518,18 +518,22 @@ class MatrixImpl implements Matrix {
     }
 
     List<List<Scalar>> result = new ArrayList<>(a.getRowSize());
-    for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new ArrayList<>(b.getColSize());
-      for (int j = 0; j < b.getColSize(); j++) {
-        Scalar sum = a.get(i, 0).clone();
-        sum.multiply(b.get(0, j));
+
+    for (int row = 0; row < a.getRowSize(); row++) {
+      List<Scalar> resultRow = new ArrayList<>(b.getColSize());
+
+      for (int col = 0; col < b.getColSize(); col++) {
+        Scalar sum = a.get(row, 0).clone();
+        sum.multiply(b.get(0, col));
+
         for (int k = 1; k < a.getColSize(); k++) {
-          Scalar tmp = a.get(i, k).clone();
-          sum.add(tmp.multiply(b.get(k, j)));
+          Scalar tmp = a.get(row, k).clone();
+          sum.add(tmp.multiply(b.get(k, col)));
         }
-        row.add(sum);
+
+        resultRow.add(sum);
       }
-      result.add(row);
+      result.add(resultRow);
     }
     return new MatrixImpl(result);
   }
@@ -595,10 +599,7 @@ class MatrixImpl implements Matrix {
 
     // 복사된 행렬의 모든 행을 현재 행렬에 추가
     for (int rowIndex = 0; rowIndex < otherMatrixCopy.getRowSize(); rowIndex++) {
-      List<Scalar> newRow = new ArrayList<>(otherMatrixCopy.getColSize());
-      for (int colIndex = 0; colIndex < otherMatrixCopy.getColSize(); colIndex++) {
-        newRow.add(otherMatrixCopy.get(rowIndex, colIndex));
-      }
+      List<Scalar> newRow = new ArrayList<>(otherMatrixCopy.getMatrixValue().get(rowIndex));
       this.matrixValue.add(newRow);
     }
 
@@ -615,19 +616,13 @@ class MatrixImpl implements Matrix {
 
     // 위쪽 행렬의 모든 행 복사
     for (int rowIndex = 0; rowIndex < top.getRowSize(); rowIndex++) {
-      List<Scalar> newRow = new ArrayList<>(top.getColSize());
-      for (int colIndex = 0; colIndex < top.getColSize(); colIndex++) {
-        newRow.add(top.get(rowIndex, colIndex).clone());
-      }
+      List<Scalar> newRow = new ArrayList<>(top.getMatrixValue().get(rowIndex));
       resultMatrix.add(newRow);
     }
 
     // 아래쪽 행렬의 모든 행 복사
     for (int rowIndex = 0; rowIndex < bottom.getRowSize(); rowIndex++) {
-      List<Scalar> newRow = new ArrayList<>(bottom.getColSize());
-      for (int colIndex = 0; colIndex < bottom.getColSize(); colIndex++) {
-        newRow.add(bottom.get(rowIndex, colIndex).clone());
-      }
+      List<Scalar> newRow = new ArrayList<>(bottom.getMatrixValue().get(rowIndex));
       resultMatrix.add(newRow);
     }
 
@@ -711,14 +706,15 @@ class MatrixImpl implements Matrix {
   // 38. 행렬은 전치행렬을 구해 줄 수 있다.
   @Override
   public Matrix transpose() {
-    int rows = getRowSize();
-    int cols = getColSize();
-    List<List<Scalar>> result = new ArrayList<>(cols);
+    int rowSize = getRowSize();
+    int colSize = getColSize();
+    List<List<Scalar>> result = new ArrayList<>(colSize);
 
-    for (int c = 0; c < cols; c++) {
-      List<Scalar> newRow = new ArrayList<>(rows);
-      for (int r = 0; r < rows; r++) {
-        newRow.add(matrixValue.get(r).get(c).clone());
+    for (int col = 0; col < colSize; col++) {
+      List<Scalar> newRow = new ArrayList<>(rowSize);
+
+      for (int row = 0; row < rowSize; row++) {
+        newRow.add(matrixValue.get(row).get(col).clone());
       }
       result.add(newRow);
     }
@@ -736,8 +732,9 @@ class MatrixImpl implements Matrix {
       throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
     Scalar sum = ZERO_SCALAR.clone();
-    for (int i = 0; i < getRowSize(); i++) {
-      sum.add(matrixValue.get(i).get(i));
+
+    for (int row = 0; row < getRowSize(); row++) {
+      sum.add(matrixValue.get(row).get(row));
     }
     return sum;
   }
@@ -755,9 +752,9 @@ class MatrixImpl implements Matrix {
       return false;
     }
 
-    for (int r = 1; r < getRowSize(); r++) {
-      for (int c = 0; c < r; c++) {
-        if (!this.get(r, c).equals(ZERO_SCALAR)) {
+    for (int row = 1; row < getRowSize(); row++) {
+      for (int col = 0; col < row; col++) {
+        if (!this.get(row, col).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -772,9 +769,9 @@ class MatrixImpl implements Matrix {
       return false;
     }
 
-    for (int r = 0; r < getRowSize(); r++) {
-      for (int c = r + 1; c < getColSize(); c++) {
-        if (!this.get(r, c).equals(ZERO_SCALAR)) {
+    for (int row = 0; row < getRowSize(); row++) {
+      for (int col = row + 1; col < getColSize(); col++) {
+        if (!this.get(row, col).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -789,14 +786,14 @@ class MatrixImpl implements Matrix {
       return false;
     }
 
-    for (int r = 0; r < getRowSize(); r++) {
-      for (int c = 0; c < getColSize(); c++) {
-        if (r == c) {
-          if (!this.get(r, c).equals(ONE_SCALAR)) {
+    for (int row = 0; row < getRowSize(); row++) {
+      for (int col = 0; col < getColSize(); col++) {
+        if (row == col) {
+          if (!this.get(row, col).equals(ONE_SCALAR)) {
             return false;
           }
         } else {
-          if (!this.get(r, c).equals(ZERO_SCALAR)) {
+          if (!this.get(row, col).equals(ZERO_SCALAR)) {
             return false;
           }
         }
@@ -808,9 +805,9 @@ class MatrixImpl implements Matrix {
   // 44. 영행렬(Zero)인지 반환
   @Override
   public boolean isZero() {
-    for (int r = 0; r < getRowSize(); r++) {
-      for (int c = 0; c < getColSize(); c++) {
-        if (!this.get(r, c).equals(ZERO_SCALAR)) {
+    for (int row = 0; row < getRowSize(); row++) {
+      for (int col = 0; col < getColSize(); col++) {
+        if (!this.get(row, col).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -839,10 +836,10 @@ class MatrixImpl implements Matrix {
     validateColIndex(col1);
     validateColIndex(col2);
 
-    for (int r = 0; r < getRowSize(); r++) {
-      Scalar tmp = matrixValue.get(r).get(col1);
-      matrixValue.get(r).set(col1, matrixValue.get(r).get(col2));
-      matrixValue.get(r).set(col2, tmp);
+    for (int row = 0; row < getRowSize(); row++) {
+      Scalar tmp = matrixValue.get(row).get(col1);
+      matrixValue.get(row).set(col1, matrixValue.get(row).get(col2));
+      matrixValue.get(row).set(col2, tmp);
     }
   }
 
@@ -852,8 +849,8 @@ class MatrixImpl implements Matrix {
     validateRowIndex(row);
     validateScalarArgument(factor);
 
-    for (int c = 0; c < getColSize(); c++) {
-      matrixValue.get(row).get(c).multiply(factor);
+    for (int col = 0; col < getColSize(); col++) {
+      matrixValue.get(row).get(col).multiply(factor);
     }
   }
 
@@ -863,8 +860,8 @@ class MatrixImpl implements Matrix {
     validateColIndex(column);
     validateScalarArgument(factor);
 
-    for (int r = 0; r < getRowSize(); r++) {
-      matrixValue.get(r).get(column).multiply(factor);
+    for (int row = 0; row < getRowSize(); row++) {
+      matrixValue.get(row).get(column).multiply(factor);
     }
   }
 
@@ -875,10 +872,10 @@ class MatrixImpl implements Matrix {
     validateRowIndex(sourceRow);
     validateScalarArgument(factor);
 
-    for (int c = 0; c < getColSize(); c++) {
-      Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
+    for (int col = 0; col < getColSize(); col++) {
+      Scalar sourceScalar = matrixValue.get(sourceRow).get(col).clone();
       sourceScalar.multiply(factor);
-      matrixValue.get(targetRow).get(c).add(sourceScalar);
+      matrixValue.get(targetRow).get(col).add(sourceScalar);
     }
   }
 
@@ -890,10 +887,10 @@ class MatrixImpl implements Matrix {
     validateColIndex(sourceColumn);
     validateScalarArgument(factor);
 
-    for (int r = 0; r < getRowSize(); r++) {
-      Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
+    for (int row = 0; row < getRowSize(); row++) {
+      Scalar sourceScalar = matrixValue.get(row).get(sourceColumn).clone();
       sourceScalar.multiply(factor);
-      matrixValue.get(r).get(targetColumn).add(sourceScalar);
+      matrixValue.get(row).get(targetColumn).add(sourceScalar);
     }
   }
 
@@ -910,35 +907,35 @@ class MatrixImpl implements Matrix {
     int colCount = m.getColSize();
     int lead = 0;
 
-    for (int r = 0; r < rowCount && lead < colCount; r++) {
+    for (int row = 0; row < rowCount && lead < colCount; row++) {
       // (1) 피벗이 0이면, 아래 행 중 0이 아닌 것이 나올 때까지 swap
-      int pivotRow = r;
+      int pivotRow = row;
       while (pivotRow < rowCount && m.get(pivotRow, lead).isZero()) {
         pivotRow++;
       }
       if (pivotRow == rowCount) {
         lead++;
-        r--;
+        row--;
         continue;
       }
-      if (pivotRow != r) {
-        m.swapRows(pivotRow, r);
+      if (pivotRow != row) {
+        m.swapRows(pivotRow, row);
       }
 
       // (2) 피벗을 1로 만들기
-      Scalar pivot = m.get(r, lead);
+      Scalar pivot = m.get(row, lead);
       if (!pivot.equals(ONE_SCALAR)) {
-        m.scaleRow(r, pivot.reciprocal());
+        m.scaleRow(row, pivot.reciprocal());
       }
 
       // (3) 같은 열의 다른 행을 0으로
       for (int i = 0; i < rowCount; i++) {
-        if (i == r) {
+        if (i == row) {
           continue;
         }
         Scalar factor = m.get(i, lead);
         if (!factor.isZero()) {
-          m.addMultipleOfRow(i, r, factor.negate());
+          m.addMultipleOfRow(i, row, factor.negate());
         }
       }
       lead++;
@@ -953,25 +950,25 @@ class MatrixImpl implements Matrix {
     int colCount = getColSize();
     int lastPivot = -1;
 
-    for (int r = 0; r < rowCount; r++) {
+    for (int row = 0; row < rowCount; row++) {
       // (a) 0-행이면 아래쪽도 전부 0-행이어야 함
-      int firstNonZero = findFirstNonZeroColumn(r);
+      int firstNonZero = findFirstNonZeroColumn(row);
 
       if (firstNonZero == -1) {
         // 0-행 이후에 0이 아닌 행이 있으면 RREF 아님
-        if (!areRemainingRowsZero(r + 1)) {
+        if (!areRemainingRowsZero(row + 1)) {
           return false;
         }
         break;
       }
 
       // (b) 피벗은 1이어야 함
-      if (!get(r, firstNonZero).equals(ONE_SCALAR)) {
+      if (!get(row, firstNonZero).equals(ONE_SCALAR)) {
         return false;
       }
 
       // (c) 피벗 열은 다른 행에서 모두 0
-      if (!isPivotColumnZeroInOtherRows(r, firstNonZero)) {
+      if (!isPivotColumnZeroInOtherRows(row, firstNonZero)) {
         return false;
       }
 
