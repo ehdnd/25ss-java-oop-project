@@ -6,7 +6,6 @@ package tensor;
   - Collection 선택
  */
 
-
 import java.io.*;
 import java.util.*;
 
@@ -15,11 +14,18 @@ class MatrixImpl implements Matrix {
   // 자료구조 - 행렬은 논리적으로 스칼라 객체를 2차원 배열 구조로 관리
   private List<List<Scalar>> matrixValue;
 
+  // =============================================================================
+  // 생성자 (Constructors)
+  // =============================================================================
+
   // 06. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성
   MatrixImpl(String bigDecimalString, int rowSize, int colSize) {
-    matrixValue = new ArrayList<>();
+    validateStringValue(bigDecimalString);
+    validateMatrixDimensions(rowSize, colSize);
+
+    matrixValue = new ArrayList<>(rowSize);
     for (int i = 0; i < rowSize; i++) {
-      List<Scalar> row = new ArrayList<>();
+      List<Scalar> row = new ArrayList<>(colSize);
       for (int j = 0; j < colSize; j++) {
         row.add(new ScalarImpl(bigDecimalString));
       }
@@ -29,9 +35,13 @@ class MatrixImpl implements Matrix {
 
   // 07. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성
   MatrixImpl(String i, String j, int rowSize, int colSize) {
-    matrixValue = new ArrayList<>();
+    validateStringValue(i);
+    validateStringValue(j);
+    validateMatrixDimensions(rowSize, colSize);
+
+    matrixValue = new ArrayList<>(rowSize);
     for (int r = 0; r < rowSize; r++) {
-      List<Scalar> row = new ArrayList<>();
+      List<Scalar> row = new ArrayList<>(colSize);
       for (int c = 0; c < colSize; c++) {
         // 각 원소마다 새로운 난수 생성
         row.add(new ScalarImpl(i, j));
@@ -41,21 +51,48 @@ class MatrixImpl implements Matrix {
   }
 
   // 08. csv 파일로부터 m x n 행렬을 생성
-  //  - comma(,): 열 구분자
-  //  - 라인: 행 구분자
+  // - comma(,): 열 구분자
+  // - 라인: 행 구분자
   MatrixImpl(File csvFile) {
+    validateFileArgument(csvFile);
+
     matrixValue = new ArrayList<>();
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       String line;
+      int rowIndex = 0;
+      int expectedColSize = -1;
+
       while ((line = br.readLine()) != null) {
+        // 빈 줄은 건너뛰기
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+
         // 한 줄을 콤마(,)로 분리
         String[] tokens = line.split(",");
-        List<Scalar> row = new ArrayList<>();
+        List<Scalar> row = new ArrayList<>(tokens.length);
+
         for (String token : tokens) {
           row.add(new ScalarImpl(token.trim()));
         }
+
+        // 첫 번째 행에서 열 크기를 설정하고, 이후 행들은 같은 크기인지 확인
+        if (expectedColSize == -1) {
+          expectedColSize = tokens.length;
+        } else if (tokens.length != expectedColSize) {
+          throw new IllegalArgumentException(
+              String.format("CSV format error: Row %d has %d columns, expected %d columns",
+                  rowIndex, tokens.length, expectedColSize));
+        }
+
         matrixValue.add(row);
+        rowIndex++;
       }
+
+      if (matrixValue.isEmpty()) {
+        throw new IllegalArgumentException("CSV file is empty or contains no valid data: " + csvFile.getPath());
+      }
+
     } catch (IOException e) {
       throw new RuntimeException("CSV 파일 읽기 실패: " + csvFile.getPath(), e);
     }
@@ -63,10 +100,12 @@ class MatrixImpl implements Matrix {
 
   // 09. 2차원 배열로부터 m x n 행렬 생성
   MatrixImpl(List<List<Scalar>> dimTwoList) {
+    validateMatrixData(dimTwoList);
+
     // 깊은 복사 권장
-    matrixValue = new ArrayList<>();
+    matrixValue = new ArrayList<>(dimTwoList.size());
     for (List<Scalar> row : dimTwoList) {
-      List<Scalar> newRow = new ArrayList<>();
+      List<Scalar> newRow = new ArrayList<>(row.size());
       for (Scalar s : row) {
         newRow.add(s.clone());
       }
@@ -76,11 +115,12 @@ class MatrixImpl implements Matrix {
 
   // 10. 단위 행렬 생성
   MatrixImpl(int size) {
-    // 내부 단위 행렬 생성
+    validateMatrixSize(size);
 
-    matrixValue = new ArrayList<>();
+    // 내부 단위 행렬 생성
+    matrixValue = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
-      List<Scalar> row = new ArrayList<>();
+      List<Scalar> row = new ArrayList<>(size);
       for (int j = 0; j < size; j++) {
         row.add(new ScalarImpl(i == j ? "1" : "0"));
       }
@@ -88,16 +128,23 @@ class MatrixImpl implements Matrix {
     }
   }
 
+  // =============================================================================
+  // 기본 접근자 메소드 (Basic Accessor Methods)
+  // =============================================================================
+
   // 11m. 특정 위치의 요소를 지정/조회할 수 있다.
   @Override
   // 11m. 조회: 지정한 인덱스 위치의 Scalar 값을 반환
   public Scalar get(int row, int col) {
+    validateIndices(row, col);
     return getMatrixValue().get(row).get(col);
   }
 
   @Override
   // 11m. 지정: 지정한 인덱스 위치에 Scalar 값을 설정
   public void set(int row, int col, Scalar value) {
+    validateIndices(row, col);
+    validateScalarArgument(value);
     matrixValue.get(row).set(col, value.clone());
   }
 
@@ -113,9 +160,23 @@ class MatrixImpl implements Matrix {
     return matrixValue.isEmpty() ? 0 : matrixValue.get(0).size();
   }
 
+  // 행렬의 내부 리스트에 직접 접근하는 메소드 (default)
+  @Override
+  public List<List<Scalar>> getMatrixValue() {
+    return matrixValue;
+  }
+
+  // =============================================================================
+  // 객체 기본 메소드 (Object Basic Methods)
+  // =============================================================================
+
   // 14m. 값들을 2차원 배열 모양으로 출력할 수 있다.
   @Override
   public String toString() {
+    if (matrixValue.isEmpty()) {
+      return "";
+    }
+
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < getRowSize(); i++) {
       for (int j = 0; j < getColSize(); j++) {
@@ -159,7 +220,6 @@ class MatrixImpl implements Matrix {
     return true;
   }
 
-
   // 17. 객체 복제를 할 수 있다.
   @Override
   public Matrix clone() {
@@ -171,17 +231,19 @@ class MatrixImpl implements Matrix {
       }
       copy.add(newRow);
     }
-    return new MatrixImpl(copy);      // Collection<Collection<Scalar>> 생성자 가정
+    return new MatrixImpl(copy); // Collection<Collection<Scalar>> 생성자 가정
   }
 
-  @Override
-  public List<List<Scalar>> getMatrixValue() {
-    return matrixValue;
-  }
+  // =============================================================================
+  // 인스턴스 산술 연산 메소드 (Instance Arithmetic Operations)
+  // =============================================================================
 
   // 22. 행렬은 다른 행렬과 덧셈이 가능하다. (크기가 같을 때)
   @Override
   public void add(Matrix otherMatrix) {
+    validateMatrixArgument(otherMatrix);
+    validateMatrixDimensionsMatch(this, otherMatrix, "addition");
+
     List<List<Scalar>> other = otherMatrix.getMatrixValue();
 
     for (int r = 0; r < matrixValue.size(); r++) {
@@ -199,6 +261,8 @@ class MatrixImpl implements Matrix {
   // - 다른 행렬이 왼쪽 행렬로서 곱해지는 경우와 오른쪽 행렬로서 곱해지는 경우 모두 지원
   @Override
   public void mul(Matrix otherMatrix) {
+    validateMatrixArgument(otherMatrix);
+
     // 원본과 파라미터 행렬 값
     List<List<Scalar>> A = this.matrixValue;
     List<List<Scalar>> B = otherMatrix.getMatrixValue();
@@ -212,9 +276,9 @@ class MatrixImpl implements Matrix {
     boolean canBA = (colsB == rowsA);
 
     if (!canAB && !canBA) {
-      throw new IllegalArgumentException(
-          String.format("Cannot multiply: A is %dx%d, B is %dx%d",
-              rowsA, colsA, rowsB, colsB));
+      throw new DimensionMismatchException(
+          String.format("%dx%d", rowsA, colsA),
+          String.format("%dx%d", rowsB, colsB));
     }
 
     // 실제 곱셈 수행 헬퍼
@@ -231,9 +295,14 @@ class MatrixImpl implements Matrix {
     this.matrixValue = result;
   }
 
+  // =============================================================================
+  // 헬퍼 메소드 (Helper Methods)
+  // =============================================================================
+
   /**
-   * left (m×n) × right (n×p) → (m×p) 결과를 생성해서 반환 mutable Scalar.add(…) 으로 합계 누적, Scalar.mul(…) 으로 새
-   * 객체 반환한다고 가정
+   * 행렬 곱셈을 수행하는 헬퍼 메소드
+   * left (m×n) × right (n×p) → (m×p) 결과를 생성해서 반환
+   * mutable Scalar.add(…) 으로 합계 누적, Scalar.mul(…) 으로 새 객체 반환한다고 가정
    */
   private List<List<Scalar>> multiply(
       List<List<Scalar>> left,
@@ -245,7 +314,7 @@ class MatrixImpl implements Matrix {
       List<Scalar> row = new ArrayList<>(p);
       for (int j = 0; j < p; j++) {
         // 0 으로 시작하는 Scalar (구현에 맞게 수정)
-        Scalar sum = new ScalarImpl("0");
+        Scalar sum = ZERO_SCALAR.clone();
         for (int k = 0; k < n; k++) {
           // left(i,k) * right(k,j)
           Scalar leftVal = left.get(i).get(k);
@@ -260,15 +329,178 @@ class MatrixImpl implements Matrix {
     return res;
   }
 
-  // 28. 전달받은 두 행렬의 덧셈이 가능하다. (크기가 같을 때)
-  static Matrix add(Matrix a, Matrix b) {
-    if (a.getRowSize() != b.getRowSize() || a.getColSize() != b.getColSize()) {
-      throw new IllegalArgumentException("Matrix dimensions must match for addition.");
+  // =============================================================================
+  // 검증 메소드 (Validation Methods)
+  // =============================================================================
+
+  /**
+   * 문자열 값의 유효성을 검증한다.
+   * 
+   * @param value 검증할 문자열 값
+   * @throws NullPointerException     값이 null인 경우
+   * @throws IllegalArgumentException 값이 빈 문자열이거나 유효한 숫자가 아닌 경우
+   */
+  private static void validateStringValue(String value) {
+    if (value == null) {
+      throw new NullPointerException("Matrix value cannot be null");
+    }
+    if (value.trim().isEmpty()) {
+      throw new IllegalArgumentException("Matrix value cannot be empty");
+    }
+  }
+
+  /**
+   * 행렬 차원의 유효성을 검증한다.
+   * 
+   * @param rowSize 행 크기
+   * @param colSize 열 크기
+   * @throws IllegalArgumentException 차원이 음수인 경우
+   */
+  private static void validateMatrixDimensions(int rowSize, int colSize) {
+    if (rowSize < 0) {
+      throw new IllegalArgumentException("Matrix row size cannot be negative: " + rowSize);
+    }
+    if (colSize < 0) {
+      throw new IllegalArgumentException("Matrix column size cannot be negative: " + colSize);
+    }
+  }
+
+  /**
+   * 정사각 행렬 크기의 유효성을 검증한다.
+   * 
+   * @param size 행렬 크기
+   * @throws IllegalArgumentException 크기가 음수인 경우
+   */
+  private static void validateMatrixSize(int size) {
+    if (size < 0) {
+      throw new IllegalArgumentException("Matrix size cannot be negative: " + size);
+    }
+  }
+
+  /**
+   * 파일 인수의 유효성을 검증한다.
+   * 
+   * @param file 검증할 파일
+   * @throws NullPointerException  파일이 null인 경우
+   * @throws FileNotFoundException 파일이 존재하지 않거나 읽을 수 없는 경우
+   */
+  private static void validateFileArgument(File file) {
+    if (file == null) {
+      throw new NullPointerException("CSV file cannot be null");
+    }
+    if (!file.exists() || !file.canRead()) {
+      throw new FileNotFoundException();
+    }
+  }
+
+  /**
+   * 2차원 행렬 데이터의 유효성을 검증한다.
+   * 
+   * @param data 검증할 2차원 리스트
+   * @throws NullPointerException     데이터가 null인 경우
+   * @throws IllegalArgumentException 데이터가 비어있거나 불규칙한 경우
+   */
+  private static void validateMatrixData(List<List<Scalar>> data) {
+    if (data == null) {
+      throw new NullPointerException("Matrix data cannot be null");
+    }
+    if (data.isEmpty()) {
+      throw new IllegalArgumentException("Matrix data cannot be empty");
     }
 
-    List<List<Scalar>> result = new java.util.ArrayList<>();
+    int expectedColSize = -1;
+    for (int i = 0; i < data.size(); i++) {
+      List<Scalar> row = data.get(i);
+      if (row == null) {
+        throw new IllegalArgumentException("Row " + i + " cannot be null");
+      }
+
+      if (expectedColSize == -1) {
+        expectedColSize = row.size();
+      } else if (row.size() != expectedColSize) {
+        throw new IllegalArgumentException(
+            String.format("Row %d has %d columns, expected %d columns", i, row.size(), expectedColSize));
+      }
+
+      for (int j = 0; j < row.size(); j++) {
+        if (row.get(j) == null) {
+          throw new IllegalArgumentException("Scalar at position [" + i + "," + j + "] cannot be null");
+        }
+      }
+    }
+  }
+
+  /**
+   * 행렬 인덱스의 유효성을 검증한다.
+   * 
+   * @param row 행 인덱스
+   * @param col 열 인덱스
+   * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
+   */
+  private void validateIndices(int row, int col) {
+    if (row < 0 || row >= getRowSize()) {
+      throw new IndexOutOfBoundsException(
+          "Row index " + row + " is out of bounds for matrix size " + getRowSize() + "x" + getColSize());
+    }
+    if (col < 0 || col >= getColSize()) {
+      throw new IndexOutOfBoundsException(
+          "Column index " + col + " is out of bounds for matrix size " + getRowSize() + "x" + getColSize());
+    }
+  }
+
+  /**
+   * 스칼라 인수의 유효성을 검증한다.
+   * 
+   * @param scalar 검증할 스칼라 객체
+   * @throws NullPointerException 스칼라가 null인 경우
+   */
+  private static void validateScalarArgument(Scalar scalar) {
+    if (scalar == null) {
+      throw new NullPointerException("Scalar argument cannot be null");
+    }
+  }
+
+  /**
+   * 행렬 인수의 유효성을 검증한다.
+   * 
+   * @param matrix 검증할 행렬 객체
+   * @throws NullPointerException 행렬이 null인 경우
+   */
+  private static void validateMatrixArgument(Matrix matrix) {
+    if (matrix == null) {
+      throw new NullPointerException("Matrix argument cannot be null");
+    }
+  }
+
+  /**
+   * 두 행렬의 차원이 일치하는지 검증한다.
+   * 
+   * @param matrix1   첫 번째 행렬
+   * @param matrix2   두 번째 행렬
+   * @param operation 수행할 연산 이름 (오류 메시지용)
+   * @throws DimensionMismatchException 차원이 일치하지 않는 경우
+   */
+  private static void validateMatrixDimensionsMatch(Matrix matrix1, Matrix matrix2, String operation) {
+    if (matrix1.getRowSize() != matrix2.getRowSize() || matrix1.getColSize() != matrix2.getColSize()) {
+      throw new DimensionMismatchException(
+          String.format("%dx%d", matrix1.getRowSize(), matrix1.getColSize()),
+          String.format("%dx%d", matrix2.getRowSize(), matrix2.getColSize()));
+    }
+  }
+
+  // =============================================================================
+  // 정적 산술 연산 메소드 (Static Arithmetic Operations)
+  // =============================================================================
+
+  // 28. 전달받은 두 행렬의 덧셈이 가능하다. (크기가 같을 때)
+  static Matrix add(Matrix a, Matrix b) {
+    validateMatrixArgument(a);
+    validateMatrixArgument(b);
+    validateMatrixDimensionsMatch(a, b, "addition");
+
+    List<List<Scalar>> result = new ArrayList<>(a.getRowSize());
     for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new java.util.ArrayList<>();
+      List<Scalar> row = new ArrayList<>(a.getColSize());
       for (int j = 0; j < a.getColSize(); j++) {
         row.add(a.get(i, j).add(b.get(i, j)));
       }
@@ -279,13 +511,15 @@ class MatrixImpl implements Matrix {
 
   // 29. 전달받은 두 행렬의 곱셈이 가능하다. ((m x n) x (n x l) 일 때)
   static Matrix mul(Matrix a, Matrix b) {
+    validateMatrixArgument(a);
+    validateMatrixArgument(b);
     if (a.getColSize() != b.getRowSize()) {
-      throw new IllegalArgumentException("Matrix dimensions do not allow multiplication.");
+      throw new DimensionMismatchException(a.getColSize(), b.getRowSize());
     }
 
-    List<List<Scalar>> result = new java.util.ArrayList<>();
+    List<List<Scalar>> result = new ArrayList<>(a.getRowSize());
     for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new java.util.ArrayList<>();
+      List<Scalar> row = new ArrayList<>(b.getColSize());
       for (int j = 0; j < b.getColSize(); j++) {
         Scalar sum = a.get(i, 0).clone();
         sum.multiply(b.get(0, j));
@@ -300,81 +534,130 @@ class MatrixImpl implements Matrix {
     return new MatrixImpl(result);
   }
 
+  // =============================================================================
+  // 연결 연산 메소드 (Concatenation Operations)
+  // =============================================================================
+
   // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능)
   @Override
   public Matrix concatHorizontally(Matrix other) {
-    if (this.getRowSize() != other.getRowSize()) {
-      throw new IllegalArgumentException("행 개수가 다릅니다.");
-    }
-    for (int i = 0; i < getRowSize(); i++) {
-      List<Scalar> copyOfOtherRow = new ArrayList<>();
-      for (Scalar s : other.getMatrixValue().get(i)) {
-        copyOfOtherRow.add(s.clone());
+    validateMatrixArgument(other);
+    validateRowSizeForHorizontalConcat(this, other);
+
+    // 자기 자신과 연결하는 경우를 위해 다른 행렬을 미리 복사
+    Matrix otherMatrixCopy = other.clone();
+
+    // 현재 행렬의 각 행에 복사된 다른 행렬의 해당 행을 추가
+    for (int rowIndex = 0; rowIndex < getRowSize(); rowIndex++) {
+      List<Scalar> currentRow = this.matrixValue.get(rowIndex);
+      for (int colIndex = 0; colIndex < otherMatrixCopy.getColSize(); colIndex++) {
+        currentRow.add(otherMatrixCopy.get(rowIndex, colIndex));
       }
-      this.getMatrixValue().get(i).addAll(copyOfOtherRow);
     }
     return this;
   }
 
-  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) static
-  static Matrix concatHorizontally(Matrix a, Matrix b) {
-    if (a.getRowSize() != b.getRowSize()) {
-      throw new IllegalArgumentException("행 개수가 다릅니다.");
+  // 32. 행렬은 다른 행렬과 가로로 합쳐질 수 있다(두 행렬의 행 수가 같아야 가능) - Static 버전
+  static Matrix concatHorizontally(Matrix left, Matrix right) {
+    validateMatrixArgument(left);
+    validateMatrixArgument(right);
+    validateRowSizeForHorizontalConcat(left, right);
+
+    List<List<Scalar>> resultMatrix = new ArrayList<>(left.getRowSize());
+
+    for (int rowIndex = 0; rowIndex < left.getRowSize(); rowIndex++) {
+      List<Scalar> newRow = new ArrayList<>(left.getColSize() + right.getColSize());
+
+      // 왼쪽 행렬의 행 복사
+      for (Scalar scalar : left.getMatrixValue().get(rowIndex)) {
+        newRow.add(scalar.clone());
+      }
+
+      // 오른쪽 행렬의 행 복사
+      for (Scalar scalar : right.getMatrixValue().get(rowIndex)) {
+        newRow.add(scalar.clone());
+      }
+
+      resultMatrix.add(newRow);
     }
-    List<List<Scalar>> result = new ArrayList<>();
-    for (int i = 0; i < a.getRowSize(); i++) {
-      List<Scalar> row = new ArrayList<>(a.getMatrixValue().get(i));
-      row.addAll(b.getMatrixValue().get(i));
-      result.add(row);
-    }
-    return new MatrixImpl(result);
+
+    return new MatrixImpl(resultMatrix);
   }
 
-  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) non static
-  //    이 메서드는 호출된 객체(this)를 직접 수정합니다.
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능)
   @Override
   public Matrix concatVertically(Matrix other) {
-    if (this.getRowSize() != other.getRowSize()) {
-      throw new IllegalArgumentException("행 개수가 다릅니다.");
-    }
+    validateMatrixArgument(other);
+    validateColSizeForVerticalConcat(this, other);
 
-    List<List<Scalar>> rowsToAdd = new ArrayList<>();
-    for (List<Scalar> row : other.getMatrixValue()) {
-      List<Scalar> newRow = new ArrayList<>(row.size());
-      for (Scalar s : row) {
-        newRow.add(s.clone());
+    // 자기 자신과 연결하는 경우를 위해 다른 행렬을 미리 복사
+    Matrix otherMatrixCopy = other.clone();
+
+    // 복사된 행렬의 모든 행을 현재 행렬에 추가
+    for (int rowIndex = 0; rowIndex < otherMatrixCopy.getRowSize(); rowIndex++) {
+      List<Scalar> newRow = new ArrayList<>(otherMatrixCopy.getColSize());
+      for (int colIndex = 0; colIndex < otherMatrixCopy.getColSize(); colIndex++) {
+        newRow.add(otherMatrixCopy.get(rowIndex, colIndex));
       }
-      rowsToAdd.add(newRow);
+      this.matrixValue.add(newRow);
     }
 
-    this.matrixValue.addAll(rowsToAdd);
     return this;
   }
 
+  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) - Static 버전
+  static Matrix concatVertically(Matrix top, Matrix bottom) {
+    validateMatrixArgument(top);
+    validateMatrixArgument(bottom);
+    validateColSizeForVerticalConcat(top, bottom);
 
-  // 33. 행렬은 다른 행렬과 세로로 합쳐질 수 있다(두 행렬의 열 수가 같아야 가능) default static
-  static Matrix concatVertically(Matrix a, Matrix b) {
-    if (a.getColSize() != b.getColSize()) {
-      throw new IllegalArgumentException("열 개수가 다릅니다.");
+    List<List<Scalar>> resultMatrix = new ArrayList<>(top.getRowSize() + bottom.getRowSize());
+
+    // 위쪽 행렬의 모든 행 복사
+    for (int rowIndex = 0; rowIndex < top.getRowSize(); rowIndex++) {
+      List<Scalar> newRow = new ArrayList<>(top.getColSize());
+      for (int colIndex = 0; colIndex < top.getColSize(); colIndex++) {
+        newRow.add(top.get(rowIndex, colIndex).clone());
+      }
+      resultMatrix.add(newRow);
     }
-    List<List<Scalar>> result = new ArrayList<>();
-    result.addAll(a.getMatrixValue());
-    result.addAll(b.getMatrixValue());
-    return new MatrixImpl(result);
+
+    // 아래쪽 행렬의 모든 행 복사
+    for (int rowIndex = 0; rowIndex < bottom.getRowSize(); rowIndex++) {
+      List<Scalar> newRow = new ArrayList<>(bottom.getColSize());
+      for (int colIndex = 0; colIndex < bottom.getColSize(); colIndex++) {
+        newRow.add(bottom.get(rowIndex, colIndex).clone());
+      }
+      resultMatrix.add(newRow);
+    }
+
+    return new MatrixImpl(resultMatrix);
   }
 
-  // 34. 행렬은 특정 행을 벡터 추출해 주 수 있다.
+  // =============================================================================
+  // 추출 연산 메소드 (Extraction Operations)
+  // =============================================================================
+
+  // 34. 행렬은 특정 행을 벡터 추출해 줄 수 있다.
   @Override
   public Vector getRowVector(int row) {
-    return new VectorImpl(new ArrayList<>(matrixValue.get(row)));
+    validateRowIndex(row);
+
+    List<Scalar> rowCopy = new ArrayList<>(getColSize());
+    for (Scalar scalar : matrixValue.get(row)) {
+      rowCopy.add(scalar.clone());
+    }
+    return new VectorImpl(rowCopy);
   }
 
   // 35. 행렬은 특정 열을 벡터 형태로 추출해 줄 수 있다
   @Override
   public Vector getColVector(int col) {
-    List<Scalar> colVec = new ArrayList<>();
+    validateColIndex(col);
+
+    List<Scalar> colVec = new ArrayList<>(getRowSize());
     for (List<Scalar> row : matrixValue) {
-      colVec.add(row.get(col));
+      colVec.add(row.get(col).clone());
     }
     return new VectorImpl(colVec);
   }
@@ -382,52 +665,69 @@ class MatrixImpl implements Matrix {
   // 36. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
   @Override
   public Matrix subMatrix(int startRow, int endRow, int startCol, int endCol) {
-    List<List<Scalar>> sub = new ArrayList<>();
+    validateSubMatrixBounds(startRow, endRow, startCol, endCol);
+
+    List<List<Scalar>> result = new ArrayList<>(endRow - startRow);
+
     for (int i = startRow; i < endRow; i++) {
-      List<Scalar> row = new ArrayList<>();
+      List<Scalar> row = new ArrayList<>(endCol - startCol);
       for (int j = startCol; j < endCol; j++) {
-        row.add(matrixValue.get(i).get(j));
+        row.add(matrixValue.get(i).get(j).clone());
       }
-      sub.add(row);
+      result.add(row);
     }
-    return new MatrixImpl(sub);
+
+    return new MatrixImpl(result);
   }
 
-  // 37. 행렬은 특정 범위의 부분 행렬을 추출해 줄 수 있다.
+  // 37. 행렬은 특정 행과 열을 제거한 부분 행렬(minor)을 추출해 줄 수 있다.
   @Override
   public Matrix minor(int rowToRemove, int colToRemove) {
-    List<List<Scalar>> sub = new ArrayList<>();
+    validateRowIndex(rowToRemove);
+    validateColIndex(colToRemove);
+
+    List<List<Scalar>> result = new ArrayList<>(getRowSize() - 1);
     for (int i = 0; i < matrixValue.size(); i++) {
       if (i == rowToRemove) {
         continue;
       }
-      List<Scalar> row = new ArrayList<>();
+      List<Scalar> row = new ArrayList<>(getColSize() - 1);
       for (int j = 0; j < matrixValue.get(i).size(); j++) {
         if (j == colToRemove) {
           continue;
         }
-        row.add(matrixValue.get(i).get(j));
+        row.add(matrixValue.get(i).get(j).clone());
       }
-      sub.add(row);
+      result.add(row);
     }
-    return new MatrixImpl(sub);
+
+    return new MatrixImpl(result);
   }
+
+  // =============================================================================
+  // 변환 연산 메소드 (Transformation Operations)
+  // =============================================================================
 
   // 38. 행렬은 전치행렬을 구해 줄 수 있다.
   @Override
   public Matrix transpose() {
     int rows = getRowSize();
     int cols = getColSize();
-    List<List<Scalar>> trans = new ArrayList<>();
+    List<List<Scalar>> result = new ArrayList<>(cols);
+
     for (int c = 0; c < cols; c++) {
-      List<Scalar> newRow = new ArrayList<>();
+      List<Scalar> newRow = new ArrayList<>(rows);
       for (int r = 0; r < rows; r++) {
-        newRow.add(matrixValue.get(r).get(c));
+        newRow.add(matrixValue.get(r).get(c).clone());
       }
-      trans.add(newRow);
+      result.add(newRow);
     }
-    return new MatrixImpl(trans);
+    return new MatrixImpl(result);
   }
+
+  // =============================================================================
+  // 특성 확인 메소드 (Property Check Methods)
+  // =============================================================================
 
   // 39. 행렬은 대각 요소의 합을 구해줄 수 있다.
   @Override
@@ -435,7 +735,7 @@ class MatrixImpl implements Matrix {
     if (!isSquare()) {
       throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
-    Scalar sum = new ScalarImpl("0");
+    Scalar sum = ZERO_SCALAR.clone();
     for (int i = 0; i < getRowSize(); i++) {
       sum.add(matrixValue.get(i).get(i));
     }
@@ -454,10 +754,10 @@ class MatrixImpl implements Matrix {
     if (!isSquare()) {
       return false;
     }
-    int n = getRowSize();
-    for (int i = 1; i < n; i++) {
-      for (int j = 0; j < i; j++) {
-        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+
+    for (int r = 1; r < getRowSize(); r++) {
+      for (int c = 0; c < r; c++) {
+        if (!this.get(r, c).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -471,10 +771,10 @@ class MatrixImpl implements Matrix {
     if (!isSquare()) {
       return false;
     }
-    int n = getRowSize();
-    for (int i = 0; i < n; i++) {
-      for (int j = i + 1; j < n; j++) {
-        if (!matrixValue.get(i).get(j).equals(new ScalarImpl("0"))) {
+
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = r + 1; c < getColSize(); c++) {
+        if (!this.get(r, c).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -488,12 +788,17 @@ class MatrixImpl implements Matrix {
     if (!isSquare()) {
       return false;
     }
-    int n = getRowSize();
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        Scalar expected = (i == j) ? new ScalarImpl("1") : new ScalarImpl("0");
-        if (!matrixValue.get(i).get(j).equals(expected)) {
-          return false;
+
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        if (r == c) {
+          if (!this.get(r, c).equals(ONE_SCALAR)) {
+            return false;
+          }
+        } else {
+          if (!this.get(r, c).equals(ZERO_SCALAR)) {
+            return false;
+          }
         }
       }
     }
@@ -503,9 +808,9 @@ class MatrixImpl implements Matrix {
   // 44. 영행렬(Zero)인지 반환
   @Override
   public boolean isZero() {
-    for (List<Scalar> row : matrixValue) {
-      for (Scalar val : row) {
-        if (!val.equals(new ScalarImpl("0"))) {
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        if (!this.get(r, c).equals(ZERO_SCALAR)) {
           return false;
         }
       }
@@ -513,103 +818,127 @@ class MatrixImpl implements Matrix {
     return true;
   }
 
-  @Override
+  // =============================================================================
+  // 행렬 변환 연산 메소드 (Matrix Transformation Operations)
+  // =============================================================================
+
   // 45. 행렬의 두 행 row1과 row2의 위치를 맞교환한다.
+  @Override
   public void swapRows(int row1, int row2) {
-    List<Scalar> tmp = matrixValue.get(row1);
-    matrixValue.set(row1, matrixValue.get(row2));
-    matrixValue.set(row2, tmp);
+    validateRowIndex(row1);
+    validateRowIndex(row2);
+
+    List<Scalar> tmp = this.matrixValue.get(row1);
+    this.matrixValue.set(row1, this.matrixValue.get(row2));
+    this.matrixValue.set(row2, tmp);
   }
 
-  @Override
   // 46. 행렬의 두 열 col1과 col2의 위치를 맞교환한다.
+  @Override
   public void swapColumns(int col1, int col2) {
-    for (int r = 0; r < getRowSize(); ++r) {
+    validateColIndex(col1);
+    validateColIndex(col2);
+
+    for (int r = 0; r < getRowSize(); r++) {
       Scalar tmp = matrixValue.get(r).get(col1);
       matrixValue.get(r).set(col1, matrixValue.get(r).get(col2));
       matrixValue.get(r).set(col2, tmp);
     }
   }
 
-  @Override
   // 47. 지정된 행 row에 Scalar factor를 곱해 상수배한다.
+  @Override
   public void scaleRow(int row, Scalar factor) {
-    // TODO: matrixValue.get(row)의 각 요소에 factor를 곱함
-    for (int c = 0; c < getColSize(); ++c) {
+    validateRowIndex(row);
+    validateScalarArgument(factor);
+
+    for (int c = 0; c < getColSize(); c++) {
       matrixValue.get(row).get(c).multiply(factor);
     }
   }
 
-  @Override
   // 48. 지정된 열 column에 Scalar factor를 곱해 상수배한다.
+  @Override
   public void scaleColumn(int column, Scalar factor) {
-    // TODO: 모든 행의 column 인덱스 요소에 factor를 곱함
-    for (int r = 0; r < getRowSize(); ++r) {
+    validateColIndex(column);
+    validateScalarArgument(factor);
+
+    for (int r = 0; r < getRowSize(); r++) {
       matrixValue.get(r).get(column).multiply(factor);
     }
   }
 
-  @Override
   // 49. targetRow에 sourceRow의 factor 배를 더한다. (row -> row + factor * sourceRow)
+  @Override
   public void addMultipleOfRow(int targetRow, int sourceRow, Scalar factor) {
-    // TODO: 각 열별로 matrix[targetRow][c] += factor * matrix[sourceRow][c]
-    for (int c = 0; c < getColSize(); ++c) {
+    validateRowIndex(targetRow);
+    validateRowIndex(sourceRow);
+    validateScalarArgument(factor);
+
+    for (int c = 0; c < getColSize(); c++) {
       Scalar sourceScalar = matrixValue.get(sourceRow).get(c).clone();
       sourceScalar.multiply(factor);
       matrixValue.get(targetRow).get(c).add(sourceScalar);
     }
   }
 
+  // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor *
+  // sourceColumn)
   @Override
-  // 50. targetColumn에 sourceColumn의 factor 배를 더한다. (column -> column + factor * sourceColumn)
   public void addMultipleOfColumn(int targetColumn, int sourceColumn, Scalar factor) {
-    // TODO: 모든 행에 대해 matrix[r][targetColumn] += factor * matrix[r][sourceColumn]
-    for (int r = 0; r < getRowSize(); ++r) {
+    validateColIndex(targetColumn);
+    validateColIndex(sourceColumn);
+    validateScalarArgument(factor);
+
+    for (int r = 0; r < getRowSize(); r++) {
       Scalar sourceScalar = matrixValue.get(r).get(sourceColumn).clone();
       sourceScalar.multiply(factor);
       matrixValue.get(r).get(targetColumn).add(sourceScalar);
     }
   }
 
+  // =============================================================================
+  // 행렬 형식 변환 메소드 (Matrix Form Conversion Methods)
+  // =============================================================================
+
   // 51. 이 행렬의 RREF(row-reduced echelon form) 버전을 새 Matrix로 계산하여 반환한다.
   @Override
   public Matrix toReducedRowEchelonForm() {
-    // 깊은 복사 – 원본 보존
     Matrix m = this.clone();
 
     int rowCount = m.getRowSize();
     int colCount = m.getColSize();
-    int lead = 0;                       // 현재 피벗 열
+    int lead = 0;
 
     for (int r = 0; r < rowCount && lead < colCount; r++) {
-      // (1)   피벗이 0이면, 아래 행 중 0 이 아닌 것이 나올 때까지 swap
+      // (1) 피벗이 0이면, 아래 행 중 0이 아닌 것이 나올 때까지 swap
       int pivotRow = r;
       while (pivotRow < rowCount && m.get(pivotRow, lead).isZero()) {
         pivotRow++;
       }
-      if (pivotRow == rowCount) {     // 전체 열이 0 → 다음 열로
+      if (pivotRow == rowCount) {
         lead++;
-        r--;                        // 같은 행에서 다시 시도
+        r--;
         continue;
       }
       if (pivotRow != r) {
-        m.swapRows(pivotRow, r);    // 45. swapRows 활용
+        m.swapRows(pivotRow, r);
       }
 
-      // (2)   피벗을 1로 만들기
+      // (2) 피벗을 1로 만들기
       Scalar pivot = m.get(r, lead);
-      if (!pivot.equals(new ScalarImpl("1"))) {
-        m.scaleRow(r, pivot.reciprocal()); // 47. scaleRow(k = 1/pivot)
+      if (!pivot.equals(ONE_SCALAR)) {
+        m.scaleRow(r, pivot.reciprocal());
       }
 
-      // (3)   같은 열의 다른 행을 0 으로
+      // (3) 같은 열의 다른 행을 0으로
       for (int i = 0; i < rowCount; i++) {
         if (i == r) {
           continue;
         }
         Scalar factor = m.get(i, lead);
         if (!factor.isZero()) {
-          m.addMultipleOfRow(i, r, factor.negate()); // 49. R_i ← R_i − factor·R_r
+          m.addMultipleOfRow(i, r, factor.negate());
         }
       }
       lead++;
@@ -622,42 +951,28 @@ class MatrixImpl implements Matrix {
   public boolean isReducedRowEchelonForm() {
     int rowCount = getRowSize();
     int colCount = getColSize();
-    int lastPivot = -1;                 // 이전 피벗 열 인덱스
+    int lastPivot = -1;
 
     for (int r = 0; r < rowCount; r++) {
       // (a) 0-행이면 아래쪽도 전부 0-행이어야 함
-      int firstNonZero = -1;
-      for (int c = 0; c < colCount; c++) {
-        if (!get(r, c).isZero()) {
-          firstNonZero = c;
-          break;
-        }
-      }
-      if (firstNonZero == -1) {       // 전부 0
+      int firstNonZero = findFirstNonZeroColumn(r);
+
+      if (firstNonZero == -1) {
         // 0-행 이후에 0이 아닌 행이 있으면 RREF 아님
-        for (int k = r + 1; k < rowCount; k++) {
-          for (int c = 0; c < colCount; c++) {
-            if (!get(k, c).isZero()) {
-              return false;
-            }
-          }
+        if (!areRemainingRowsZero(r + 1)) {
+          return false;
         }
-        break;                      // 남은 행 모두 0 — 조건 충족
+        break;
       }
 
-      // (b) 피벗은 1 이어야 함
-      if (!get(r, firstNonZero).equals(new ScalarImpl("1"))) {
+      // (b) 피벗은 1이어야 함
+      if (!get(r, firstNonZero).equals(ONE_SCALAR)) {
         return false;
       }
 
       // (c) 피벗 열은 다른 행에서 모두 0
-      for (int i = 0; i < rowCount; i++) {
-        if (i == r) {
-          continue;
-        }
-        if (!get(i, firstNonZero).isZero()) {
-          return false;
-        }
+      if (!isPivotColumnZeroInOtherRows(r, firstNonZero)) {
+        return false;
       }
 
       // (d) 피벗 열은 오른쪽으로 Strictly 증가
@@ -669,34 +984,271 @@ class MatrixImpl implements Matrix {
     return true;
   }
 
-  //53. 행렬은 자신의 행렬식을 구해줄 수 있다.
+  // =============================================================================
+  // 고급 행렬 연산 메소드 (Advanced Matrix Operations)
+  // =============================================================================
+
+  // 53. 행렬은 자신의 행렬식을 구해줄 수 있다.
   @Override
   public Scalar determinant() {
     if (!isSquare()) {
-      throw new DimensionMismatchException(getRowSize() + "x" + getRowSize(),
-          getRowSize() + "x" + getColSize());
+      throw new NonSquareMatrixException(getRowSize(), getColSize());
     }
 
     int n = getRowSize();
 
     if (n == 1) {
-      return matrixValue.get(0).get(0).clone(); // 1x1 행렬
+      return matrixValue.get(0).get(0).clone();
     }
 
     if (n == 2) {
-
-      Scalar a = matrixValue.get(0).get(0).clone();
-      Scalar b = matrixValue.get(0).get(1).clone();
-      Scalar c = matrixValue.get(1).get(0).clone();
-      Scalar d = matrixValue.get(1).get(1).clone();
-
-      Scalar ac = a.multiply(d);
-      Scalar bd = b.multiply(c).multiply(new ScalarImpl("-1"));
-      ac.add(bd);
-      return ac;
+      return calculate2x2Determinant();
     }
 
-    Scalar det = new ScalarImpl("0");
+    return calculateNxNDeterminant(n);
+  }
+
+  // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
+  @Override
+  public Matrix inverse() {
+    if (!isSquare()) {
+      throw new NonSquareMatrixException(getRowSize(), getColSize());
+    }
+
+    Scalar det = this.determinant();
+    if (det.isZero()) {
+      throw new SingularMatrixException();
+    }
+
+    int n = getRowSize();
+    Matrix cofactorMatrix = calculateCofactorMatrix(n);
+    Matrix adjugate = cofactorMatrix.transpose();
+    Scalar detReciprocal = det.reciprocal();
+
+    return multiplyMatrixByScalar(adjugate, detReciprocal);
+  }
+
+  // =============================================================================
+  // 유틸리티 메소드 (Utility Methods)
+  // =============================================================================
+
+  /**
+   * 해시코드를 생성한다.
+   */
+  @Override
+  public int hashCode() {
+    int result = 1;
+    for (List<Scalar> row : matrixValue) {
+      for (Scalar scalar : row) {
+        result = 31 * result + scalar.hashCode();
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 빈 행렬인지 확인한다.
+   */
+  public boolean isEmpty() {
+    return matrixValue.isEmpty() || getColSize() == 0;
+  }
+
+  /**
+   * 모든 요소가 양수인지 확인한다.
+   */
+  public boolean isAllPositive() {
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        Scalar value = get(r, c);
+        if (!(value instanceof ScalarImpl) || !((ScalarImpl) value).isPositive()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 모든 요소가 음수인지 확인한다.
+   */
+  public boolean isAllNegative() {
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        Scalar value = get(r, c);
+        if (!(value instanceof ScalarImpl) || !((ScalarImpl) value).isNegative()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 대각 행렬인지 확인한다.
+   */
+  public boolean isDiagonal() {
+    if (!isSquare()) {
+      return false;
+    }
+
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        if (r != c && !get(r, c).equals(ZERO_SCALAR)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 대칭 행렬인지 확인한다.
+   */
+  public boolean isSymmetric() {
+    if (!isSquare()) {
+      return false;
+    }
+
+    for (int r = 0; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        if (!get(r, c).equals(get(c, r))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // =============================================================================
+  // 상수 정의 (Constants)
+  // =============================================================================
+
+  private static final Scalar ZERO_SCALAR = new ScalarImpl("0");
+  private static final Scalar ONE_SCALAR = new ScalarImpl("1");
+  private static final Scalar NEGATIVE_ONE_SCALAR = new ScalarImpl("-1");
+
+  // =============================================================================
+  // 검증 헬퍼 메소드 (Validation Helper Methods)
+  // =============================================================================
+
+  /**
+   * 행 인덱스의 유효성을 검증한다.
+   */
+  private void validateRowIndex(int row) {
+    if (row < 0 || row >= getRowSize()) {
+      throw new IndexOutOfBoundsException(
+          "Row index " + row + " is out of bounds for matrix size " + getRowSize() + "x" + getColSize());
+    }
+  }
+
+  /**
+   * 열 인덱스의 유효성을 검증한다.
+   */
+  private void validateColIndex(int col) {
+    if (col < 0 || col >= getColSize()) {
+      throw new IndexOutOfBoundsException(
+          "Column index " + col + " is out of bounds for matrix size " + getRowSize() + "x" + getColSize());
+    }
+  }
+
+  /**
+   * 부분 행렬 범위의 유효성을 검증한다.
+   */
+  private void validateSubMatrixBounds(int startRow, int endRow, int startCol, int endCol) {
+    if (startRow < 0 || startRow >= getRowSize()) {
+      throw new IndexOutOfBoundsException("Start row index " + startRow + " is out of bounds");
+    }
+    if (endRow <= startRow || endRow > getRowSize()) {
+      throw new IndexOutOfBoundsException("End row index " + endRow + " is invalid");
+    }
+    if (startCol < 0 || startCol >= getColSize()) {
+      throw new IndexOutOfBoundsException("Start column index " + startCol + " is out of bounds");
+    }
+    if (endCol <= startCol || endCol > getColSize()) {
+      throw new IndexOutOfBoundsException("End column index " + endCol + " is invalid");
+    }
+  }
+
+  /**
+   * 가로 연결을 위한 행 크기 검증
+   */
+  private static void validateRowSizeForHorizontalConcat(Matrix left, Matrix right) {
+    if (left.getRowSize() != right.getRowSize()) {
+      throw new DimensionMismatchException(left.getRowSize(), right.getRowSize());
+    }
+  }
+
+  /**
+   * 세로 연결을 위한 열 크기 검증
+   */
+  private static void validateColSizeForVerticalConcat(Matrix top, Matrix bottom) {
+    if (top.getColSize() != bottom.getColSize()) {
+      throw new DimensionMismatchException(top.getColSize(), bottom.getColSize());
+    }
+  }
+
+  // =============================================================================
+  // 계산 헬퍼 메소드 (Calculation Helper Methods)
+  // =============================================================================
+
+  /**
+   * 특정 행에서 첫 번째 0이 아닌 열을 찾는다.
+   */
+  private int findFirstNonZeroColumn(int row) {
+    for (int c = 0; c < getColSize(); c++) {
+      if (!get(row, c).isZero()) {
+        return c;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * 지정된 행부터 나머지 모든 행이 0인지 확인한다.
+   */
+  private boolean areRemainingRowsZero(int startRow) {
+    for (int r = startRow; r < getRowSize(); r++) {
+      for (int c = 0; c < getColSize(); c++) {
+        if (!get(r, c).isZero()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 피벗 열이 다른 행에서 모두 0인지 확인한다.
+   */
+  private boolean isPivotColumnZeroInOtherRows(int pivotRow, int pivotCol) {
+    for (int i = 0; i < getRowSize(); i++) {
+      if (i != pivotRow && !get(i, pivotCol).isZero()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 2x2 행렬의 행렬식을 계산한다.
+   */
+  private Scalar calculate2x2Determinant() {
+    Scalar a = matrixValue.get(0).get(0).clone();
+    Scalar b = matrixValue.get(0).get(1).clone();
+    Scalar c = matrixValue.get(1).get(0).clone();
+    Scalar d = matrixValue.get(1).get(1).clone();
+
+    Scalar ac = a.multiply(d);
+    Scalar bd = b.multiply(c).multiply(NEGATIVE_ONE_SCALAR);
+    ac.add(bd);
+    return ac;
+  }
+
+  /**
+   * NxN 행렬의 행렬식을 계산한다 (재귀적 방법).
+   */
+  private Scalar calculateNxNDeterminant(int n) {
+    Scalar det = ZERO_SCALAR.clone();
     for (int j = 0; j < n; j++) {
       Scalar sign = new ScalarImpl((j % 2 == 0) ? "1" : "-1");
       Scalar aij = matrixValue.get(0).get(j).clone();
@@ -707,25 +1259,14 @@ class MatrixImpl implements Matrix {
     return det;
   }
 
+  /**
+   * 여인수 행렬을 계산한다.
+   */
+  private Matrix calculateCofactorMatrix(int n) {
+    List<List<Scalar>> cofactorMatrix = new ArrayList<>(n);
 
-  // 54. 행렬은 자신의 역행렬을 구해줄 수 있다.
-  @Override
-  public Matrix inverse() {
-    if (!isSquare()) {
-      throw new NonSquareMatrixException(getRowSize(), getColSize());
-    }
-
-    Scalar det = this.determinant();
-    if (det.getValueAsString().equals("0")) {
-      throw new SingularMatrixException();
-    }
-
-    int n = getRowSize();
-    List<List<Scalar>> cofactorMatrix = new ArrayList<>();
-
-    // Cofactor 행렬 생성
     for (int i = 0; i < n; i++) {
-      List<Scalar> cofactorRow = new ArrayList<>();
+      List<Scalar> cofactorRow = new ArrayList<>(n);
       for (int j = 0; j < n; j++) {
         Scalar sign = new ScalarImpl(((i + j) % 2 == 0) ? "1" : "-1");
         Scalar minorDet = this.minor(i, j).determinant();
@@ -735,20 +1276,23 @@ class MatrixImpl implements Matrix {
       cofactorMatrix.add(cofactorRow);
     }
 
-    Matrix adjugate = new MatrixImpl(cofactorMatrix).transpose();
-    Scalar detReciprocal = det.reciprocal();
+    return new MatrixImpl(cofactorMatrix);
+  }
 
-    // 역행렬 = (1/det) * adjugate
-    List<List<Scalar>> invMatrix = new ArrayList<>();
-    for (int i = 0; i < n; i++) {
-      List<Scalar> row = new ArrayList<>();
-      for (int j = 0; j < n; j++) {
-        Scalar elem = adjugate.get(i, j);
-        elem = elem.multiply(detReciprocal);  // 역수를 곱함
+  /**
+   * 행렬에 스칼라를 곱한다.
+   */
+  private Matrix multiplyMatrixByScalar(Matrix matrix, Scalar scalar) {
+    List<List<Scalar>> result = new ArrayList<>(matrix.getRowSize());
+    for (int i = 0; i < matrix.getRowSize(); i++) {
+      List<Scalar> row = new ArrayList<>(matrix.getColSize());
+      for (int j = 0; j < matrix.getColSize(); j++) {
+        Scalar elem = matrix.get(i, j).clone();
+        elem.multiply(scalar);
         row.add(elem);
       }
-      invMatrix.add(row);
+      result.add(row);
     }
-    return new MatrixImpl(invMatrix);
+    return new MatrixImpl(result);
   }
 }
